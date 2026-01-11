@@ -5,31 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse Pro</title>
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
+    <title>Body Pulse Elite</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%233a86ff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
     <style>
         :root {
-            /* MINIMALIST DARK THEME */
             --bg: #000000;
-            --card: #121212;
-            --border: #2a2a2a;
-            --input-bg: #1a1a1a;
+            --card: #141414; 
+            --input: #222222;
+            --border: #333333;
             --text: #ffffff;
-            --text-dim: #666666;
-            --accent: #3a86ff; /* Modernes Blau */
-            --accent-dim: rgba(58, 134, 255, 0.1);
-            --danger: #ff4d4d;
-            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-        }
-
-        body.light-mode {
-            --bg: #f5f5f7;
-            --card: #ffffff;
-            --border: #e1e1e6;
-            --input-bg: #f0f0f5;
-            --text: #111111;
             --text-dim: #888888;
+            --accent: #3a86ff; /* Elite Blue */
+            --accent-glow: rgba(58, 134, 255, 0.3);
+            --danger: #ff4757;
+            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
@@ -37,550 +29,633 @@
         body {
             background-color: var(--bg); color: var(--text); font-family: var(--font);
             margin: 0; height: 100vh; display: flex; flex-direction: column;
-            padding-top: env(safe-area-inset-top); overflow: hidden;
-            transition: background 0.3s;
+            padding-top: var(--safe-top); overflow: hidden;
         }
 
-        /* --- LAYOUT --- */
-        .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
-        .screen.active { display: flex; animation: fadein 0.3s; }
-        
-        /* --- TYPOGRAPHY --- */
-        h1 { font-size: 26px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; }
+        /* --- UI COMPONENTS --- */
+        h1 { font-size: 24px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; }
         h2 { font-size: 18px; font-weight: 600; margin: 0 0 10px; }
-        .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 25px; display: block; }
-        .label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* --- CARDS & UI --- */
-        .card { 
-            background: var(--card); padding: 20px; border-radius: 18px; 
-            margin-bottom: 16px; border: 1px solid var(--border);
-        }
+        .subtitle { color: var(--text-dim); font-size: 13px; margin-bottom: 20px; display: block; }
         
-        .btn-main { 
-            width: 100%; padding: 16px; border-radius: 12px; border: none; 
-            font-size: 16px; font-weight: 600; cursor: pointer; 
-            background: var(--text); color: var(--bg); margin-top: 10px; 
-            transition: opacity 0.2s;
+        .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
+        .screen.active { display: flex; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
+        
+        .btn {
+            width: 100%; padding: 18px; border-radius: 16px; border: none; font-size: 16px; 
+            font-weight: 600; cursor: pointer; background: var(--text); color: var(--bg); 
+            transition: transform 0.1s, opacity 0.2s; margin-top: 10px;
         }
-        .btn-main:active { opacity: 0.7; }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
         .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn-accent { background: var(--accent); color: white; }
-
-        /* --- INPUTS (FIXED) --- */
-        input { 
-            width: 100%; background: var(--input-bg); border: 1px solid var(--border); 
-            color: var(--text); padding: 14px; border-radius: 12px; font-size: 16px; 
-            font-family: var(--font); margin-bottom: 0; appearance: none;
+        .btn-accent { background: var(--accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
+        
+        /* INPUTS */
+        input, select {
+            width: 100%; background: var(--input); border: 1px solid var(--border); color: var(--text);
+            padding: 15px; border-radius: 12px; font-size: 16px; margin-bottom: 10px;
+            appearance: none; -webkit-appearance: none; font-family: var(--font);
         }
-        /* Fix für Date Input Overflow */
-        input[type="date"] { min-width: 0; width: 100%; display: block; }
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* --- HOME DASHBOARD --- */
-        .level-badge { font-size:12px; color: var(--accent); background: var(--accent-dim); padding: 4px 10px; border-radius: 20px; font-weight: bold; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .stat-item { background: var(--input-bg); padding: 10px; border-radius: 12px; text-align: center; }
-        .stat-val { font-size: 18px; font-weight: 700; display: block; }
-        .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; margin-top: 2px; }
-
-        /* --- WATER TRACKER --- */
-        .water-track { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .water-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--accent); font-size: 20px; cursor: pointer; }
-        .water-fill { display: flex; gap: 5px; }
-        .drop { width: 12px; height: 12px; border-radius: 50%; background: var(--border); transition: 0.3s; }
-        .drop.active { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-
+        /* --- ONBOARDING STYLES --- */
+        .wizard-step { display: none; flex-direction: column; height: 100%; }
+        .wizard-step.active { display: flex; animation: slideIn 0.3s ease; }
+        .option-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .option-card {
+            background: var(--input); padding: 20px; border-radius: 15px; text-align: left;
+            border: 2px solid transparent; cursor: pointer; transition: 0.2s;
+        }
+        .option-card.selected { border-color: var(--accent); background: rgba(58, 134, 255, 0.1); }
+        .option-icon { font-size: 24px; margin-bottom: 5px; display: block; }
+        .option-title { font-weight: bold; display: block; }
+        
+        /* --- DASHBOARD --- */
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: var(--card); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
+        .stat-val { font-size: 20px; font-weight: 800; display: block; color: var(--text); }
+        .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 600; margin-top: 4px; display: block;}
+        
         /* --- PLAYER --- */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
-            z-index: 200; display: none; flex-direction: column; padding: env(safe-area-inset-top) 20px 20px 20px;
+            z-index: 200; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
         }
-        .full-overlay.active { display: flex; }
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .time-big { font-size: 90px; font-weight: 200; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
-        .progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 20px; }
-        .progress-fill { height: 100%; background: var(--text); width: 0%; transition: width 1s linear; }
-
+        .time-big { font-size: 100px; font-weight: 200; font-variant-numeric: tabular-nums; letter-spacing: -3px; line-height: 1; }
+        .phase-lbl { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-top: 10px; }
+        
         /* --- NAV --- */
-        .nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 85px; 
-            background: rgba(18,18,18, 0.9); backdrop-filter: blur(20px); 
-            border-top: 1px solid var(--border); display: flex; justify-content: space-around; 
-            padding-bottom: env(safe-area-inset-bottom); z-index: 100; 
+        .nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(20,20,20,0.95); backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border); display: flex; justify-content: space-around;
+            padding-bottom: var(--safe-bottom); z-index: 100;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-dim); opacity: 0.6; transition: 0.2s; }
-        .nav-item.active { color: var(--text); opacity: 1; }
-        .nav-icon { font-size: 22px; margin-bottom: 6px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; transition: 0.2s; }
+        .nav-item.active { opacity: 1; color: var(--accent); }
+        .nav-icon { font-size: 24px; }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* --- HELPERS --- */
-        .row { display: flex; justify-content: space-between; align-items: center; }
-        .toggle-switch { position: relative; width: 50px; height: 26px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--input-bg); transition: .4s; border-radius: 34px; border: 1px solid var(--border); }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
-        input:checked + .slider:before { transform: translateX(24px); background-color: var(--text); }
-        
-        .modal-bg { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--card); width: 100%; max-width: 400px; border-radius: 20px; padding: 25px; border: 1px solid var(--border); }
-
-        /* Fix für Text-Overflow */
-        .ex-desc { color: var(--text-dim); font-size: 14px; line-height: 1.5; margin-top: 5px; }
+        /* --- HISTORY LIST --- */
+        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .history-date { color: var(--text-dim); }
     </style>
 </head>
 <body>
 
-    <div id="screen-onboarding" class="full-overlay" style="z-index: 500; justify-content: center;">
-        <h1 style="text-align: center;">Dein Ziel</h1>
-        <p class="subtitle" style="text-align: center;">Was möchtest du fokussieren?</p>
-        <div style="display: grid; gap: 10px;">
-            <button class="btn-main btn-ghost" onclick="finishOnboarding(['bauch'])">Bauch & Core</button>
-            <button class="btn-main btn-ghost" onclick="finishOnboarding(['po'])">Beine & Po</button>
-            <button class="btn-main btn-ghost" onclick="finishOnboarding(['arme', 'ruecken'])">Oberkörper (Arme/Rücken)</button>
-            <button class="btn-main" onclick="finishOnboarding(['bauch', 'po', 'arme', 'ruecken'])">Ganzkörper</button>
+    <div id="view-onboarding" class="full-overlay" style="z-index: 500; background: var(--bg);">
+        <div id="wiz-1" class="wizard-step active">
+            <h1>Dein Ziel 🎯</h1>
+            <p class="subtitle">Wofür möchtest du trainieren?</p>
+            <div class="option-grid">
+                <div class="option-card" onclick="wizSelect('goal', 'lose', this)">
+                    <span class="option-icon">🔥</span>
+                    <span class="option-title">Abnehmen / Fettabbau</span>
+                    <small style="color:var(--text-dim)">Hohe Intensität, kurze Pausen</small>
+                </div>
+                <div class="option-card" onclick="wizSelect('goal', 'build', this)">
+                    <span class="option-icon">💪</span>
+                    <span class="option-title">Muskelaufbau</span>
+                    <small style="color:var(--text-dim)">Kraftfokus, moderate Pausen</small>
+                </div>
+                <div class="option-card" onclick="wizSelect('goal', 'fit', this)">
+                    <span class="option-icon">❤️</span>
+                    <span class="option-title">Allgemeine Fitness</span>
+                    <small style="color:var(--text-dim)">Balance aus Kraft & Ausdauer</small>
+                </div>
+            </div>
+            <button class="btn btn-accent" style="margin-top:auto" onclick="wizNext(1)">Weiter</button>
+        </div>
+
+        <div id="wiz-2" class="wizard-step">
+            <h1>Fokus-Zonen ⚡</h1>
+            <p class="subtitle">Wähle mindestens eine Zone.</p>
+            <div class="option-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="option-card" onclick="wizToggle('parts', 'bauch', this)">
+                    <span class="option-title">Bauch</span>
+                </div>
+                <div class="option-card" onclick="wizToggle('parts', 'beine', this)">
+                    <span class="option-title">Beine & Po</span>
+                </div>
+                <div class="option-card" onclick="wizToggle('parts', 'ober', this)">
+                    <span class="option-title">Oberkörper</span>
+                </div>
+                <div class="option-card" onclick="wizToggle('parts', 'cardio', this)">
+                    <span class="option-title">Cardio</span>
+                </div>
+            </div>
+            <button class="btn btn-accent" style="margin-top:auto" onclick="wizNext(2)">Weiter</button>
+        </div>
+
+        <div id="wiz-3" class="wizard-step">
+            <h1>Über dich 👤</h1>
+            <p class="subtitle">Für deinen Kalorienverbrauch & BMI.</p>
+            <div class="card">
+                <div class="input-row">
+                    <input type="number" id="wiz-height" placeholder="Größe (cm)">
+                    <input type="number" id="wiz-weight" placeholder="Gewicht (kg)">
+                </div>
+                <input type="number" id="wiz-age" placeholder="Alter (Jahre)">
+            </div>
+            <button class="btn btn-accent" style="margin-top:auto" onclick="wizFinish()">Plan erstellen</button>
         </div>
     </div>
 
     <div id="tab-home" class="screen active">
-        <div class="row">
-            <div>
-                <span class="label">Willkommen zurück</span>
-                <h1>Dashboard</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>Dashboard</h1>
+            <div id="user-badge" style="font-size:12px; color:var(--accent); background:rgba(58,134,255,0.1); padding:4px 10px; border-radius:20px;">
+                Muskelaufbau
             </div>
-            <div class="level-badge" id="lvl-badge">Level 1</div>
         </div>
-
-        <div class="card" style="margin-top: 20px; border-color: var(--text);">
-            <div class="row">
-                <h2>Heute</h2>
-                <span style="font-size: 24px;">🔥</span>
-            </div>
-            <h1 id="next-workout-title" style="font-size: 22px; margin-bottom: 5px;">Lade Plan...</h1>
-            <p id="next-workout-desc" class="ex-desc">...</p>
-            <button class="btn-main" onclick="openPlayer()">Training starten</button>
-        </div>
+        <span class="subtitle" id="date-display">Heute</span>
 
         <div class="stat-grid">
-            <div class="stat-item">
-                <span class="stat-val" id="disp-workouts">0</span>
-                <span class="stat-lbl">Workouts</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-val" id="disp-bmi">--</span>
-                <span class="stat-lbl">BMI</span>
-            </div>
-            <div class="stat-item">
+            <div class="stat-box">
                 <span class="stat-val" id="disp-streak">0</span>
                 <span class="stat-lbl">Streak</span>
             </div>
+            <div class="stat-box">
+                <span class="stat-val" id="disp-workouts">0</span>
+                <span class="stat-lbl">Workouts</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-val" id="disp-bmi">--</span>
+                <span class="stat-lbl">BMI</span>
+            </div>
         </div>
 
-        <div class="card" style="margin-top: 15px;">
-            <span class="label">Hydration</span>
-            <div class="water-track">
-                <div class="water-fill" id="water-fill">
-                    <div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div>
-                </div>
-                <button class="water-btn" onclick="addWater()">+</button>
+        <div class="card" style="border-color: var(--accent);">
+            <div style="display:flex; justify-content:space-between;">
+                <h2 style="color:var(--accent);">Nächstes Training</h2>
+                <span>⏱️ 15 Min</span>
             </div>
+            <h1 id="next-title" style="font-size: 26px;">Plan wird geladen...</h1>
+            <p id="next-desc" style="color:var(--text-dim); font-size:14px; margin-bottom:15px;">...</p>
+            <button class="btn btn-accent" onclick="openPlayer()">Training starten</button>
+        </div>
+
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>Hydration 💧</h2>
+                <span id="water-count" style="color:var(--accent); font-weight:bold;">0 / 8</span>
+            </div>
+            <div style="display:flex; gap:5px; margin-top:10px; height:10px;">
+                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:15px; padding:10px;" onclick="addWater()">Glas trinken (+250ml)</button>
         </div>
     </div>
 
     <div id="tab-stats" class="screen">
         <h1>Tracking</h1>
-        <span class="subtitle">Fortschritt eintragen</span>
-        
+        <span class="subtitle">Dein Körper & Verlauf</span>
+
         <div class="card">
-            <span class="label">Neuer Eintrag</span>
-            <input type="date" id="input-date" style="margin-bottom: 12px;">
-            
-            <div class="input-grid">
-                <div>
-                    <span class="label">Gewicht (kg)</span>
-                    <input type="number" id="input-weight" placeholder="0.0">
-                </div>
-                <div>
-                    <span class="label">Bauch (cm)</span>
-                    <input type="number" id="input-waist" placeholder="0">
-                </div>
+            <h2>Neuer Eintrag</h2>
+            <input type="date" id="stats-date">
+            <div class="input-row">
+                <input type="number" id="stats-weight" placeholder="Gewicht (kg)">
+                <input type="number" id="stats-waist" placeholder="Bauch (cm)">
             </div>
-            <button class="btn-main btn-accent" onclick="saveStats()">Speichern</button>
+            <button class="btn btn-accent" onclick="saveLog()">Speichern</button>
         </div>
 
         <div class="card">
-            <span class="label">Verlauf</span>
-            <div id="chart-area" style="height: 120px; display:flex; align-items:flex-end; gap:4px; margin-top:10px;">
-                <p style="color:var(--text-dim); width:100%; text-align:center; font-size:12px; align-self:center;">Keine Daten</p>
+            <h2>Gewichtsverlauf</h2>
+            <div id="chart-container" style="height:120px; display:flex; align-items:flex-end; gap:5px; margin-top:10px;">
+                <p style="text-align:center; width:100%; color:var(--text-dim); font-size:12px; align-self:center;">Keine Daten</p>
             </div>
+        </div>
+
+        <div class="card">
+            <h2>Trainings-Historie</h2>
+            <div id="history-list"></div>
         </div>
     </div>
 
     <div id="tab-settings" class="screen">
         <h1>Einstellungen</h1>
-        <span class="subtitle">Profil & App</span>
+        <span class="subtitle">Profil & Daten</span>
 
         <div class="card">
-            <span class="label">Stammdaten (für BMI)</span>
-            <div class="input-grid">
-                <input type="number" id="base-height" placeholder="Größe (cm)" onchange="saveBaseData()">
-                <input type="number" id="base-age" placeholder="Alter" onchange="saveBaseData()">
+            <h2>Stammdaten</h2>
+            <div class="input-row">
+                <input type="number" id="set-height" placeholder="Größe" onchange="updateBase()">
+                <input type="number" id="set-age" placeholder="Alter" onchange="updateBase()">
             </div>
         </div>
 
         <div class="card">
-            <div class="row">
-                <span>Light Mode</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
-                    <span class="slider"></span>
-                </label>
-            </div>
+            <h2>Planung</h2>
+            <p style="font-size:13px; color:var(--text-dim); line-height:1.4; margin-bottom:10px;">
+                Ändere dein Ziel und generiere einen neuen Trainingsplan basierend auf deinen Zonen.
+            </p>
+            <button class="btn btn-ghost" onclick="resetOnboarding()">Ziel / Fokus ändern</button>
         </div>
 
         <div class="card">
-            <span class="label">Datenmanagement</span>
-            <button class="btn-main btn-ghost" onclick="exportData()" style="margin-bottom:10px;">Backup speichern</button>
-            <button class="btn-main btn-ghost" onclick="document.getElementById('import-file').click()">Backup laden</button>
-            <input type="file" id="import-file" style="display:none" onchange="importData(this)" accept=".json">
-            <button class="btn-main btn-ghost" onclick="resetApp()" style="margin-top:20px; border-color:var(--danger); color:var(--danger);">App zurücksetzen</button>
+            <h2>System</h2>
+            <button class="btn btn-ghost" onclick="exportData()">Backup speichern</button>
+            <input type="file" id="import-file" style="display:none" onchange="importData(this)">
+            <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">Backup laden</button>
+            <button class="btn btn-ghost" style="border-color:var(--danger); color:var(--danger); margin-top:20px;" onclick="factoryReset()">App zurücksetzen</button>
         </div>
     </div>
 
     <div id="view-player" class="full-overlay">
-        <div class="row" style="margin-bottom: 30px;">
-            <button class="btn-ghost" style="border:none; font-size:24px; padding:0;" onclick="closePlayer()">✕</button>
-            <span id="round-disp" class="label" style="font-size:14px; margin:0;">Runde 1/3</span>
-            <button class="btn-ghost" style="border:none; font-size:20px; padding:0;" onclick="toggleSound()" id="sound-btn">🔊</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button style="background:none; border:none; color:var(--text); font-size:24px;" onclick="closePlayer()">✕</button>
+            <span style="font-size:14px; color:var(--text-dim);" id="round-disp">Runde 1/3</span>
+            <button style="background:none; border:none; font-size:24px;" onclick="toggleMute()" id="mute-icon">🔊</button>
         </div>
 
         <div class="timer-wrap">
             <div class="time-big" id="time-disp">00</div>
-            <span class="label" id="phase-disp" style="font-size: 16px; margin-top: 10px;">BEREIT</span>
-            <div class="progress-bar">
-                <div class="progress-fill" id="prog-fill"></div>
-            </div>
+            <div class="phase-lbl" id="phase-disp">READY</div>
         </div>
 
-        <div style="text-align: center; margin-bottom: 40px;">
-            <div style="display:flex; justify-content:center; align-items:center; gap:10px;">
-                <h2 id="ex-name" style="font-size: 24px; margin:0;">Übung</h2>
-                <div style="background:var(--border); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer;" onclick="showInfo()">i</div>
+        <div style="text-align:center; margin-bottom:40px;">
+            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:5px;">
+                <h2 style="font-size:28px; margin:0;" id="ex-name">Übung</h2>
+                <div onclick="showInfo()" style="width:24px; height:24px; border:1px solid var(--text-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer;">i</div>
             </div>
-            <p id="next-ex" style="color:var(--text-dim); margin-top:5px;">...</p>
+            <p id="next-ex" style="color:var(--text-dim);">Next: ...</p>
         </div>
 
-        <button class="btn-main" id="main-btn" style="height: 60px; font-size: 20px;" onclick="toggleTimer()">START</button>
+        <button class="btn btn-accent" id="play-btn" style="height:70px; font-size:20px;" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="modal-info" class="modal-bg" onclick="this.style.display='none'">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <h2 id="info-title">Titel</h2>
-            <p id="info-desc" style="color:var(--text-dim); line-height:1.5;">Beschreibung</p>
-            <button class="btn-main" onclick="document.getElementById('modal-info').style.display='none'">OK</button>
+    <div id="modal-bg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:300; backdrop-filter:blur(5px); padding:40px;">
+        <div class="card" style="margin-top:20vh; border:1px solid var(--accent);">
+            <h2 id="modal-title" style="color:var(--accent)">Info</h2>
+            <p id="modal-desc" style="line-height:1.6; color:var(--text-dim)">...</p>
+            <button class="btn" onclick="document.getElementById('modal-bg').style.display='none'">OK</button>
         </div>
     </div>
 
     <nav class="nav">
-        <div class="nav-item active" onclick="switchTab('tab-home', this)">
-            <div class="nav-icon">☖</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-stats', this)">
-            <div class="nav-icon">📈</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('tab-settings', this)">
-            <div class="nav-icon">⚙️</div>
-        </div>
+        <div class="nav-item active" onclick="nav('tab-home', this)"><div class="nav-icon">☖</div></div>
+        <div class="nav-item" onclick="nav('tab-stats', this)"><div class="nav-icon">📈</div></div>
+        <div class="nav-item" onclick="nav('tab-settings', this)"><div class="nav-icon">⚙️</div></div>
     </nav>
 
     <script>
-        // --- DATA ---
+        // --- DATABASE ---
         const DB = {
             bauch: [
-                {n:"Crunches", d:"Rückenlage, Hände an Kopf. Schultern heben."},
-                {n:"Beinheben", d:"Rückenlage, Beine gestreckt heben & senken."},
-                {n:"Plank", d:"Unterarmstütz halten. Körper ist ein Brett."},
-                {n:"Russian Twist", d:"Sitzen, Füße hoch, Hände links/rechts."}
+                {n:"Crunches", d:"Rückenlage, Hände Kopf, Schultern heben."},
+                {n:"Leg Raises", d:"Rückenlage, gestreckte Beine heben/senken."},
+                {n:"Plank", d:"Unterarmstütz halten, Körper gerade."},
+                {n:"Russian Twist", d:"Sitzen, Füße hoch, Oberkörper drehen."},
+                {n:"Mountain Climbers", d:"Stütz, Knie abwechselnd zur Brust."}
             ],
-            po: [
-                {n:"Squats", d:"Tiefbeugen, Gewicht auf Fersen. Rücken gerade."},
-                {n:"Glute Bridges", d:"Rückenlage, Hüfte hochdrücken. Po fest."},
-                {n:"Lunges", d:"Ausfallschritt nach hinten. Knie tief."},
-                {n:"Donkey Kicks", d:"Vierfüßler, Bein nach oben kicken."}
+            beine: [
+                {n:"Squats", d:"Kniebeugen, Gewicht auf Fersen."},
+                {n:"Lunges", d:"Ausfallschritte nach hinten."},
+                {n:"Glute Bridges", d:"Rückenlage, Hüfte hochdrücken."},
+                {n:"Calf Raises", d:"Auf Zehenspitzen stellen und senken."},
+                {n:"Wall Sit", d:"An Wand sitzen (90 Grad), halten."}
             ],
-            arme: [
-                {n:"Liegestütze", d:"Brust zum Boden, fest hochdrücken."},
+            ober: [
+                {n:"Push-Ups", d:"Liegestütze (Knie oder Füße)."},
                 {n:"Dips", d:"Rücklings an Kante stützen, Arme beugen."},
-                {n:"Shoulder Taps", d:"Liegestütz-Pos, Hände an Schulter tippen."},
-                {n:"Plank Up", d:"Vom Unterarm in den Handstütz & zurück."}
+                {n:"Superman", d:"Bauchlage, Arme & Beine heben."},
+                {n:"Shoulder Taps", d:"Plank Position, Hand tippt Schulter."},
+                {n:"Pike Pushups", d:"V-Form, Kopf Richtung Boden senken."}
             ],
-            ruecken: [
-                {n:"Superman", d:"Bauchlage, Arme & Beine anheben."},
-                {n:"Schneeengel", d:"Bauchlage, Arme kreisen über Kopf."},
-                {n:"Brücke", d:"Rückenlage, Becken hoch, Spannung halten."}
+            cardio: [
+                {n:"Jumping Jacks", d:"Hampelmänner."},
+                {n:"High Knees", d:"Auf der Stelle laufen, Knie hoch."},
+                {n:"Burpees", d:"Liegestütz -> Sprung nach oben."},
+                {n:"Schattenboxen", d:"Schnelle Schläge in die Luft."}
             ]
         };
 
         // --- APP STATE ---
         let app = {
-            targets: [], plan: [], planIdx: 0,
-            workouts: 0, level: 1, water: 0,
-            height: '', age: '',
-            logs: [], theme: 'dark'
+            goal: '', // lose, build, fit
+            parts: [], // ['bauch', 'beine'...]
+            profile: { height: '', weight: '', age: '' },
+            plan: [], planIdx: 0,
+            stats: { logs: [], history: [], water: 0, lastWater: '' },
+            settings: { sound: true }
         };
         
-        let sess = { activeEx: [], round: 1, exIdx: 0, time: 0, max: 0, work: false, run: false, int: null };
-        const CFG = { WORK: 40, REST: 20, PREP: 10, RNDS: 3 };
-        let sound = true; let ac;
+        // --- SESSION ---
+        let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
+        let CFG = { WORK: 40, REST: 20, RNDS: 3 }; // Defaults
+
+        let wizData = { goal: '', parts: [] };
+        let ac; // AudioContext
 
         // --- INIT ---
         window.onload = () => {
-            if(localStorage.getItem('bpp_data')) app = JSON.parse(localStorage.getItem('bpp_data'));
-            applyTheme();
+            if(localStorage.getItem('bpe_data')) app = JSON.parse(localStorage.getItem('bpe_data'));
             
-            if(app.targets.length === 0) document.getElementById('screen-onboarding').style.display = 'flex';
-            else updateHome();
+            // Check Onboarding
+            if(!app.goal) {
+                document.getElementById('view-onboarding').style.display = 'flex';
+                document.getElementById('wiz-1').classList.add('active');
+            } else {
+                initApp();
+            }
+        }
 
-            document.getElementById('input-date').valueAsDate = new Date();
-            document.getElementById('base-height').value = app.height;
-            document.getElementById('base-age').value = app.age;
-            renderWater();
+        function initApp() {
+            // Config laden basierend auf Ziel
+            if(app.goal === 'lose') { CFG.WORK = 45; CFG.REST = 15; } // Intense
+            else if(app.goal === 'build') { CFG.WORK = 40; CFG.REST = 30; } // Power
+            else { CFG.WORK = 40; CFG.REST = 20; } // Fit
+
+            updateDashboard();
+            renderHistory();
             renderChart();
-        };
+            renderWater();
+            
+            // Set Inputs
+            document.getElementById('set-height').value = app.profile.height;
+            document.getElementById('set-age').value = app.profile.age;
+            document.getElementById('stats-date').valueAsDate = new Date();
+        }
 
-        // --- CORE ---
-        function save() { localStorage.setItem('bpp_data', JSON.stringify(app)); }
-        function haptic() { if(navigator.vibrate) navigator.vibrate(10); }
-
-        function finishOnboarding(t) {
-            app.targets = t;
+        // --- WIZARD LOGIC ---
+        function wizSelect(key, val, el) {
+            wizData[key] = val;
+            el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+        function wizToggle(key, val, el) {
+            if(!wizData[key]) wizData[key] = [];
+            const idx = wizData[key].indexOf(val);
+            if(idx > -1) { wizData[key].splice(idx, 1); el.classList.remove('selected'); }
+            else { wizData[key].push(val); el.classList.add('selected'); }
+        }
+        function wizNext(step) {
+            if(step === 1 && !wizData.goal) return alert("Wähle ein Ziel.");
+            if(step === 2 && (!wizData.parts || wizData.parts.length === 0)) return alert("Wähle min. 1 Zone.");
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('wiz-'+(step+1)).classList.add('active');
+        }
+        function wizFinish() {
+            const h = document.getElementById('wiz-height').value;
+            const w = document.getElementById('wiz-weight').value;
+            const a = document.getElementById('wiz-age').value;
+            if(!h || !w || !a) return alert("Bitte alle Felder ausfüllen.");
+            
+            app.profile = { height: h, weight: w, age: a };
+            app.goal = wizData.goal;
+            app.parts = wizData.parts;
+            
+            // Generate Plan
             genPlan();
-            document.getElementById('screen-onboarding').style.display = 'none';
-            save(); updateHome();
+            
+            // Save & Close
+            document.getElementById('view-onboarding').style.display = 'none';
+            save();
+            initApp();
         }
 
         function genPlan() {
             let pool = [];
-            app.targets.forEach(k => { if(DB[k]) pool = pool.concat(DB[k]); });
-            pool.sort(()=>Math.random()-0.5);
+            app.parts.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
+            pool.sort(()=>Math.random()-0.5); // Shuffle
+            
             app.plan = [];
+            // Create 3 rotating workouts
             for(let i=0; i<3; i++) {
                 let ex = [];
-                for(let j=0; j<4; j++) ex.push(pool[(i*4+j)%pool.length]);
-                app.plan.push({ name: "Workout "+(String.fromCharCode(65+i)), ex: ex });
+                // 5 exercises per workout for Elite version
+                for(let j=0; j<5; j++) ex.push(pool[(i*5+j)%pool.length]);
+                app.plan.push({ name: "Daily Mix "+(i+1), ex: ex });
             }
             app.planIdx = 0;
         }
 
-        function updateHome() {
-            const cur = app.plan[app.planIdx % app.plan.length];
-            document.getElementById('next-workout-title').innerText = cur.name;
-            document.getElementById('next-workout-desc').innerText = cur.ex.map(e=>e.n).join(', ');
-            
-            app.level = Math.floor(app.workouts / 5) + 1;
-            document.getElementById('lvl-badge').innerText = "Level " + app.level;
-            document.getElementById('disp-workouts').innerText = app.workouts;
-            document.getElementById('disp-streak').innerText = getStreak();
-            
-            calcBMI();
-        }
-
-        function calcBMI() {
-            if(app.height && app.logs.length > 0) {
-                const w = parseFloat(app.logs[app.logs.length-1].w);
-                const h = parseFloat(app.height) / 100;
-                const bmi = (w / (h*h)).toFixed(1);
-                document.getElementById('disp-bmi').innerText = bmi;
-            } else {
-                document.getElementById('disp-bmi').innerText = "--";
+        function resetOnboarding() {
+            if(confirm("Trainingsplan neu erstellen?")) {
+                wizData = { goal: '', parts: [] };
+                document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+                document.getElementById('wiz-1').classList.add('active');
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                document.getElementById('view-onboarding').style.display = 'flex';
             }
         }
 
-        function getStreak() {
-            // Simple Logic for demo
-            return app.logs.length > 0 ? "1" : "0"; 
+        // --- DASHBOARD ---
+        function updateDashboard() {
+            const plan = app.plan[app.planIdx % app.plan.length];
+            document.getElementById('next-title').innerText = plan.name;
+            document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
+            
+            // Badge text
+            const map = { lose: "Fettabbau", build: "Muskelaufbau", fit: "Fitness" };
+            document.getElementById('user-badge').innerText = map[app.goal] || "Elite";
+
+            document.getElementById('disp-workouts').innerText = app.stats.history.length;
+            
+            // BMI
+            if(app.profile.height && app.profile.weight) {
+                const h = app.profile.height/100;
+                const bmi = (app.profile.weight / (h*h)).toFixed(1);
+                document.getElementById('disp-bmi').innerText = bmi;
+            }
+            
+            document.getElementById('date-display').innerText = new Date().toLocaleDateString('de-DE', {weekday:'long', day:'numeric', month:'long'});
+            
+            // Streak (Simple logic)
+            document.getElementById('disp-streak').innerText = app.stats.history.length > 0 ? "Active" : "0";
         }
 
         // --- PLAYER ---
         function openPlayer() {
-            sess.activeEx = app.plan[app.planIdx % app.plan.length].ex;
-            sess.round = 1; sess.exIdx = 0;
-            document.getElementById('view-player').classList.add('active');
+            sess.active = app.plan[app.planIdx % app.plan.length].ex;
+            sess.r = 1; sess.idx = 0;
+            document.getElementById('view-player').style.display = 'flex';
             startPhase('PREP');
             if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
         }
         function closePlayer() {
             clearInterval(sess.int); sess.run = false;
-            document.getElementById('view-player').classList.remove('active');
+            document.getElementById('view-player').style.display = 'none';
         }
 
         function startPhase(type) {
             sess.work = (type === 'WORK');
             const ph = document.getElementById('phase-disp');
-            const ex = document.getElementById('ex-name');
-            const nx = document.getElementById('next-ex');
+            const tm = document.getElementById('time-disp');
             
             if(type === 'PREP') {
-                sess.time = sess.max = CFG.PREP;
+                sess.t = sess.max = CFG.PREP;
                 ph.innerText = "BEREIT MACHEN";
-                ex.innerText = sess.activeEx[0].n;
-                nx.innerText = "";
-            } else if(type === 'WORK') {
-                sess.time = sess.max = CFG.WORK;
+                document.getElementById('ex-name').innerText = sess.active[0].n;
+                document.getElementById('next-ex').innerText = "";
+            } else if (type === 'WORK') {
+                sess.t = sess.max = CFG.WORK;
                 ph.innerText = "WORK";
-                ex.innerText = sess.activeEx[sess.exIdx].n;
-                nx.innerText = "Danach: Pause";
-                beep(600, 800, 0.3); // High Sweep
+                ph.style.color = "var(--work)";
+                document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
+                document.getElementById('next-ex').innerText = "Danach: Pause";
+                beep(400, 800);
             } else {
-                sess.time = sess.max = CFG.REST;
+                sess.t = sess.max = CFG.REST;
                 ph.innerText = "PAUSE";
-                ex.innerText = "Erholen";
-                let n = (sess.exIdx+1 < sess.activeEx.length) ? sess.activeEx[sess.exIdx+1].n : (sess.round<CFG.RNDS ? sess.activeEx[0].n : "ENDE");
-                nx.innerText = "Nächste: " + n;
-                beep(600, 300, 0.3); // Low Sweep
+                ph.style.color = "var(--text-dim)";
+                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<CFG.RNDS?sess.active[0].n:"Finish");
+                document.getElementById('next-ex').innerText = "Next: " + n;
+                beep(600, 300);
             }
             drawTimer();
             if(!sess.run) toggleTimer();
         }
 
         function tick() {
-            if(sess.time > 0) {
-                sess.time--; drawTimer();
-                if(sess.time <= 3) { beep(800, 800, 0.1); haptic(); }
+            if(sess.t > 0) {
+                sess.t--;
+                drawTimer();
+                if(sess.t <= 3) { beep(800, 800, 0.05); if(navigator.vibrate) navigator.vibrate(20); }
             } else {
-                haptic();
                 if(document.getElementById('phase-disp').innerText === "BEREIT MACHEN") startPhase('WORK');
                 else if(sess.work) {
-                    if(sess.exIdx >= sess.activeEx.length-1 && sess.round >= CFG.RNDS) finish();
+                    if(sess.idx >= sess.active.length-1 && sess.r >= CFG.RNDS) finishWorkout();
                     else startPhase('REST');
                 } else {
-                    sess.exIdx++;
-                    if(sess.exIdx >= sess.activeEx.length) { sess.exIdx = 0; sess.round++; }
-                    document.getElementById('round-disp').innerText = "Runde " + sess.round + "/3";
+                    sess.idx++;
+                    if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
+                    document.getElementById('round-disp').innerText = "Runde "+sess.r+"/"+CFG.RNDS;
                     startPhase('WORK');
                 }
             }
         }
 
         function drawTimer() {
-            document.getElementById('time-disp').innerText = sess.time;
-            const pct = (sess.time / sess.max) * 100;
-            document.getElementById('prog-fill').style.width = pct + "%";
+            document.getElementById('time-disp').innerText = sess.t;
         }
 
         function toggleTimer() {
-            const btn = document.getElementById('main-btn');
+            const b = document.getElementById('play-btn');
             if(sess.run) {
                 clearInterval(sess.int); sess.run = false;
-                btn.innerText = "WEITER"; btn.style.background = "var(--text)"; btn.style.color = "var(--bg)";
+                b.innerText = "WEITER"; b.style.background = "#333";
             } else {
                 sess.int = setInterval(tick, 1000); sess.run = true;
-                btn.innerText = "PAUSE"; btn.style.background = "var(--card)"; btn.style.color = "var(--text)";
+                b.innerText = "PAUSE"; b.style.background = "var(--accent)";
             }
-            haptic();
         }
 
-        function finish() {
+        function finishWorkout() {
             closePlayer();
-            app.workouts++; app.planIdx++;
-            save(); updateHome();
-            alert("Training beendet! Level up! 🚀");
+            app.planIdx++;
+            app.stats.history.push({ date: new Date().toISOString(), name: "Workout Completed" });
+            save(); updateDashboard(); renderHistory();
+            alert("Training beendet! 🔥");
         }
-
+        
         function showInfo() {
             if(sess.run) toggleTimer();
-            const e = sess.activeEx[sess.exIdx];
-            document.getElementById('info-title').innerText = e.n;
-            document.getElementById('info-desc').innerText = e.d;
-            document.getElementById('modal-info').style.display = 'flex';
-        }
-
-        // --- AUDIO ---
-        function toggleSound() { sound = !sound; document.getElementById('sound-btn').style.opacity = sound ? 1 : 0.4; }
-        function beep(f1, f2, dur) {
-            if(!sound || !ac) return;
-            const o = ac.createOscillator(); const g = ac.createGain();
-            o.connect(g); g.connect(ac.destination);
-            o.type = 'sawtooth';
-            o.frequency.setValueAtTime(f1, ac.currentTime);
-            o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime + dur);
-            g.gain.setValueAtTime(0.5, ac.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + dur);
-            o.start(); o.stop(ac.currentTime + dur);
+            const e = sess.active[sess.idx];
+            document.getElementById('modal-title').innerText = e.n;
+            document.getElementById('modal-desc').innerText = e.d;
+            document.getElementById('modal-bg').style.display = 'flex';
         }
 
         // --- STATS & DATA ---
-        function saveBaseData() {
-            app.height = document.getElementById('base-height').value;
-            app.age = document.getElementById('base-age').value;
-            save(); updateHome();
-        }
-
-        function saveStats() {
-            const d = document.getElementById('input-date').value;
-            const w = document.getElementById('input-weight').value;
-            if(!d || !w) return alert("Bitte Datum & Gewicht angeben.");
-            app.logs.push({ date: d, w: w });
-            app.logs.sort((a,b) => new Date(a.date) - new Date(b.date));
-            save(); updateHome(); renderChart(); haptic();
+        function saveLog() {
+            const d = document.getElementById('stats-date').value;
+            const w = document.getElementById('stats-weight').value;
+            const cm = document.getElementById('stats-waist').value;
+            if(!d || !w) return alert("Datum & Gewicht nötig");
+            app.stats.logs.push({date: d, w: w, cm: cm});
+            app.stats.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
+            // Update current weight in profile too
+            app.profile.weight = w;
+            save(); renderChart(); updateDashboard(); alert("Gespeichert");
         }
 
         function renderChart() {
-            const el = document.getElementById('chart-area'); el.innerHTML = "";
-            if(app.logs.length < 2) return el.innerHTML = '<p style="width:100%;text-align:center;color:#666;">2 Einträge nötig</p>';
-            app.logs.slice(-7).forEach(l => {
+            const el = document.getElementById('chart-container'); el.innerHTML = "";
+            if(app.stats.logs.length < 2) return el.innerHTML="<p style='width:100%;text-align:center;font-size:12px;color:#666'>Min 2 Einträge</p>";
+            
+            const vals = app.stats.logs.map(l => parseFloat(l.w));
+            const min = Math.min(...vals) * 0.98; const max = Math.max(...vals) * 1.02;
+            
+            app.stats.logs.slice(-10).forEach(l => {
+                const h = ((parseFloat(l.w) - min) / (max - min)) * 100;
                 const bar = document.createElement('div');
-                bar.style.width = "100%";
-                bar.style.height = (l.w / 150 * 100) + "%"; // Rough scale
-                bar.style.background = "var(--accent)";
-                bar.style.borderRadius = "4px 4px 0 0";
-                bar.style.opacity = 0.8;
+                bar.style.cssText = `width:100%; background:var(--accent); opacity:0.7; border-radius:3px 3px 0 0; height:${h}%`;
                 el.appendChild(bar);
+            });
+        }
+
+        function renderHistory() {
+            const lst = document.getElementById('history-list'); lst.innerHTML = "";
+            app.stats.history.slice().reverse().slice(0, 5).forEach(h => {
+                const d = new Date(h.date).toLocaleDateString();
+                lst.innerHTML += `<div class="history-item"><span>${h.name}</span><span class="history-date">${d}</span></div>`;
             });
         }
 
         // --- WATER ---
         function renderWater() {
-            const drops = document.querySelectorAll('.drop');
-            drops.forEach((d, i) => {
-                if(i < app.water) d.classList.add('active');
-                else d.classList.remove('active');
+            const bars = document.querySelectorAll('.water-bar');
+            const today = new Date().toDateString();
+            if(app.stats.lastWater !== today) { app.stats.water = 0; app.stats.lastWater = today; }
+            
+            document.getElementById('water-count').innerText = app.stats.water + " / 8";
+            bars.forEach((b, i) => {
+                b.style.background = i < app.stats.water ? "var(--accent)" : "var(--input)";
             });
         }
         function addWater() {
-            app.water = (app.water + 1) % 6;
-            renderWater(); haptic();
+            if(app.stats.water < 8) app.stats.water++;
+            save(); renderWater();
         }
 
-        // --- UTILS ---
-        function switchTab(id, el) {
+        // --- AUDIO ---
+        function toggleMute() { app.settings.sound = !app.settings.sound; document.getElementById('mute-icon').style.opacity=app.settings.sound?1:0.3; }
+        function beep(f1, f2, dur=0.3) {
+            if(!app.settings.sound || !ac) return;
+            const o = ac.createOscillator(); const g = ac.createGain();
+            o.connect(g); g.connect(ac.destination); o.type='sawtooth';
+            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.linearRampToValueAtTime(f2, ac.currentTime+dur);
+            g.gain.setValueAtTime(0.5, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
+            o.start(); o.stop(ac.currentTime+dur);
+        }
+
+        // --- SYSTEM ---
+        function nav(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
-            haptic();
         }
-        function toggleTheme() {
-            app.theme = document.getElementById('theme-toggle').checked ? 'light' : 'dark';
-            applyTheme(); save();
+        function updateBase() {
+            app.profile.height = document.getElementById('set-height').value;
+            app.profile.age = document.getElementById('set-age').value;
+            save(); updateDashboard();
         }
-        function applyTheme() {
-            document.body.className = app.theme + '-mode';
-            document.getElementById('theme-toggle').checked = (app.theme === 'light');
-        }
+        function save() { localStorage.setItem('bpe_data', JSON.stringify(app)); }
         function exportData() {
             const a = document.createElement('a');
             a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(app));
-            a.download = "backup.json"; a.click();
+            a.download = "bodypulse_elite.json"; a.click();
         }
         function importData(el) {
             const r = new FileReader();
             r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); };
             r.readAsText(el.files[0]);
         }
-        function resetApp() { if(confirm("Alles löschen?")) { localStorage.clear(); location.reload(); } }
+        function factoryReset() { if(confirm("ALLES löschen?")) { localStorage.clear(); location.reload(); } }
+
     </script>
 </body>
 </html>
