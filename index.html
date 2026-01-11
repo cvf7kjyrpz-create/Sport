@@ -52,7 +52,8 @@
 
         .full-screen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); z-index: 50;
+            background: var(--bg); 
+            z-index: 200; /* FIXED: Jetzt höher als die Nav Bar */
             display: none; flex-direction: column;
             padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
         }
@@ -90,6 +91,10 @@
             border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer;
         }
         .btn-save:active { opacity: 0.8; }
+        
+        .btn-secondary {
+            background: #333; margin-top: 15px; font-size: 14px;
+        }
 
         /* CHART */
         .chart-container { height: 200px; width: 100%; margin-top: 20px; position: relative; border-bottom: 1px solid #333; border-left: 1px solid #333;}
@@ -127,7 +132,8 @@
         .state-work .progress-ring__circle { stroke: var(--work); }
         .state-rest .progress-ring__circle { stroke: var(--rest); }
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-icon { background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 18px; }
+        .btn-icon { background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 18px; cursor: pointer;}
+        .btn-icon:active { background: rgba(255,255,255,0.3); }
 
         @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -204,7 +210,7 @@
 
     <div id="tab-profile" class="main-view">
         <h1>Profil</h1>
-        <span class="subtitle">Deine Erfolge</span>
+        <span class="subtitle">Deine Erfolge & Daten</span>
 
         <div class="stat-grid">
             <div class="stat-box">
@@ -227,9 +233,19 @@
             <div id="bmi-result" style="margin-top:15px; font-weight:bold; color: var(--accent);"></div>
         </div>
 
-        <button onclick="resetData()" style="width:100%; padding:15px; background:none; border:1px solid #333; color:#555; border-radius:12px; margin-top:30px;">
-            Alle Daten löschen
-        </button>
+        <div class="card">
+            <h2>Datensicherung</h2>
+            <p style="color:#888; font-size:13px; margin-bottom:15px;">Speichere deine Fortschritte, falls du das Gerät wechselst.</p>
+            
+            <button class="btn-save" onclick="exportData()">💾 Backup speichern</button>
+            
+            <button class="btn-save btn-secondary" onclick="document.getElementById('import-file').click()">📂 Backup laden</button>
+            <input type="file" id="import-file" style="display:none" onchange="importData(this)" accept=".json">
+
+            <button onclick="resetData()" style="width:100%; padding:15px; background:none; border:1px solid #333; color:#666; border-radius:12px; margin-top:30px; font-size:12px;">
+                App zurücksetzen (Daten löschen)
+            </button>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -254,14 +270,18 @@
             <div style="width:40px;"></div>
         </div>
         <div style="flex-grow:1; overflow-y:auto;" id="preview-list"></div>
-        <button class="btn-save" style="background:var(--work); color:black;" onclick="startWorkout()">Training Starten</button>
+        <button class="btn-save" style="background:var(--work); color:black; margin-top: 20px; margin-bottom: 20px;" onclick="startWorkout()">Training Starten</button>
     </div>
 
     <div id="view-runner" class="full-screen-overlay">
         <div class="header-row">
             <button class="btn-icon" onclick="quitWorkout()">✕</button>
             <div style="font-weight:bold; color:#888;" id="round-disp">Runde 1/3</div>
-            <button class="btn-icon" onclick="toggleSound()" id="sound-btn">🔊</button>
+            
+            <div style="display:flex; gap:10px;">
+                <button class="btn-icon" onclick="restartWorkout()">↻</button>
+                <button class="btn-icon" onclick="toggleSound()" id="sound-btn">🔊</button>
+            </div>
         </div>
 
         <div class="timer-container">
@@ -313,6 +333,38 @@
         function loadData() { const stored = localStorage.getItem('bodyPulseData_v5'); if(stored) appData = JSON.parse(stored); }
         function saveData() { localStorage.setItem('bodyPulseData_v5', JSON.stringify(appData)); updateProfile(); }
 
+        // --- BACKUP SYSTEM (NEW) ---
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "bodypulse_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(imported.logs && imported.totalWorkouts !== undefined) {
+                        appData = imported;
+                        saveData();
+                        renderStats();
+                        alert("Daten erfolgreich geladen! ✅");
+                    } else {
+                        alert("Falsches Dateiformat!");
+                    }
+                } catch(err) { alert("Fehler beim Laden der Datei."); }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- STATS ---
         function saveStats() {
             const date = document.getElementById('input-date').value;
             const w = parseFloat(document.getElementById('input-weight').value);
@@ -369,10 +421,17 @@
         }
         function startWorkout() {
             closeOverlay('view-preview'); document.getElementById('view-runner').classList.add('active');
-            round = 1; exIndex = 0; startPhase('PREP');
+            restartWorkout(); // Init
             if('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e=>{});
         }
+        
+        function restartWorkout() {
+            clearInterval(interval); isRunning = false;
+            round = 1; exIndex = 0; startPhase('PREP');
+        }
+
         function quitWorkout() { clearInterval(interval); isRunning = false; closeOverlay('view-runner'); }
+        
         function workoutComplete() {
             quitWorkout(); appData.totalWorkouts++;
             const today = new Date().toDateString(), yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
@@ -389,11 +448,11 @@
             if(type === 'PREP') {
                 timeLeft = maxTime = PREP_T; phTxt.innerText = "BEREIT MACHEN"; exTxt.innerText = currentPlan.ex[0]; nxTxt.innerText = ""; cont.className = "full-screen-overlay active";
             } else if(type === 'WORK') {
-                timeLeft = maxTime = WORK_T; phTxt.innerText = "GO!"; exTxt.innerText = currentPlan.ex[exIndex]; nxTxt.innerText = "Danach: Pause"; cont.className = "full-screen-overlay active state-work"; playBeep('start'); // SWEEP UP
+                timeLeft = maxTime = WORK_T; phTxt.innerText = "GO!"; exTxt.innerText = currentPlan.ex[exIndex]; nxTxt.innerText = "Danach: Pause"; cont.className = "full-screen-overlay active state-work"; playBeep('start');
             } else {
                 timeLeft = maxTime = REST_T; phTxt.innerText = "PAUSE"; exTxt.innerText = "Erholen";
                 let nxt = (exIndex+1 < currentPlan.ex.length) ? currentPlan.ex[exIndex+1] : ((round<ROUNDS) ? currentPlan.ex[0] : "Ende");
-                nxTxt.innerText = "Nächste: " + nxt; cont.className = "full-screen-overlay active state-rest"; playBeep('end'); // SWEEP DOWN
+                nxTxt.innerText = "Nächste: " + nxt; cont.className = "full-screen-overlay active state-rest"; playBeep('end');
             }
             updateTimer(); if(!isRunning) toggleTimer();
         }
@@ -414,7 +473,6 @@
             else { interval = setInterval(tick, 1000); isRunning=true; document.getElementById('main-btn').innerText = "⏸"; document.getElementById('main-btn').className = "btn-control pause"; initAudio(); }
         }
 
-        // --- NEW LOUD AUDIO ENGINE ---
         let audCtx;
         function initAudio() { if(!audCtx) audCtx = new (window.AudioContext||window.webkitAudioContext)(); if(audCtx.state==='suspended') audCtx.resume(); }
         function toggleSound() { soundOn = !soundOn; document.getElementById('sound-btn').style.opacity = soundOn?1:0.5; }
@@ -424,32 +482,19 @@
             const t = audCtx.currentTime;
             const osc = audCtx.createOscillator();
             const gain = audCtx.createGain();
-            
-            osc.connect(gain);
-            gain.connect(audCtx.destination);
-            
-            // SAWTOOTH is much louder/sharper than SINE
+            osc.connect(gain); gain.connect(audCtx.destination);
             osc.type = 'sawtooth'; 
-            
             if (type === 'start') {
-                // GO: Sweep UP (Siren style)
-                osc.frequency.setValueAtTime(400, t);
-                osc.frequency.exponentialRampToValueAtTime(1000, t + 0.3);
-                gain.gain.setValueAtTime(1, t);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+                osc.frequency.setValueAtTime(400, t); osc.frequency.exponentialRampToValueAtTime(1000, t + 0.3);
+                gain.gain.setValueAtTime(1, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
                 osc.start(t); osc.stop(t + 0.3);
             } else if (type === 'end') {
-                // PAUSE: Sweep DOWN
-                osc.frequency.setValueAtTime(800, t);
-                osc.frequency.exponentialRampToValueAtTime(300, t + 0.3);
-                gain.gain.setValueAtTime(1, t);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+                osc.frequency.setValueAtTime(800, t); osc.frequency.exponentialRampToValueAtTime(300, t + 0.3);
+                gain.gain.setValueAtTime(1, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
                 osc.start(t); osc.stop(t + 0.3);
             } else if (type === 'short') {
-                // COUNTDOWN: High pitch sharp tick
                 osc.frequency.setValueAtTime(1200, t);
-                gain.gain.setValueAtTime(1, t);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+                gain.gain.setValueAtTime(1, t); gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
                 osc.start(t); osc.stop(t + 0.1);
             }
         }
