@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse LEGACY</title>
+    <title>Body Pulse DEFINITIVE</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -16,7 +16,7 @@
             --surface-light: #141414;
             --border: #222222;
             --primary: #ffffff;
-            --accent: #32d74b; /* Success Green */
+            --accent: #32d74b;
             --secondary: #666666;
             --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
             --safe-top: env(safe-area-inset-top);
@@ -45,6 +45,8 @@
         .card { 
             background: var(--surface); padding: 20px; border: 1px solid var(--border); 
             margin-bottom: 15px; border-radius: 12px;
+            /* Subtle shadow for depth */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -60,42 +62,40 @@
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
         .btn-close { background: transparent; border: none; font-size: 24px; color: var(--primary); padding: 10px; }
 
-        /* --- INPUTS & SLIDERS --- */
+        /* --- INPUTS --- */
         input:not([type="checkbox"]):not([type="range"]) {
             width: 100%; background: var(--surface-light); border: 1px solid var(--border);
             color: var(--primary); padding: 12px; font-size: 16px; font-family: var(--font);
             border-radius: 8px; margin-bottom: 20px;
         }
         input:focus { border-color: var(--primary); }
-
         .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
         input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
         input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
 
-        /* --- GRAPH (New!) --- */
+        /* --- GRAPH --- */
         .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
         svg.chart { width: 100%; height: 100%; overflow: visible; }
         polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
         .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
         /* --- WIZARD --- */
-        .full-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
-            z-index: 500; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
-        }
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 500; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px; }
         .wiz-step { display: none; flex-direction: column; height: 100%; }
         .wiz-step.active { display: flex; animation: slide 0.3s ease; }
         .opt-item { padding: 20px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; border-radius: 8px; }
         .opt-item.selected { border-color: var(--primary); background: var(--surface-light); }
 
-        /* --- CIRCLE TIMER --- */
+        /* --- CIRCLE TIMER (FIXED SIZE) --- */
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .progress-ring { width: 280px; height: 280px; transform: rotate(-90deg); }
+        /* Reduced size to ensure no cut-off */
+        .progress-ring { width: 260px; height: 260px; transform: rotate(-90deg); }
         .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
         .time-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .time-huge { font-size: 80px; font-weight: 700; font-family: monospace; letter-spacing: -3px; line-height: 1; }
         .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; }
         
+        /* Mini Goal Circle (FIXED SIZE) */
         .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
 
         /* --- LISTS --- */
@@ -164,7 +164,7 @@
 
         <div class="stat-grid">
             <div class="card" style="margin:0; text-align:center;">
-                <span class="label">TOTAL KCAL</span>
+                <span class="label">LIFETIME KCAL</span>
                 <span class="val-big" id="disp-total-kcal">0</span>
             </div>
             <div class="card" style="margin:0; text-align:center;">
@@ -180,9 +180,9 @@
                 <div class="sub-text" style="font-size:12px; margin-top:4px;">Bleib dran!</div>
             </div>
             <div style="position:relative; width:60px; height:60px;">
-                <svg class="goal-ring" width="60" height="60">
-                    <circle stroke="#222" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
-                    <circle id="week-circle" stroke="white" stroke-width="4" stroke-linecap="round" fill="transparent" r="26" cx="30" cy="30" stroke-dasharray="163 163" stroke-dashoffset="163"/>
+                <svg class="goal-ring" width="60" height="60" viewBox="0 0 60 60">
+                    <circle stroke="#222" stroke-width="4" fill="transparent" r="24" cx="30" cy="30"/>
+                    <circle id="week-circle" stroke="white" stroke-width="4" stroke-linecap="round" fill="transparent" r="24" cx="30" cy="30" stroke-dasharray="150 150" stroke-dashoffset="150"/>
                 </svg>
             </div>
         </div>
@@ -192,7 +192,7 @@
                 <h2>HEUTE</h2>
                 <span style="font-size:10px; color:#666;" id="last-workout">Last: Nie</span>
             </div>
-            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade...</div>
+            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px; color:var(--secondary);" id="next-title">Lade Plan...</div>
             <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
             <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
         </div>
@@ -209,6 +209,20 @@
             <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:var(--secondary);">
                 <span>Start</span>
                 <span>Heute</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>DIESER MONAT</h2>
+            <div class="stat-grid" style="margin-bottom:0;">
+                <div style="text-align:center;">
+                     <span class="val-big" id="month-workouts">0</span>
+                     <span class="label">WORKOUTS</span>
+                </div>
+                <div style="text-align:center;">
+                     <span class="val-big" id="month-kcal">0</span>
+                     <span class="label">KCAL</span>
+                </div>
             </div>
         </div>
 
@@ -308,9 +322,9 @@
         </div>
 
         <div class="timer-wrap">
-            <svg class="progress-ring" width="300" height="300">
-                <circle stroke="#222" stroke-width="8" fill="transparent" r="130" cx="150" cy="150"/>
-                <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="130" cx="150" cy="150"/>
+            <svg class="progress-ring" width="260" height="260" viewBox="0 0 260 260">
+                <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/>
+                <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130"/>
             </svg>
             <div class="time-center">
                 <div class="time-huge" id="time-disp">00</div>
@@ -377,16 +391,22 @@
         let wiz = { goal: '', parts: [] };
         let ac; let sound = true;
 
-        // Circle UI
+        // Circle UI Setup (New sizes)
         const circle = document.getElementById('progress-circle');
-        const radius = circle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
+        // Radius is now 115. Circumference = 2 * PI * r
+        const circumference = 2 * Math.PI * 115; 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = circumference;
 
+        // Goal Circle Setup (New size: r=24)
+        const goalCirc = 2 * Math.PI * 24; // approx 150.8
+        document.getElementById('week-circle').style.strokeDasharray = `${goalCirc} ${goalCirc}`;
+        document.getElementById('week-circle').style.strokeDashoffset = goalCirc;
+
+
         // --- INIT ---
         window.onload = () => {
-            const d = localStorage.getItem('bp_legacy_v16');
+            const d = localStorage.getItem('bp_definitive_v17');
             if(d) {
                 const loaded = JSON.parse(d);
                 app = { ...app, ...loaded };
@@ -463,18 +483,38 @@
         function updateUI() {
             const plan = app.plan[app.planIdx % app.plan.length];
             document.getElementById('next-title').innerText = plan.name;
+            document.getElementById('next-title').style.color = var(--primary); // Reset color
             document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
             
             const count = app.history.length;
             document.getElementById('disp-count').innerText = count;
             document.getElementById('lvl-badge').innerText = "LVL " + (Math.floor(count/5)+1);
             
-            // CALORIES LIFETIME
+            // LIFETIME KCAL
             let totalKcal = 0;
             app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
-            // Stats
+            // MONTHLY PERFORMANCE (NEW)
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            let monthWorkouts = 0;
+            let monthKcal = 0;
+            
+            app.history.forEach(h => {
+                const hDate = new Date(h.date);
+                if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) {
+                    monthWorkouts++;
+                    if(h.kcal) monthKcal += parseInt(h.kcal);
+                }
+            });
+            document.getElementById('month-workouts').innerText = monthWorkouts;
+            document.getElementById('month-kcal').innerText = monthKcal.toLocaleString();
+
+
+            // Stats Body
             let last = { w: app.profile.w };
             if(app.logs.length > 0) last = app.logs[app.logs.length-1];
 
@@ -497,7 +537,7 @@
             const target = parseInt(app.settings.weeklyGoal);
             document.getElementById('week-val').innerText = `${thisWeekWorkouts} / ${target}`;
             const pct = Math.min(thisWeekWorkouts / target, 1);
-            document.getElementById('week-circle').style.strokeDashoffset = 163 - (163 * pct);
+            document.getElementById('week-circle').style.strokeDashoffset = goalCirc - (goalCirc * pct);
             
             if(pct >= 1) document.getElementById('week-circle').setAttribute("stroke", "#32d74b");
             else document.getElementById('week-circle').setAttribute("stroke", "white");
@@ -517,19 +557,18 @@
             svg.innerHTML = "";
             if(app.logs.length < 2) return;
 
-            const data = app.logs.slice(-10).map(l => parseFloat(l.w)); // Last 10 entries
-            const max = Math.max(...data) + 1;
-            const min = Math.min(...data) - 1;
+            const data = app.logs.slice(-10).map(l => parseFloat(l.w));
+            const max = Math.max(...data) + 0.5;
+            const min = Math.min(...data) - 0.5;
             const range = max - min;
             const stepX = 100 / (data.length - 1);
 
             let points = "";
             data.forEach((val, i) => {
                 const x = i * stepX;
-                const y = 100 - ((val - min) / range * 100);
+                // Ensure range is not zero to avoid division by zero
+                const y = range === 0 ? 50 : 100 - ((val - min) / range * 100);
                 points += `${x},${y} `;
-                
-                // Add dot
                 const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
                 dot.setAttribute("class", "chart-dot");
@@ -615,9 +654,8 @@
         function showRPE() { closePlayer(); document.getElementById('view-rpe').style.display='flex'; }
         function finishWorkout() {
             const rpe = document.getElementById('rpe-slider').value;
-            // Approx Calories
             const weight = parseFloat(app.profile.w) || 75;
-            const kcal = Math.floor((6 * 3.5 * weight / 200) * 15); // ~15 mins avg workout
+            const kcal = Math.floor((6 * 3.5 * weight / 200) * 15);
             app.history.push({date: new Date(), rpe: rpe, kcal: kcal});
             app.planIdx++;
             save(); updateUI();
@@ -662,8 +700,8 @@
             });
         }
         function nav(id, el) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
-        function save() { localStorage.setItem('bp_legacy_v16', JSON.stringify(app)); }
-        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_legacy_v16'); location.reload(); } }
+        function save() { localStorage.setItem('bp_definitive_v17', JSON.stringify(app)); }
+        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_definitive_v17'); location.reload(); } }
         function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
         function beep(f1, f2, dur=0.2) { if(!sound || !ac) return; const o = ac.createOscillator(); const g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.type='sawtooth'; o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
         function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download = "backup.json"; a.click(); }
