@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V2</title>
+    <title>Body Pulse V19</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -352,9 +352,9 @@
     </nav>
 
     <script>
-        // --- CONFIG & RESET ---
-        // I changed this key to FORCE a fresh start for you, ensuring no bad old data persists.
-        const STORE_KEY = 'bp_v2_stable'; 
+        // --- CONFIG ---
+        // Using a fresh key to guarantee clean state.
+        const STORE_KEY = 'bp_final_v19'; 
         
         const DB = {
             bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
@@ -373,7 +373,7 @@
         let wiz = { goal: '', parts: [] };
         let ac; let sound = true;
 
-        // Circle UI Setup
+        // Circle UI
         const circle = document.getElementById('progress-circle');
         const circumference = 2 * Math.PI * 115; 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
@@ -390,12 +390,12 @@
                     const loaded = JSON.parse(d);
                     if(loaded && loaded.profile && loaded.profile.h) {
                         app = { ...app, ...loaded };
-                        // REPAIR: Ensure settings exist if loading form old
+                        // Ensure settings structure
                         if(!app.settings) app.settings = { supps:true, work:40, rest:20, weeklyGoal:3 };
                         if(!app.settings.weeklyGoal) app.settings.weeklyGoal = 3;
                         hasData = true;
                     }
-                } catch(e) { console.log("Data corrupted, resetting"); }
+                } catch(e) { console.log("Data corrupted"); }
             }
             
             if(!hasData) {
@@ -408,7 +408,6 @@
 
         function initApp() {
             document.getElementById('view-onboarding').style.display = 'none';
-
             const h = new Date().getHours();
             let greet = "GUTEN ABEND";
             if(h < 11) greet = "GUTEN MORGEN"; else if(h < 18) greet = "GUTEN TAG";
@@ -421,7 +420,7 @@
             document.getElementById('rng-rest').value = app.settings.rest;
             document.getElementById('rng-goal').value = app.settings.weeklyGoal;
             
-            updateRangeLbl();
+            updateRangeLbl(); // Initialize labels
             document.getElementById('log-date').valueAsDate = new Date();
 
             if(!app.plan || app.plan.length === 0) genPlan();
@@ -467,7 +466,7 @@
             app.planIdx = 0;
         }
 
-        // --- UI ---
+        // --- UI UPDATES ---
         function updateUI() {
             if(!app.plan || app.plan.length === 0) return;
             const plan = app.plan[app.planIdx % app.plan.length];
@@ -475,10 +474,12 @@
             document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
             document.getElementById('disp-count').innerText = app.history.length;
             
+            // Total Kcal
             let totalKcal = 0;
             app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
+            // Month Stats
             const now = new Date();
             let mWork = 0; let mKcal = 0;
             app.history.forEach(h => {
@@ -490,6 +491,7 @@
             document.getElementById('month-workouts').innerText = mWork;
             document.getElementById('month-kcal').innerText = mKcal.toLocaleString();
 
+            // Stats Body
             let last = { w: app.profile.w };
             if(app.logs.length > 0) last = app.logs[app.logs.length-1];
             document.getElementById('st-w').innerText = last.w + " kg";
@@ -498,11 +500,13 @@
             document.getElementById('st-c').innerText = (last.chest || "--") + " cm";
             document.getElementById('st-l').innerText = (last.thigh || "--") + " cm";
 
-            // Weekly Goal Fix
+            // Weekly Goal Logic
             const startOfWeek = new Date();
             startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
             startOfWeek.setHours(0,0,0,0);
             const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
+            
+            // Fix: parse int with fallback
             const target = parseInt(app.settings.weeklyGoal) || 3;
             document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
             const pct = Math.min(thisWeek / target, 1);
@@ -517,32 +521,33 @@
             renderChart(); renderHist();
         }
 
-        function renderChart() {
-            const svg = document.getElementById('weight-chart'); svg.innerHTML = "";
-            if(app.logs.length < 2) return;
-            const data = app.logs.slice(-10).map(l => parseFloat(l.w));
-            const max = Math.max(...data) + 1; const min = Math.min(...data) - 1;
-            const range = max - min;
-            let points = "";
-            data.forEach((val, i) => {
-                const x = i * (100 / (data.length - 1));
-                const y = 100 - ((val - min) / range * 100);
-                points += `${x},${y} `;
-                const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
-                dot.setAttribute("class", "chart-dot");
-                svg.appendChild(dot);
-            });
-            const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            pl.setAttribute("points", points); svg.prepend(pl);
-        }
-
+        // --- RANGE SLIDER LOGIC (FIXED) ---
         function updateRangeLbl() {
+            // Update Text Labels
             document.getElementById('lbl-work').innerText = document.getElementById('rng-work').value;
             document.getElementById('lbl-rest').innerText = document.getElementById('rng-rest').value;
             document.getElementById('lbl-goal').innerText = document.getElementById('rng-goal').value;
+
+            // CRITICAL FIX: Update State immediately (Live Update)
+            app.settings.work = document.getElementById('rng-work').value;
+            app.settings.rest = document.getElementById('rng-rest').value;
+            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
+
+            // Refresh UI immediately to reflect changes on dashboard
+            updateUI();
         }
 
+        function saveSettings() {
+            // Save to disk (triggered on release)
+            updateRangeLbl(); // ensure state is synced
+            app.profile.h = document.getElementById('set-height').value;
+            app.profile.a = document.getElementById('set-age').value;
+            save(); 
+        }
+
+        function toggleSupps() { app.settings.supps = document.getElementById('tog-supps').checked; save(); }
+
+        // --- PLAYER ---
         function openPlayer() {
             sess.active = app.plan[app.planIdx % app.plan.length].ex;
             sess.r = 1; sess.idx = 0;
@@ -610,6 +615,27 @@
         function closeSupps() { document.getElementById('view-supps').style.display='none'; }
         function showInfo() { if(sess.run) toggleTimer(); const e = sess.active[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display='flex'; }
 
+        // --- UTILS ---
+        function renderChart() {
+            const svg = document.getElementById('weight-chart'); svg.innerHTML = "";
+            if(app.logs.length < 2) return;
+            const data = app.logs.slice(-10).map(l => parseFloat(l.w));
+            const max = Math.max(...data) + 1; const min = Math.min(...data) - 1;
+            const range = max - min;
+            let points = "";
+            data.forEach((val, i) => {
+                const x = i * (100 / (data.length - 1));
+                const y = 100 - ((val - min) / range * 100);
+                points += `${x},${y} `;
+                const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
+                dot.setAttribute("class", "chart-dot");
+                svg.appendChild(dot);
+            });
+            const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            pl.setAttribute("points", points); svg.prepend(pl);
+        }
+
         function saveLog() {
             const d = document.getElementById('log-date').value;
             const w = document.getElementById('log-weight').value;
@@ -622,15 +648,7 @@
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
             save(); updateUI(); alert("Gespeichert");
         }
-        function saveSettings() {
-            app.profile.h = document.getElementById('set-height').value;
-            app.profile.a = document.getElementById('set-age').value;
-            app.settings.work = document.getElementById('rng-work').value;
-            app.settings.rest = document.getElementById('rng-rest').value;
-            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
-            save(); updateUI();
-        }
-        function toggleSupps() { app.settings.supps = document.getElementById('tog-supps').checked; save(); }
+        
         function renderHist() {
             const l = document.getElementById('hist-list'); l.innerHTML="";
             app.history.slice().reverse().slice(0,5).forEach(h => {
