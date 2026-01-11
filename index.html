@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse Obsidian</title>
+    <title>Body Pulse LEGACY</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
     <style>
         :root {
             --bg: #000000;
-            --surface: #0f0f0f;
+            --surface: #0a0a0a;
+            --surface-light: #141414;
             --border: #222222;
             --primary: #ffffff;
+            --accent: #32d74b; /* Success Green */
             --secondary: #666666;
             --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
             --safe-top: env(safe-area-inset-top);
@@ -30,40 +32,51 @@
         }
 
         /* --- TYPO --- */
-        h1 { font-size: 22px; font-weight: 800; margin: 0 0 20px; text-transform: uppercase; letter-spacing: 1px; }
-        h2 { font-size: 10px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
-        .val-big { font-size: 28px; font-weight: 300; letter-spacing: -0.5px; }
+        h1 { font-size: 24px; font-weight: 800; margin: 0 0 5px; letter-spacing: 0.5px; }
+        h2 { font-size: 11px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
+        .val-big { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
         .label { color: var(--secondary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        
+        .sub-text { font-size: 14px; color: var(--secondary); }
+
         /* --- LAYOUT --- */
         .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
         .screen.active { display: flex; animation: fade 0.3s ease; }
         
         .card { 
-            background: var(--surface); padding: 25px; border: 1px solid var(--border); 
-            margin-bottom: 15px; border-radius: 4px;
+            background: var(--surface); padding: 20px; border: 1px solid var(--border); 
+            margin-bottom: 15px; border-radius: 12px;
         }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
         /* --- BUTTONS --- */
         .btn {
             width: 100%; padding: 18px; border: 1px solid var(--primary); background: var(--primary); 
             color: var(--bg); font-size: 14px; font-weight: 800; text-transform: uppercase; 
-            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 1px;
+            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 1px; border-radius: 8px;
         }
         .btn:active { transform: scale(0.98); opacity: 0.8; }
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
         .btn-close { background: transparent; border: none; font-size: 24px; color: var(--primary); padding: 10px; }
 
-        /* --- INPUTS --- */
-        input {
-            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border);
-            color: var(--primary); padding: 10px 0; font-size: 16px; font-family: var(--font);
-            border-radius: 0; margin-bottom: 20px;
+        /* --- INPUTS & SLIDERS --- */
+        input:not([type="checkbox"]):not([type="range"]) {
+            width: 100%; background: var(--surface-light); border: 1px solid var(--border);
+            color: var(--primary); padding: 12px; font-size: 16px; font-family: var(--font);
+            border-radius: 8px; margin-bottom: 20px;
         }
-        input:focus { border-bottom-color: var(--primary); }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        input:focus { border-color: var(--primary); }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
+        input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
+
+        /* --- GRAPH (New!) --- */
+        .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+        svg.chart { width: 100%; height: 100%; overflow: visible; }
+        polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
+        .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
         /* --- WIZARD --- */
         .full-overlay {
@@ -72,41 +85,31 @@
         }
         .wiz-step { display: none; flex-direction: column; height: 100%; }
         .wiz-step.active { display: flex; animation: slide 0.3s ease; }
-        
-        .opt-item {
-            padding: 20px; border: 1px solid var(--border); margin-bottom: 10px;
-            cursor: pointer; font-size: 16px; transition: 0.2s;
-        }
-        .opt-item.selected { border-color: var(--primary); background: var(--surface); }
+        .opt-item { padding: 20px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; border-radius: 8px; }
+        .opt-item.selected { border-color: var(--primary); background: var(--surface-light); }
 
         /* --- CIRCLE TIMER --- */
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        
-        .progress-ring { width: 300px; height: 300px; transform: rotate(-90deg); }
-        .progress-ring__circle {
-            transition: stroke-dashoffset 1.0s linear;
-            transform-origin: 50% 50%;
-        }
-        
-        .time-center {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .time-huge { 
-            font-size: 80px; font-weight: 700; 
-            font-variant-numeric: tabular-nums; line-height: 1; 
-            font-family: monospace; letter-spacing: -3px;
-        }
+        .progress-ring { width: 280px; height: 280px; transform: rotate(-90deg); }
+        .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
+        .time-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .time-huge { font-size: 80px; font-weight: 700; font-family: monospace; letter-spacing: -3px; line-height: 1; }
         .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; }
+        
+        .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
+
+        /* --- LISTS --- */
+        .check-item { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 15px; }
+        .hist-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 
         /* --- NAV --- */
         .nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(10px);
             display: flex; justify-content: space-around; padding-bottom: var(--safe-bottom); z-index: 100;
         }
-        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.3; font-size: 22px; cursor: pointer; }
-        .nav-btn.active { opacity: 1; }
+        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.3; font-size: 22px; cursor: pointer; transition: 0.2s; }
+        .nav-btn.active { opacity: 1; transform: scale(1.1); }
 
         @keyframes fade { from{opacity:0;} to{opacity:1;} }
         @keyframes slide { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
@@ -121,11 +124,10 @@
             <div style="margin-top:20px;">
                 <div class="opt-item" onclick="wizSet('goal', 'lose', this)">ABNEHMEN</div>
                 <div class="opt-item" onclick="wizSet('goal', 'build', this)">MUSKELAUFBAU</div>
-                <div class="opt-item" onclick="wizSet('goal', 'fit', this)">FITNESS & MOBILITY</div>
+                <div class="opt-item" onclick="wizSet('goal', 'fit', this)">ALLG. FITNESS</div>
             </div>
             <button class="btn" style="margin-top:auto" onclick="wizNext(1)">WEITER</button>
         </div>
-
         <div id="wiz-2" class="wiz-step">
             <h1 style="margin-top:20px;">FOKUS ZONEN</h1>
             <p class="label">Mehrfachwahl möglich</p>
@@ -137,7 +139,6 @@
             </div>
             <button class="btn" style="margin-top:auto" onclick="wizNext(2)">WEITER</button>
         </div>
-
         <div id="wiz-3" class="wiz-step">
             <h1 style="margin-top:20px;">STAMMDATEN</h1>
             <p class="label">Für deine Statistik</p>
@@ -153,35 +154,64 @@
     </div>
 
     <div id="tab-home" class="screen active">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h1>COCKPIT</h1>
-            <div style="font-size:12px; border:1px solid var(--border); padding:5px 10px;" id="lvl-badge">LVL 1</div>
-        </div>
-
-        <div style="font-style:italic; color:#666; margin-bottom:20px; font-size:14px;" id="quote-area">...</div>
-
-        <div class="card">
-            <h2>HEUTE</h2>
-            <div style="font-size: 24px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade...</div>
-            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
-            <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
+        <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:20px;">
+            <div>
+                <span class="label" id="greeting">GUTEN TAG</span>
+                <h1>COCKPIT</h1>
+            </div>
+            <div style="font-size:12px; border:1px solid var(--border); padding:5px 10px; border-radius:20px;" id="lvl-badge">LVL 1</div>
         </div>
 
         <div class="stat-grid">
             <div class="card" style="margin:0; text-align:center;">
+                <span class="label">TOTAL KCAL</span>
+                <span class="val-big" id="disp-total-kcal">0</span>
+            </div>
+            <div class="card" style="margin:0; text-align:center;">
                 <span class="label">WORKOUTS</span>
                 <span class="val-big" id="disp-count">0</span>
             </div>
-            <div class="card" style="margin:0; text-align:center;">
-                <span class="label">BMI</span>
-                <span class="val-big" id="disp-bmi">--</span>
+        </div>
+
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span class="label">WOCHENZIEL</span>
+                <div class="val-big" id="week-val">0 / 3</div>
+                <div class="sub-text" style="font-size:12px; margin-top:4px;">Bleib dran!</div>
             </div>
+            <div style="position:relative; width:60px; height:60px;">
+                <svg class="goal-ring" width="60" height="60">
+                    <circle stroke="#222" stroke-width="4" fill="transparent" r="26" cx="30" cy="30"/>
+                    <circle id="week-circle" stroke="white" stroke-width="4" stroke-linecap="round" fill="transparent" r="26" cx="30" cy="30" stroke-dasharray="163 163" stroke-dashoffset="163"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="card" style="border-color: var(--primary);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2>HEUTE</h2>
+                <span style="font-size:10px; color:#666;" id="last-workout">Last: Nie</span>
+            </div>
+            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade...</div>
+            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
+            <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
         </div>
     </div>
 
     <div id="tab-stats" class="screen">
-        <h1>KÖRPERDATEN</h1>
+        <h1>TRACKING</h1>
         
+        <div class="card">
+            <h2>GEWICHTSKURVE</h2>
+            <div class="chart-container">
+                <svg class="chart" id="weight-chart" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:var(--secondary);">
+                <span>Start</span>
+                <span>Heute</span>
+            </div>
+        </div>
+
         <div class="card">
             <h2>AKTUELLE FORM</h2>
             <div class="input-row" style="margin-bottom:10px;">
@@ -189,18 +219,14 @@
                 <div><span class="label">BAUCH</span><span class="val-big" id="st-b">--</span></div>
             </div>
             <div class="input-row">
-                <div><span class="label">PO / HÜFTE</span><span class="val-big" id="st-h">--</span></div>
-                <div><span class="label">BRUST</span><span class="val-big" id="st-c">--</span></div>
+                <div><span class="label">BMI</span><span class="val-big" id="disp-bmi">--</span></div>
+                <div><span class="label">OBERSCHENKEL</span><span class="val-big" id="st-l">--</span></div>
             </div>
-            <div style="margin-top:15px;">
-                <span class="label">OBERSCHENKEL</span><span class="val-big" id="st-l">--</span>
-             </div>
         </div>
 
         <div class="card">
             <h2>MESSUNG EINTRAGEN</h2>
             <input type="date" id="log-date">
-            
             <div class="input-row">
                 <div><span class="label">Gewicht (kg)</span><input type="number" id="log-weight" placeholder="0.0"></div>
                 <div><span class="label">Bauch (cm)</span><input type="number" id="log-waist" placeholder="0"></div>
@@ -224,6 +250,38 @@
 
     <div id="tab-settings" class="screen">
         <h1>SYSTEM</h1>
+        
+        <div class="card">
+            <h2>TRAININGS-KONFIG</h2>
+            
+            <div style="margin-bottom:25px;">
+                <div class="toggle-row">
+                    <span>Wochenziel: <b id="lbl-goal">3</b> x</span>
+                </div>
+                <input type="range" min="1" max="7" step="1" id="rng-goal" oninput="updateRangeLbl()" onchange="saveSettings()">
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <div class="toggle-row">
+                    <span>Belastung: <b id="lbl-work">40</b> Sek</span>
+                </div>
+                <input type="range" min="20" max="90" step="5" id="rng-work" oninput="updateRangeLbl()" onchange="saveSettings()">
+            </div>
+            <div>
+                <div class="toggle-row">
+                    <span>Pause: <b id="lbl-rest">20</b> Sek</span>
+                </div>
+                <input type="range" min="10" max="60" step="5" id="rng-rest" oninput="updateRangeLbl()" onchange="saveSettings()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>OPTIONEN</h2>
+            <div class="toggle-row">
+                <span style="font-size:16px;">Supplements Erinnerung</span>
+                <input type="checkbox" id="tog-supps" onchange="toggleSupps()" checked>
+            </div>
+        </div>
 
         <div class="card">
             <h2>DEIN PROFIL</h2>
@@ -234,15 +292,11 @@
         </div>
 
         <div class="card">
-            <h2>TRAINING</h2>
-            <button class="btn btn-outline" onclick="resetApp()">NEU DEFINIEREN</button>
-        </div>
-
-        <div class="card">
             <h2>DATEN</h2>
             <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
             <input type="file" id="import-input" style="display:none" onchange="importData(this)">
             <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
+            <button class="btn btn-outline" style="margin-top:20px; color:#666; border-color:#333;" onclick="resetApp()">NEUSTART (RESET)</button>
         </div>
     </div>
 
@@ -286,6 +340,18 @@
         <button class="btn" onclick="finishWorkout()">ABSCHLIESSEN</button>
     </div>
 
+    <div id="view-supps" class="full-overlay" style="z-index: 800; justify-content:center; text-align:center;">
+        <h1>POST-WORKOUT</h1>
+        <p class="label" style="margin-bottom:30px;">Vergiss deine Nährstoffe nicht!</p>
+        <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
+            <div class="check-item">🥤 Eiweißpulver</div>
+            <div class="check-item">⚡ Kreatin</div>
+            <div class="check-item">💊 Magnesium</div>
+            <div class="check-item">🔩 Eisen</div>
+        </div>
+        <button class="btn" style="margin-top:50px;" onclick="closeSupps()">ERLEDIGT</button>
+    </div>
+
     <nav class="nav">
         <div class="nav-btn active" onclick="nav('tab-home', this)">■</div>
         <div class="nav-btn" onclick="nav('tab-stats', this)">lll</div>
@@ -293,15 +359,7 @@
     </nav>
 
     <script>
-        // --- CONTENT ---
-        const QUOTES = [
-            "Der Schmerz von heute ist die Kraft von morgen.",
-            "Disziplin ist Freiheit.",
-            "Einfach machen.",
-            "Keine Ausreden.",
-            "Fokus auf das Ziel."
-        ];
-        
+        // --- DATA ---
         const DB = {
             bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
             beine: [ {n:"Squats", d:"Kniebeugen."}, {n:"Lunges", d:"Ausfallschritte."}, {n:"Glute Bridges", d:"Hüfte heben."}, {n:"Calf Raises", d:"Wadenheben."} ],
@@ -310,10 +368,13 @@
         };
 
         // --- STATE ---
-        let app = { profile: { h: '', w: '', a: '' }, goal: '', parts: [], plan: [], planIdx: 0, logs: [], history: [] };
+        let app = { 
+            profile: { h: '', w: '', a: '' }, 
+            goal: '', parts: [], plan: [], planIdx: 0, logs: [], history: [],
+            settings: { supps: true, work: 40, rest: 20, weeklyGoal: 3 }
+        };
         let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
         let wiz = { goal: '', parts: [] };
-        let CFG = { WORK: 40, REST: 20, RNDS: 3 }; 
         let ac; let sound = true;
 
         // Circle UI
@@ -325,8 +386,12 @@
 
         // --- INIT ---
         window.onload = () => {
-            const d = localStorage.getItem('bp_obsidian');
-            if(d) app = JSON.parse(d);
+            const d = localStorage.getItem('bp_legacy_v16');
+            if(d) {
+                const loaded = JSON.parse(d);
+                app = { ...app, ...loaded };
+                if(app.settings.weeklyGoal === undefined) app.settings.weeklyGoal = 3;
+            }
             
             if(!app.profile.h || !app.goal) {
                 document.getElementById('view-onboarding').style.display = 'flex';
@@ -337,14 +402,23 @@
         };
 
         function initApp() {
-            document.getElementById('quote-area').innerText = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-            
-            if(app.goal === 'lose') { CFG.WORK=45; CFG.REST=15; }
-            else if(app.goal === 'build') { CFG.WORK=40; CFG.REST=40; }
-            else { CFG.WORK=40; CFG.REST=20; }
-            
+            // Dynamic Greeting
+            const h = new Date().getHours();
+            let greet = "GUTEN ABEND";
+            if(h < 11) greet = "GUTEN MORGEN";
+            else if(h < 18) greet = "GUTEN TAG";
+            document.getElementById('greeting').innerText = greet;
+
             document.getElementById('set-height').value = app.profile.h;
             document.getElementById('set-age').value = app.profile.a;
+            
+            // Set Controls
+            document.getElementById('tog-supps').checked = app.settings.supps;
+            document.getElementById('rng-work').value = app.settings.work;
+            document.getElementById('rng-rest').value = app.settings.rest;
+            document.getElementById('rng-goal').value = app.settings.weeklyGoal;
+            
+            updateRangeLbl();
             document.getElementById('log-date').valueAsDate = new Date();
 
             updateUI();
@@ -358,22 +432,15 @@
             if(i>-1) { wiz[k].splice(i,1); el.classList.remove('selected'); }
             else { wiz[k].push(v); el.classList.add('selected'); }
         }
-        function wizNext(s) {
-            document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active'));
-            document.getElementById('wiz-'+(s+1)).classList.add('active');
-        }
+        function wizNext(s) { document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); document.getElementById('wiz-'+(s+1)).classList.add('active'); }
         function wizFinish() {
             const h = document.getElementById('wiz-height').value;
             const w = document.getElementById('wiz-weight').value;
             const a = document.getElementById('wiz-age').value;
             if(!h || !w || !a) return alert("Bitte alles ausfüllen");
-            
             app.profile = { h: h, w: w, a: a };
             app.goal = wiz.goal; app.parts = wiz.parts;
-            
-            // Initial log
-            app.logs.push({date: new Date().toISOString().split('T')[0], w: w, cm: '', hips: '', chest: '', thigh: ''});
-            
+            app.logs.push({date: new Date().toISOString().split('T')[0], w: w});
             genPlan();
             document.getElementById('view-onboarding').style.display='none';
             save(); initApp();
@@ -402,8 +469,13 @@
             document.getElementById('disp-count').innerText = count;
             document.getElementById('lvl-badge').innerText = "LVL " + (Math.floor(count/5)+1);
             
-            // Stats & BMI
-            let last = { w: app.profile.w, cm: '--', hips: '--', chest: '--', thigh: '--' };
+            // CALORIES LIFETIME
+            let totalKcal = 0;
+            app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
+            document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
+
+            // Stats
+            let last = { w: app.profile.w };
             if(app.logs.length > 0) last = app.logs[app.logs.length-1];
 
             document.getElementById('st-w').innerText = last.w + " kg";
@@ -415,8 +487,64 @@
             const h_m = app.profile.h / 100;
             const bmi = (last.w / (h_m*h_m)).toFixed(1);
             document.getElementById('disp-bmi').innerText = bmi;
+
+            // Weekly Goal
+            const startOfWeek = new Date();
+            startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
+            startOfWeek.setHours(0,0,0,0);
             
+            const thisWeekWorkouts = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
+            const target = parseInt(app.settings.weeklyGoal);
+            document.getElementById('week-val').innerText = `${thisWeekWorkouts} / ${target}`;
+            const pct = Math.min(thisWeekWorkouts / target, 1);
+            document.getElementById('week-circle').style.strokeDashoffset = 163 - (163 * pct);
+            
+            if(pct >= 1) document.getElementById('week-circle').setAttribute("stroke", "#32d74b");
+            else document.getElementById('week-circle').setAttribute("stroke", "white");
+
+            if(app.history.length > 0) {
+                const lastDate = new Date(app.history[app.history.length-1].date);
+                const diff = Math.floor((new Date() - lastDate) / (1000*60*60*24));
+                document.getElementById('last-workout').innerText = diff === 0 ? "Last: Heute" : `Last: Vor ${diff} Tagen`;
+            }
+
+            renderChart();
             renderHist();
+        }
+
+        function renderChart() {
+            const svg = document.getElementById('weight-chart');
+            svg.innerHTML = "";
+            if(app.logs.length < 2) return;
+
+            const data = app.logs.slice(-10).map(l => parseFloat(l.w)); // Last 10 entries
+            const max = Math.max(...data) + 1;
+            const min = Math.min(...data) - 1;
+            const range = max - min;
+            const stepX = 100 / (data.length - 1);
+
+            let points = "";
+            data.forEach((val, i) => {
+                const x = i * stepX;
+                const y = 100 - ((val - min) / range * 100);
+                points += `${x},${y} `;
+                
+                // Add dot
+                const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
+                dot.setAttribute("class", "chart-dot");
+                svg.appendChild(dot);
+            });
+
+            const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            polyline.setAttribute("points", points);
+            svg.prepend(polyline);
+        }
+
+        function updateRangeLbl() {
+            document.getElementById('lbl-work').innerText = document.getElementById('rng-work').value;
+            document.getElementById('lbl-rest').innerText = document.getElementById('rng-rest').value;
+            document.getElementById('lbl-goal').innerText = document.getElementById('rng-goal').value;
         }
 
         // --- PLAYER ---
@@ -427,10 +555,7 @@
             startPhase('PREP');
             if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
         }
-        function closePlayer() {
-            clearInterval(sess.int); sess.run = false;
-            document.getElementById('view-player').style.display = 'none';
-        }
+        function closePlayer() { clearInterval(sess.int); sess.run = false; document.getElementById('view-player').style.display = 'none'; }
 
         function startPhase(type) {
             sess.work = (type === 'WORK');
@@ -438,22 +563,22 @@
             const skip = document.getElementById('skip-btn');
             
             if(type === 'PREP') {
-                sess.t = sess.max = CFG.PREP;
+                sess.t = sess.max = 10;
                 ph.innerText = "READY";
                 document.getElementById('ex-name').innerText = sess.active[0].n;
                 document.getElementById('next-ex').innerText = "";
                 skip.style.display='none';
             } else if(type === 'WORK') {
-                sess.t = sess.max = CFG.WORK;
+                sess.t = sess.max = parseInt(app.settings.work);
                 ph.innerText = "WORK"; ph.style.color = "#fff";
                 document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
                 document.getElementById('next-ex').innerText = "Danach: Pause";
                 skip.style.display='none';
                 beep(400, 800);
             } else {
-                sess.t = sess.max = CFG.REST;
+                sess.t = sess.max = parseInt(app.settings.rest);
                 ph.innerText = "REST"; ph.style.color = "#666";
-                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<CFG.RNDS?sess.active[0].n:"ENDE");
+                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<3?sess.active[0].n:"ENDE");
                 document.getElementById('next-ex').innerText = "Next: " + n;
                 skip.style.display='block';
                 beep(600, 300);
@@ -462,68 +587,47 @@
             if(!sess.run) toggleTimer();
         }
 
-        function tick() {
-            if(sess.t > 0) {
-                sess.t--; drawTimer();
-                if(sess.t <= 3) beep(1000, 1000, 0.05);
-            } else {
-                nextStep();
-            }
-        }
-
+        function tick() { if(sess.t > 0) { sess.t--; drawTimer(); if(sess.t <= 3) beep(1000, 1000, 0.05); } else { nextStep(); } }
         function nextStep() {
-            const ph = document.getElementById('phase-disp').innerText;
-            if(ph === "READY") startPhase('WORK');
+            if(document.getElementById('phase-disp').innerText === "READY") startPhase('WORK');
             else if(sess.work) {
-                if(sess.idx >= sess.active.length-1 && sess.r >= CFG.RNDS) showRPE();
+                if(sess.idx >= sess.active.length-1 && sess.r >= 3) showRPE();
                 else startPhase('REST');
             } else {
                 sess.idx++;
                 if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
-                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/"+CFG.RNDS;
+                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3";
                 startPhase('WORK');
             }
         }
         function skipRest() { nextStep(); }
-
-        // CIRCLE TIMER DRAW
         function drawTimer() {
             document.getElementById('time-disp').innerText = sess.t;
-            
-            // Calculate SVG Offset
-            // empty when time = 0, full when time = max
             const offset = circumference - (sess.t / sess.max) * circumference;
-            
-            // NOTE: To make it look like it's "emptying" counter-clockwise or clockwise, we adjust logic.
-            // Standard: offset = circumference * (1 - pct)
             circle.style.strokeDashoffset = offset;
         }
-
         function toggleTimer() {
             const b = document.getElementById('play-btn');
             if(sess.run) { clearInterval(sess.int); sess.run = false; b.innerText="WEITER"; }
             else { sess.int = setInterval(tick, 1000); sess.run = true; b.innerText="STOP"; }
         }
 
-        function showRPE() {
-            closePlayer(); document.getElementById('view-rpe').style.display='flex';
-        }
+        function showRPE() { closePlayer(); document.getElementById('view-rpe').style.display='flex'; }
         function finishWorkout() {
             const rpe = document.getElementById('rpe-slider').value;
-            app.history.push({date: new Date(), rpe: rpe});
+            // Approx Calories
+            const weight = parseFloat(app.profile.w) || 75;
+            const kcal = Math.floor((6 * 3.5 * weight / 200) * 15); // ~15 mins avg workout
+            app.history.push({date: new Date(), rpe: rpe, kcal: kcal});
             app.planIdx++;
             save(); updateUI();
             document.getElementById('view-rpe').style.display='none';
+            if(app.settings.supps) document.getElementById('view-supps').style.display='flex';
         }
-        function showInfo() {
-            if(sess.run) toggleTimer();
-            const e = sess.active[sess.idx];
-            document.getElementById('info-title').innerText = e.n;
-            document.getElementById('info-desc').innerText = e.d;
-            document.getElementById('view-info').style.display='flex';
-        }
+        function closeSupps() { document.getElementById('view-supps').style.display='none'; }
+        function showInfo() { if(sess.run) toggleTimer(); const e = sess.active[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display='flex'; }
 
-        // --- SAVING ---
+        // --- UTILS ---
         function saveLog() {
             const d = document.getElementById('log-date').value;
             const w = document.getElementById('log-weight').value;
@@ -531,66 +635,39 @@
             const hi = document.getElementById('log-hips').value;
             const ch = document.getElementById('log-chest').value;
             const th = document.getElementById('log-thigh').value;
-
             if(!d || !w) return alert("Datum & Gewicht nötig.");
             app.logs.push({date:d, w:w, cm:cm, hips:hi, chest:ch, thigh:th});
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
-            save(); updateUI(); alert("OK");
-            
-            // Clear inputs
+            save(); updateUI(); alert("Gespeichert");
             document.getElementById('log-weight').value='';
-            document.getElementById('log-waist').value='';
-            document.getElementById('log-hips').value='';
-            document.getElementById('log-chest').value='';
-            document.getElementById('log-thigh').value='';
         }
-        
         function saveSettings() {
             app.profile.h = document.getElementById('set-height').value;
             app.profile.a = document.getElementById('set-age').value;
+            app.settings.work = document.getElementById('rng-work').value;
+            app.settings.rest = document.getElementById('rng-rest').value;
+            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
             save(); updateUI();
         }
-
+        function toggleSupps() { app.settings.supps = document.getElementById('tog-supps').checked; save(); }
         function renderHist() {
             const l = document.getElementById('hist-list'); l.innerHTML="";
             app.history.slice().reverse().slice(0,5).forEach(h => {
                 const d = new Date(h.date).toLocaleDateString();
-                l.innerHTML += `<div class="hist-item"><span>TRAINING (Intensität ${h.rpe})</span><span style="color:#666">${d}</span></div>`;
+                const k = h.kcal ? `${h.kcal} kcal` : '';
+                l.innerHTML += `<div class="hist-item"><span>TRAINING (${h.rpe}/10)</span><span style="color:#666">${d} • ${k}</span></div>`;
             });
-            // Logs
-             app.logs.slice().reverse().slice(0,3).forEach(log => {
-                 l.innerHTML += `<div class="hist-item"><span style="color:#aaa">CHECK: ${log.w}kg</span><span style="color:#666">${log.date}</span></div>`;
-             });
+            app.logs.slice().reverse().slice(0,3).forEach(log => {
+                l.innerHTML += `<div class="hist-item"><span style="color:#aaa">CHECK: ${log.w}kg</span><span style="color:#666">${log.date}</span></div>`;
+            });
         }
-
-        // --- UTILS ---
-        function nav(id, el) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-        }
-        function save() { localStorage.setItem('bp_obsidian', JSON.stringify(app)); }
-        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_obsidian'); location.reload(); } }
-        
+        function nav(id, el) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
+        function save() { localStorage.setItem('bp_legacy_v16', JSON.stringify(app)); }
+        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_legacy_v16'); location.reload(); } }
         function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
-        function beep(f1, f2, dur=0.2) {
-            if(!sound || !ac) return;
-            const o = ac.createOscillator(); const g = ac.createGain();
-            o.connect(g); g.connect(ac.destination); o.type='sawtooth';
-            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur);
-            g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
-            o.start(); o.stop(ac.currentTime+dur);
-        }
-        
-        function exportData() {
-            const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app));
-            a.download = "backup.json"; a.click();
-        }
-        function importData(el) {
-            const r = new FileReader(); r.onload=e=>{ app=JSON.parse(e.target.result); save(); location.reload(); };
-            r.readAsText(el.files[0]);
-        }
+        function beep(f1, f2, dur=0.2) { if(!sound || !ac) return; const o = ac.createOscillator(); const g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.type='sawtooth'; o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
+        function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download = "backup.json"; a.click(); }
+        function importData(el) { const r = new FileReader(); r.onload=e=>{ app=JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(el.files[0]); }
     </script>
 </body>
 </html>
