@@ -5,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse Elite</title>
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%233a86ff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#000000">
+    <title>Body Pulse PURE</title>
+    
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
     <style>
         :root {
             --bg: #000000;
-            --card: #141414; 
-            --input: #222222;
+            --surface: #121212;
             --border: #333333;
-            --text: #ffffff;
-            --text-dim: #888888;
-            --accent: #3a86ff; /* Elite Blue */
-            --accent-glow: rgba(58, 134, 255, 0.3);
-            --danger: #ff4757;
-            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            --primary: #ffffff;
+            --secondary: #888888;
+            --accent: #ffffff; /* Reines Weiß als Akzent */
+            --danger: #cf6679;
+            --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
@@ -27,456 +27,358 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
         
         body {
-            background-color: var(--bg); color: var(--text); font-family: var(--font);
+            background-color: var(--bg); color: var(--primary); font-family: var(--font);
             margin: 0; height: 100vh; display: flex; flex-direction: column;
             padding-top: var(--safe-top); overflow: hidden;
         }
 
-        /* --- UI COMPONENTS --- */
-        h1 { font-size: 24px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; }
-        h2 { font-size: 18px; font-weight: 600; margin: 0 0 10px; }
-        .subtitle { color: var(--text-dim); font-size: 13px; margin-bottom: 20px; display: block; }
+        /* --- TYPOGRAPHY --- */
+        h1 { font-size: 28px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; }
+        h2 { font-size: 18px; font-weight: 600; margin: 0 0 15px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--secondary); font-size: 12px; }
+        .value { font-size: 32px; font-weight: 300; letter-spacing: -1px; }
+        .label { color: var(--secondary); font-size: 13px; text-transform: uppercase; margin-bottom: 5px; display: block; }
         
+        /* --- LAYOUT --- */
         .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
-        .screen.active { display: flex; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screen.active { display: flex; animation: fade 0.3s ease; }
         
-        .card { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border); }
-        
-        .btn {
-            width: 100%; padding: 18px; border-radius: 16px; border: none; font-size: 16px; 
-            font-weight: 600; cursor: pointer; background: var(--text); color: var(--bg); 
-            transition: transform 0.1s, opacity 0.2s; margin-top: 10px;
+        .card { 
+            background: var(--surface); padding: 25px; border: 1px solid var(--border); 
+            margin-bottom: 20px; 
         }
-        .btn:active { transform: scale(0.97); opacity: 0.8; }
-        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
-        .btn-accent { background: var(--accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
-        
-        /* INPUTS */
-        input, select {
-            width: 100%; background: var(--input); border: 1px solid var(--border); color: var(--text);
-            padding: 15px; border-radius: 12px; font-size: 16px; margin-bottom: 10px;
-            appearance: none; -webkit-appearance: none; font-family: var(--font);
-        }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* --- ONBOARDING STYLES --- */
-        .wizard-step { display: none; flex-direction: column; height: 100%; }
-        .wizard-step.active { display: flex; animation: slideIn 0.3s ease; }
-        .option-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
-        .option-card {
-            background: var(--input); padding: 20px; border-radius: 15px; text-align: left;
-            border: 2px solid transparent; cursor: pointer; transition: 0.2s;
+        /* --- BUTTONS --- */
+        .btn {
+            width: 100%; padding: 20px; border: 1px solid var(--primary); background: var(--primary); 
+            color: var(--bg); font-size: 16px; font-weight: 700; text-transform: uppercase; 
+            letter-spacing: 1px; cursor: pointer; transition: 0.1s; margin-top: 10px;
         }
-        .option-card.selected { border-color: var(--accent); background: rgba(58, 134, 255, 0.1); }
-        .option-icon { font-size: 24px; margin-bottom: 5px; display: block; }
-        .option-title { font-weight: bold; display: block; }
-        
-        /* --- DASHBOARD --- */
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: var(--card); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        .stat-val { font-size: 20px; font-weight: 800; display: block; color: var(--text); }
-        .stat-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 600; margin-top: 4px; display: block;}
-        
-        /* --- PLAYER --- */
+        .btn:active { transform: scale(0.98); opacity: 0.8; }
+        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
+        .btn-text { background: transparent; border: none; color: var(--secondary); text-decoration: underline; font-size: 12px; }
+
+        /* --- INPUTS --- */
+        input, select {
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border);
+            color: var(--primary); padding: 15px 0; font-size: 18px; font-family: var(--font);
+            border-radius: 0; margin-bottom: 20px;
+        }
+        input:focus { border-bottom-color: var(--primary); }
+        input[type="date"] { color-scheme: dark; } /* Wichtig für Dark Mode Kalender */
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        /* --- WIZARD (ONBOARDING) --- */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
-            z-index: 200; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
+            z-index: 500; display: none; flex-direction: column; padding: var(--safe-top) 30px 30px 30px;
         }
-        .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .time-big { font-size: 100px; font-weight: 200; font-variant-numeric: tabular-nums; letter-spacing: -3px; line-height: 1; }
-        .phase-lbl { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-top: 10px; }
-        
+        .option-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .option-item {
+            padding: 20px; border: 1px solid var(--border); color: var(--secondary);
+            cursor: pointer; transition: 0.2s; font-size: 18px;
+        }
+        .option-item.selected { border-color: var(--primary); color: var(--primary); background: var(--surface); }
+
+        /* --- PLAYER --- */
+        .timer-display { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .time-big { font-size: 140px; font-weight: 100; font-variant-numeric: tabular-nums; line-height: 1; }
+        .phase-text { font-size: 24px; font-weight: 700; color: var(--primary); letter-spacing: 4px; margin-top: 20px; }
+        .progress-line { width: 100%; height: 2px; background: var(--border); margin-top: 40px; position: relative; }
+        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--primary); width: 0%; transition: width 1s linear; }
+
+        /* --- HISTORY LIST --- */
+        .hist-item { 
+            display: flex; justify-content: space-between; padding: 15px 0; 
+            border-bottom: 1px solid var(--border); font-size: 14px; 
+        }
+
         /* --- NAV --- */
         .nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(20,20,20,0.95); backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border); display: flex; justify-content: space-around;
-            padding-bottom: var(--safe-bottom); z-index: 100;
+            background: rgba(0,0,0,0.9); border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around; padding-bottom: var(--safe-bottom); z-index: 100;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; transition: 0.2s; }
-        .nav-item.active { opacity: 1; color: var(--accent); }
-        .nav-icon { font-size: 24px; }
+        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.4; font-size: 24px; cursor: pointer; }
+        .nav-btn.active { opacity: 1; }
 
-        /* --- ANIMATIONS --- */
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-        /* --- HISTORY LIST --- */
-        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .history-date { color: var(--text-dim); }
+        @keyframes fade { from{opacity:0;} to{opacity:1;} }
     </style>
 </head>
 <body>
 
-    <div id="view-onboarding" class="full-overlay" style="z-index: 500; background: var(--bg);">
-        <div id="wiz-1" class="wizard-step active">
-            <h1>Dein Ziel 🎯</h1>
-            <p class="subtitle">Wofür möchtest du trainieren?</p>
-            <div class="option-grid">
-                <div class="option-card" onclick="wizSelect('goal', 'lose', this)">
-                    <span class="option-icon">🔥</span>
-                    <span class="option-title">Abnehmen / Fettabbau</span>
-                    <small style="color:var(--text-dim)">Hohe Intensität, kurze Pausen</small>
-                </div>
-                <div class="option-card" onclick="wizSelect('goal', 'build', this)">
-                    <span class="option-icon">💪</span>
-                    <span class="option-title">Muskelaufbau</span>
-                    <small style="color:var(--text-dim)">Kraftfokus, moderate Pausen</small>
-                </div>
-                <div class="option-card" onclick="wizSelect('goal', 'fit', this)">
-                    <span class="option-icon">❤️</span>
-                    <span class="option-title">Allgemeine Fitness</span>
-                    <small style="color:var(--text-dim)">Balance aus Kraft & Ausdauer</small>
-                </div>
+    <div id="view-onboarding" class="full-overlay" style="z-index:999;">
+        <h1 style="margin-top: 20px;">SETUP</h1>
+        <p class="label">Definiere dein Ziel.</p>
+        
+        <div id="step-1">
+            <div class="option-list">
+                <div class="option-item" onclick="wizSet('goal', 'lose', this)">ABNEHMEN (HIIT)</div>
+                <div class="option-item" onclick="wizSet('goal', 'build', this)">MUSKELAUFBAU (KRAFT)</div>
+                <div class="option-item" onclick="wizSet('goal', 'fit', this)">FITNESS & MOBILITY</div>
             </div>
-            <button class="btn btn-accent" style="margin-top:auto" onclick="wizNext(1)">Weiter</button>
+            <button class="btn" style="margin-top:40px" onclick="wizNext(1)">WEITER</button>
         </div>
 
-        <div id="wiz-2" class="wizard-step">
-            <h1>Fokus-Zonen ⚡</h1>
-            <p class="subtitle">Wähle mindestens eine Zone.</p>
-            <div class="option-grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="option-card" onclick="wizToggle('parts', 'bauch', this)">
-                    <span class="option-title">Bauch</span>
-                </div>
-                <div class="option-card" onclick="wizToggle('parts', 'beine', this)">
-                    <span class="option-title">Beine & Po</span>
-                </div>
-                <div class="option-card" onclick="wizToggle('parts', 'ober', this)">
-                    <span class="option-title">Oberkörper</span>
-                </div>
-                <div class="option-card" onclick="wizToggle('parts', 'cardio', this)">
-                    <span class="option-title">Cardio</span>
-                </div>
+        <div id="step-2" style="display:none;">
+            <p class="label" style="margin-top:20px;">Wähle Fokus-Zonen (Mehrfachwahl)</p>
+            <div class="option-list">
+                <div class="option-item" onclick="wizToggle('parts', 'bauch', this)">BAUCH & CORE</div>
+                <div class="option-item" onclick="wizToggle('parts', 'beine', this)">BEINE & PO</div>
+                <div class="option-item" onclick="wizToggle('parts', 'ober', this)">OBERKÖRPER</div>
+                <div class="option-item" onclick="wizToggle('parts', 'mobility', this)">MOBILITY & STRETCH</div>
             </div>
-            <button class="btn btn-accent" style="margin-top:auto" onclick="wizNext(2)">Weiter</button>
-        </div>
-
-        <div id="wiz-3" class="wizard-step">
-            <h1>Über dich 👤</h1>
-            <p class="subtitle">Für deinen Kalorienverbrauch & BMI.</p>
-            <div class="card">
-                <div class="input-row">
-                    <input type="number" id="wiz-height" placeholder="Größe (cm)">
-                    <input type="number" id="wiz-weight" placeholder="Gewicht (kg)">
-                </div>
-                <input type="number" id="wiz-age" placeholder="Alter (Jahre)">
-            </div>
-            <button class="btn btn-accent" style="margin-top:auto" onclick="wizFinish()">Plan erstellen</button>
+            <button class="btn" style="margin-top:40px" onclick="wizFinish()">ABSCHLIESSEN</button>
         </div>
     </div>
 
     <div id="tab-home" class="screen active">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h1>Dashboard</h1>
-            <div id="user-badge" style="font-size:12px; color:var(--accent); background:rgba(58,134,255,0.1); padding:4px 10px; border-radius:20px;">
-                Muskelaufbau
-            </div>
-        </div>
-        <span class="subtitle" id="date-display">Heute</span>
-
-        <div class="stat-grid">
-            <div class="stat-box">
-                <span class="stat-val" id="disp-streak">0</span>
-                <span class="stat-lbl">Streak</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-val" id="disp-workouts">0</span>
-                <span class="stat-lbl">Workouts</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-val" id="disp-bmi">--</span>
-                <span class="stat-lbl">BMI</span>
-            </div>
-        </div>
-
-        <div class="card" style="border-color: var(--accent);">
-            <div style="display:flex; justify-content:space-between;">
-                <h2 style="color:var(--accent);">Nächstes Training</h2>
-                <span>⏱️ 15 Min</span>
-            </div>
-            <h1 id="next-title" style="font-size: 26px;">Plan wird geladen...</h1>
-            <p id="next-desc" style="color:var(--text-dim); font-size:14px; margin-bottom:15px;">...</p>
-            <button class="btn btn-accent" onclick="openPlayer()">Training starten</button>
-        </div>
+        <h1 style="margin-bottom: 30px;">DASHBOARD</h1>
 
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2>Hydration 💧</h2>
-                <span id="water-count" style="color:var(--accent); font-weight:bold;">0 / 8</span>
+            <h2>HEUTE</h2>
+            <div style="font-size: 24px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade Plan...</div>
+            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
+            <button class="btn" onclick="openPlayer()">STARTEN</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="card">
+                <h2>WORKOUTS</h2>
+                <div class="value" id="val-workouts">0</div>
             </div>
-            <div style="display:flex; gap:5px; margin-top:10px; height:10px;">
-                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
-                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
-                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
-                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
-                <div class="water-bar" style="flex:1; background:var(--input); border-radius:5px;"></div>
+            <div class="card">
+                <h2>BMI</h2>
+                <div class="value" id="val-bmi">--</div>
             </div>
-            <button class="btn btn-ghost" style="margin-top:15px; padding:10px;" onclick="addWater()">Glas trinken (+250ml)</button>
         </div>
     </div>
 
     <div id="tab-stats" class="screen">
-        <h1>Tracking</h1>
-        <span class="subtitle">Dein Körper & Verlauf</span>
+        <h1 style="margin-bottom: 30px;">LOGBUCH</h1>
 
         <div class="card">
-            <h2>Neuer Eintrag</h2>
-            <input type="date" id="stats-date">
+            <h2>NEUER EINTRAG</h2>
+            <input type="date" id="log-date">
             <div class="input-row">
-                <input type="number" id="stats-weight" placeholder="Gewicht (kg)">
-                <input type="number" id="stats-waist" placeholder="Bauch (cm)">
+                <input type="number" id="log-weight" placeholder="Gewicht (kg)">
+                <input type="number" id="log-waist" placeholder="Bauch (cm)">
             </div>
-            <button class="btn btn-accent" onclick="saveLog()">Speichern</button>
+            <button class="btn btn-outline" onclick="saveLog()">SPEICHERN</button>
         </div>
 
         <div class="card">
-            <h2>Gewichtsverlauf</h2>
-            <div id="chart-container" style="height:120px; display:flex; align-items:flex-end; gap:5px; margin-top:10px;">
-                <p style="text-align:center; width:100%; color:var(--text-dim); font-size:12px; align-self:center;">Keine Daten</p>
-            </div>
+            <h2>GEWICHTSVERLAUF</h2>
+            <div id="chart-wrap" style="height: 100px; display:flex; align-items:flex-end; gap:5px; margin-top:20px;"></div>
         </div>
 
         <div class="card">
-            <h2>Trainings-Historie</h2>
+            <h2>HISTORIE</h2>
             <div id="history-list"></div>
         </div>
     </div>
 
     <div id="tab-settings" class="screen">
-        <h1>Einstellungen</h1>
-        <span class="subtitle">Profil & Daten</span>
+        <h1 style="margin-bottom: 30px;">SYSTEM</h1>
 
         <div class="card">
-            <h2>Stammdaten</h2>
+            <h2>STAMMDATEN</h2>
             <div class="input-row">
-                <input type="number" id="set-height" placeholder="Größe" onchange="updateBase()">
-                <input type="number" id="set-age" placeholder="Alter" onchange="updateBase()">
+                <input type="number" id="base-height" placeholder="Größe (cm)" onchange="saveBase()">
+                <input type="number" id="base-age" placeholder="Alter" onchange="saveBase()">
             </div>
         </div>
 
         <div class="card">
-            <h2>Planung</h2>
-            <p style="font-size:13px; color:var(--text-dim); line-height:1.4; margin-bottom:10px;">
-                Ändere dein Ziel und generiere einen neuen Trainingsplan basierend auf deinen Zonen.
-            </p>
-            <button class="btn btn-ghost" onclick="resetOnboarding()">Ziel / Fokus ändern</button>
+            <h2>TRAINING</h2>
+            <button class="btn btn-outline" onclick="resetOnboarding()">PLAN NEU GENERIEREN</button>
         </div>
 
         <div class="card">
-            <h2>System</h2>
-            <button class="btn btn-ghost" onclick="exportData()">Backup speichern</button>
-            <input type="file" id="import-file" style="display:none" onchange="importData(this)">
-            <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">Backup laden</button>
-            <button class="btn btn-ghost" style="border-color:var(--danger); color:var(--danger); margin-top:20px;" onclick="factoryReset()">App zurücksetzen</button>
+            <h2>DATEN</h2>
+            <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
+            <input type="file" id="import-input" style="display:none" onchange="importData(this)">
+            <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
+            <button class="btn-text" style="width:100%; margin-top:20px; color:var(--danger);" onclick="hardReset()">WERKSEINSTELLUNGEN</button>
         </div>
     </div>
 
     <div id="view-player" class="full-overlay">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <button style="background:none; border:none; color:var(--text); font-size:24px;" onclick="closePlayer()">✕</button>
-            <span style="font-size:14px; color:var(--text-dim);" id="round-disp">Runde 1/3</span>
-            <button style="background:none; border:none; font-size:24px;" onclick="toggleMute()" id="mute-icon">🔊</button>
+            <button style="background:none; border:none; color:var(--primary); font-size:24px;" onclick="closePlayer()">✕</button>
+            <span style="font-size:12px; letter-spacing:1px;" id="round-disp">RUNDE 1/3</span>
+            <button style="background:none; border:none; font-size:20px;" onclick="toggleMute()" id="mute-icon">🔊</button>
         </div>
 
-        <div class="timer-wrap">
+        <div class="timer-display">
             <div class="time-big" id="time-disp">00</div>
-            <div class="phase-lbl" id="phase-disp">READY</div>
+            <div class="phase-text" id="phase-disp">READY</div>
+            <div class="progress-line"><div class="progress-fill" id="prog-fill"></div></div>
         </div>
 
-        <div style="text-align:center; margin-bottom:40px;">
-            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:5px;">
-                <h2 style="font-size:28px; margin:0;" id="ex-name">Übung</h2>
-                <div onclick="showInfo()" style="width:24px; height:24px; border:1px solid var(--text-dim); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer;">i</div>
+        <div style="margin-bottom: 40px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border); padding-bottom:10px; margin-bottom:10px;">
+                <div style="font-size:20px; font-weight:700;" id="ex-name">Übung</div>
+                <button onclick="showInfo()" style="border:1px solid var(--border); background:transparent; color:var(--primary); width:30px; height:30px; border-radius:50%;">i</button>
             </div>
-            <p id="next-ex" style="color:var(--text-dim);">Next: ...</p>
+            <div style="color:var(--secondary); font-size:14px;" id="next-ex">Next: ...</div>
+            
+            <button id="skip-btn" onclick="skipRest()" style="display:none; width:100%; background:var(--border); color:var(--primary); padding:10px; border:none; margin-top:15px;">PAUSE ÜBERSPRINGEN</button>
         </div>
 
-        <button class="btn btn-accent" id="play-btn" style="height:70px; font-size:20px;" onclick="toggleTimer()">START</button>
+        <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="modal-bg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:300; backdrop-filter:blur(5px); padding:40px;">
-        <div class="card" style="margin-top:20vh; border:1px solid var(--accent);">
-            <h2 id="modal-title" style="color:var(--accent)">Info</h2>
-            <p id="modal-desc" style="line-height:1.6; color:var(--text-dim)">...</p>
-            <button class="btn" onclick="document.getElementById('modal-bg').style.display='none'">OK</button>
+    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 600;">
+        <h1 id="info-title" style="margin-top:40px;">TITEL</h1>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;">...</p>
+        <button class="btn" style="margin-top:auto;" onclick="document.getElementById('view-info').style.display='none'">SCHLIESSEN</button>
+    </div>
+
+    <div id="view-rpe" class="full-overlay" style="z-index: 700; justify-content:center;">
+        <h1 style="text-align:center;">INTENSITÄT?</h1>
+        <p style="text-align:center; color:var(--secondary); margin-bottom:30px;">Wie schwer war das Training (1-10)?</p>
+        <input type="range" min="1" max="10" value="5" id="rpe-slider" style="margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; color:var(--secondary); font-size:12px; margin-bottom:40px;">
+            <span>LEICHT</span><span>MAXIMAL</span>
         </div>
+        <button class="btn" onclick="finishWorkout()">FERTIG</button>
     </div>
 
     <nav class="nav">
-        <div class="nav-item active" onclick="nav('tab-home', this)"><div class="nav-icon">☖</div></div>
-        <div class="nav-item" onclick="nav('tab-stats', this)"><div class="nav-icon">📈</div></div>
-        <div class="nav-item" onclick="nav('tab-settings', this)"><div class="nav-icon">⚙️</div></div>
+        <div class="nav-btn active" onclick="nav('tab-home', this)">■</div>
+        <div class="nav-btn" onclick="nav('tab-stats', this)">lll</div>
+        <div class="nav-btn" onclick="nav('tab-settings', this)">●</div>
     </nav>
 
     <script>
         // --- DATABASE ---
         const DB = {
             bauch: [
-                {n:"Crunches", d:"Rückenlage, Hände Kopf, Schultern heben."},
-                {n:"Leg Raises", d:"Rückenlage, gestreckte Beine heben/senken."},
-                {n:"Plank", d:"Unterarmstütz halten, Körper gerade."},
-                {n:"Russian Twist", d:"Sitzen, Füße hoch, Oberkörper drehen."},
-                {n:"Mountain Climbers", d:"Stütz, Knie abwechselnd zur Brust."}
+                {n:"Crunches", d:"Rückenlage. Schultern heben, Bauch fest."},
+                {n:"Leg Raises", d:"Rückenlage. Beine gestreckt heben."},
+                {n:"Plank", d:"Unterarmstütz halten. Gerade Linie."},
+                {n:"Russian Twist", d:"Sitzend, Füße hoch, Oberkörper drehen."},
+                {n:"Mountain Climbers", d:"Stützposition, Knie zur Brust ziehen."}
             ],
             beine: [
-                {n:"Squats", d:"Kniebeugen, Gewicht auf Fersen."},
+                {n:"Squats", d:"Kniebeugen. Gewicht auf Fersen."},
                 {n:"Lunges", d:"Ausfallschritte nach hinten."},
                 {n:"Glute Bridges", d:"Rückenlage, Hüfte hochdrücken."},
-                {n:"Calf Raises", d:"Auf Zehenspitzen stellen und senken."},
-                {n:"Wall Sit", d:"An Wand sitzen (90 Grad), halten."}
+                {n:"Wall Sit", d:"An Wand sitzen (90 Grad), halten."},
+                {n:"Calf Raises", d:"Auf Zehenspitzen stehen, senken."}
             ],
             ober: [
-                {n:"Push-Ups", d:"Liegestütze (Knie oder Füße)."},
-                {n:"Dips", d:"Rücklings an Kante stützen, Arme beugen."},
+                {n:"Push-Ups", d:"Liegestütze. Körper fest."},
+                {n:"Triceps Dips", d:"Rücklings an Kante stützen, beugen."},
                 {n:"Superman", d:"Bauchlage, Arme & Beine heben."},
-                {n:"Shoulder Taps", d:"Plank Position, Hand tippt Schulter."},
-                {n:"Pike Pushups", d:"V-Form, Kopf Richtung Boden senken."}
+                {n:"Pike Pushups", d:"V-Form (Po hoch), Kopf senken."},
+                {n:"Shoulder Taps", d:"Plank, Hand tippt Schulter."}
             ],
-            cardio: [
-                {n:"Jumping Jacks", d:"Hampelmänner."},
-                {n:"High Knees", d:"Auf der Stelle laufen, Knie hoch."},
-                {n:"Burpees", d:"Liegestütz -> Sprung nach oben."},
-                {n:"Schattenboxen", d:"Schnelle Schläge in die Luft."}
+            mobility: [
+                {n:"Cat-Cow", d:"Vierfüßler. Rücken rund machen, dann Hohlkreuz."},
+                {n:"Child's Pose", d:"Knien, Po auf Fersen, Arme lang vorstrecken."},
+                {n:"Hip Flexor Stretch", d:"Ausfallschritt, Hüfte nach vorne schieben."},
+                {n:"Torso Twist", d:"Rückenlage, Knie zur Seite fallen lassen."},
+                {n:"Forward Fold", d:"Stehend, Oberkörper locker hängen lassen."}
             ]
         };
 
-        // --- APP STATE ---
-        let app = {
-            goal: '', // lose, build, fit
-            parts: [], // ['bauch', 'beine'...]
-            profile: { height: '', weight: '', age: '' },
-            plan: [], planIdx: 0,
-            stats: { logs: [], history: [], water: 0, lastWater: '' },
-            settings: { sound: true }
+        // --- STATE ---
+        let app = { 
+            goal: '', parts: [], 
+            plan: [], planIdx: 0, 
+            base: { h: '', a: '' },
+            logs: [], history: [] // {date, name, rpe}
         };
         
-        // --- SESSION ---
         let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
-        let CFG = { WORK: 40, REST: 20, RNDS: 3 }; // Defaults
-
-        let wizData = { goal: '', parts: [] };
-        let ac; // AudioContext
+        let CFG = { WORK: 40, REST: 20, RNDS: 3 };
+        let sound = true; let ac;
+        let wiz = { goal: '', parts: [] };
 
         // --- INIT ---
         window.onload = () => {
-            if(localStorage.getItem('bpe_data')) app = JSON.parse(localStorage.getItem('bpe_data'));
+            const d = localStorage.getItem('bp_pure');
+            if(d) app = JSON.parse(d);
             
-            // Check Onboarding
             if(!app.goal) {
                 document.getElementById('view-onboarding').style.display = 'flex';
-                document.getElementById('wiz-1').classList.add('active');
             } else {
                 initApp();
             }
-        }
+        };
 
         function initApp() {
-            // Config laden basierend auf Ziel
-            if(app.goal === 'lose') { CFG.WORK = 45; CFG.REST = 15; } // Intense
-            else if(app.goal === 'build') { CFG.WORK = 40; CFG.REST = 30; } // Power
-            else { CFG.WORK = 40; CFG.REST = 20; } // Fit
-
-            updateDashboard();
-            renderHistory();
-            renderChart();
-            renderWater();
+            // Apply Goal Config
+            if(app.goal === 'lose') { CFG.WORK = 45; CFG.REST = 15; }
+            else if(app.goal === 'build') { CFG.WORK = 40; CFG.REST = 40; }
+            else { CFG.WORK = 40; CFG.REST = 20; }
             
             // Set Inputs
-            document.getElementById('set-height').value = app.profile.height;
-            document.getElementById('set-age').value = app.profile.age;
-            document.getElementById('stats-date').valueAsDate = new Date();
+            document.getElementById('base-height').value = app.base.h;
+            document.getElementById('base-age').value = app.base.a;
+            document.getElementById('log-date').valueAsDate = new Date();
+
+            updateUI();
         }
 
-        // --- WIZARD LOGIC ---
-        function wizSelect(key, val, el) {
-            wizData[key] = val;
-            el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        // --- WIZARD ---
+        function wizSet(k, v, el) { 
+            wiz[k] = v; 
+            el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected'));
             el.classList.add('selected');
         }
-        function wizToggle(key, val, el) {
-            if(!wizData[key]) wizData[key] = [];
-            const idx = wizData[key].indexOf(val);
-            if(idx > -1) { wizData[key].splice(idx, 1); el.classList.remove('selected'); }
-            else { wizData[key].push(val); el.classList.add('selected'); }
+        function wizToggle(k, v, el) {
+            if(!wiz[k]) wiz[k] = [];
+            const i = wiz[k].indexOf(v);
+            if(i > -1) { wiz[k].splice(i,1); el.classList.remove('selected'); }
+            else { wiz[k].push(v); el.classList.add('selected'); }
         }
-        function wizNext(step) {
-            if(step === 1 && !wizData.goal) return alert("Wähle ein Ziel.");
-            if(step === 2 && (!wizData.parts || wizData.parts.length === 0)) return alert("Wähle min. 1 Zone.");
-            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
-            document.getElementById('wiz-'+(step+1)).classList.add('active');
+        function wizNext(s) {
+            if(!wiz.goal) return alert("Ziel wählen");
+            document.getElementById('step-1').style.display='none';
+            document.getElementById('step-2').style.display='block';
         }
         function wizFinish() {
-            const h = document.getElementById('wiz-height').value;
-            const w = document.getElementById('wiz-weight').value;
-            const a = document.getElementById('wiz-age').value;
-            if(!h || !w || !a) return alert("Bitte alle Felder ausfüllen.");
-            
-            app.profile = { height: h, weight: w, age: a };
-            app.goal = wizData.goal;
-            app.parts = wizData.parts;
-            
-            // Generate Plan
+            if(wiz.parts.length === 0) return alert("Min 1 Zone");
+            app.goal = wiz.goal; app.parts = wiz.parts;
             genPlan();
-            
-            // Save & Close
-            document.getElementById('view-onboarding').style.display = 'none';
-            save();
-            initApp();
+            document.getElementById('view-onboarding').style.display='none';
+            save(); initApp();
         }
 
         function genPlan() {
             let pool = [];
             app.parts.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
-            pool.sort(()=>Math.random()-0.5); // Shuffle
-            
+            pool.sort(()=>Math.random()-0.5);
             app.plan = [];
-            // Create 3 rotating workouts
             for(let i=0; i<3; i++) {
                 let ex = [];
-                // 5 exercises per workout for Elite version
                 for(let j=0; j<5; j++) ex.push(pool[(i*5+j)%pool.length]);
-                app.plan.push({ name: "Daily Mix "+(i+1), ex: ex });
+                app.plan.push({ name: "SESSION "+(i+1), ex: ex });
             }
             app.planIdx = 0;
         }
 
-        function resetOnboarding() {
-            if(confirm("Trainingsplan neu erstellen?")) {
-                wizData = { goal: '', parts: [] };
-                document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
-                document.getElementById('wiz-1').classList.add('active');
-                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                document.getElementById('view-onboarding').style.display = 'flex';
-            }
-        }
-
-        // --- DASHBOARD ---
-        function updateDashboard() {
+        // --- DASHBOARD & UI ---
+        function updateUI() {
             const plan = app.plan[app.planIdx % app.plan.length];
             document.getElementById('next-title').innerText = plan.name;
             document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
-            
-            // Badge text
-            const map = { lose: "Fettabbau", build: "Muskelaufbau", fit: "Fitness" };
-            document.getElementById('user-badge').innerText = map[app.goal] || "Elite";
-
-            document.getElementById('disp-workouts').innerText = app.stats.history.length;
+            document.getElementById('val-workouts').innerText = app.history.length;
             
             // BMI
-            if(app.profile.height && app.profile.weight) {
-                const h = app.profile.height/100;
-                const bmi = (app.profile.weight / (h*h)).toFixed(1);
-                document.getElementById('disp-bmi').innerText = bmi;
+            if(app.base.h && app.logs.length > 0) {
+                const w = parseFloat(app.logs[app.logs.length-1].w);
+                const h = parseFloat(app.base.h)/100;
+                document.getElementById('val-bmi').innerText = (w/(h*h)).toFixed(1);
             }
-            
-            document.getElementById('date-display').innerText = new Date().toLocaleDateString('de-DE', {weekday:'long', day:'numeric', month:'long'});
-            
-            // Streak (Simple logic)
-            document.getElementById('disp-streak').innerText = app.stats.history.length > 0 ? "Active" : "0";
+
+            renderChart();
+            renderHistory();
         }
 
-        // --- PLAYER ---
+        // --- PLAYER ENGINE ---
         function openPlayer() {
             sess.active = app.plan[app.planIdx % app.plan.length].ex;
             sess.r = 1; sess.idx = 0;
@@ -492,27 +394,30 @@
         function startPhase(type) {
             sess.work = (type === 'WORK');
             const ph = document.getElementById('phase-disp');
-            const tm = document.getElementById('time-disp');
+            const btn = document.getElementById('skip-btn');
             
             if(type === 'PREP') {
                 sess.t = sess.max = CFG.PREP;
-                ph.innerText = "BEREIT MACHEN";
+                ph.innerText = "READY";
                 document.getElementById('ex-name').innerText = sess.active[0].n;
                 document.getElementById('next-ex').innerText = "";
-            } else if (type === 'WORK') {
+                btn.style.display = 'none';
+            } else if(type === 'WORK') {
                 sess.t = sess.max = CFG.WORK;
                 ph.innerText = "WORK";
-                ph.style.color = "var(--work)";
+                ph.style.color = "#ffffff";
                 document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
                 document.getElementById('next-ex').innerText = "Danach: Pause";
                 beep(400, 800);
+                btn.style.display = 'none';
             } else {
                 sess.t = sess.max = CFG.REST;
-                ph.innerText = "PAUSE";
-                ph.style.color = "var(--text-dim)";
-                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<CFG.RNDS?sess.active[0].n:"Finish");
+                ph.innerText = "REST";
+                ph.style.color = "#888888";
+                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<CFG.RNDS?sess.active[0].n:"FINISH");
                 document.getElementById('next-ex').innerText = "Next: " + n;
                 beep(600, 300);
+                btn.style.display = 'block'; // Show skip button
             }
             drawTimer();
             if(!sess.run) toggleTimer();
@@ -520,142 +425,133 @@
 
         function tick() {
             if(sess.t > 0) {
-                sess.t--;
-                drawTimer();
-                if(sess.t <= 3) { beep(800, 800, 0.05); if(navigator.vibrate) navigator.vibrate(20); }
+                sess.t--; drawTimer();
+                if(sess.t <= 3) beep(1000, 1000, 0.05);
             } else {
-                if(document.getElementById('phase-disp').innerText === "BEREIT MACHEN") startPhase('WORK');
-                else if(sess.work) {
-                    if(sess.idx >= sess.active.length-1 && sess.r >= CFG.RNDS) finishWorkout();
-                    else startPhase('REST');
-                } else {
-                    sess.idx++;
-                    if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
-                    document.getElementById('round-disp').innerText = "Runde "+sess.r+"/"+CFG.RNDS;
-                    startPhase('WORK');
-                }
+                nextStep();
             }
+        }
+        
+        function nextStep() {
+             const ph = document.getElementById('phase-disp').innerText;
+             if(ph === "READY") startPhase('WORK');
+             else if(sess.work) {
+                 if(sess.idx >= sess.active.length-1 && sess.r >= CFG.RNDS) showRPE();
+                 else startPhase('REST');
+             } else {
+                 sess.idx++;
+                 if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
+                 document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/"+CFG.RNDS;
+                 startPhase('WORK');
+             }
+        }
+
+        function skipRest() {
+            nextStep();
         }
 
         function drawTimer() {
             document.getElementById('time-disp').innerText = sess.t;
+            const pct = (sess.t / sess.max) * 100;
+            document.getElementById('prog-fill').style.width = pct + "%";
         }
 
         function toggleTimer() {
             const b = document.getElementById('play-btn');
             if(sess.run) {
-                clearInterval(sess.int); sess.run = false;
-                b.innerText = "WEITER"; b.style.background = "#333";
+                clearInterval(sess.int); sess.run = false; b.innerText = "WEITER";
             } else {
-                sess.int = setInterval(tick, 1000); sess.run = true;
-                b.innerText = "PAUSE"; b.style.background = "var(--accent)";
+                sess.int = setInterval(tick, 1000); sess.run = true; b.innerText = "STOP";
             }
+        }
+        
+        function showRPE() {
+            clearInterval(sess.int); sess.run = false;
+            document.getElementById('view-player').style.display='none';
+            document.getElementById('view-rpe').style.display='flex';
         }
 
         function finishWorkout() {
-            closePlayer();
+            const rpe = document.getElementById('rpe-slider').value;
+            app.history.push({ date: new Date().toISOString(), rpe: rpe });
             app.planIdx++;
-            app.stats.history.push({ date: new Date().toISOString(), name: "Workout Completed" });
-            save(); updateDashboard(); renderHistory();
-            alert("Training beendet! 🔥");
+            save(); updateUI();
+            document.getElementById('view-rpe').style.display='none';
         }
-        
+
         function showInfo() {
             if(sess.run) toggleTimer();
             const e = sess.active[sess.idx];
-            document.getElementById('modal-title').innerText = e.n;
-            document.getElementById('modal-desc').innerText = e.d;
-            document.getElementById('modal-bg').style.display = 'flex';
+            document.getElementById('info-title').innerText = e.n;
+            document.getElementById('info-desc').innerText = e.d;
+            document.getElementById('view-info').style.display = 'flex';
         }
 
-        // --- STATS & DATA ---
+        // --- DATA ---
         function saveLog() {
-            const d = document.getElementById('stats-date').value;
-            const w = document.getElementById('stats-weight').value;
-            const cm = document.getElementById('stats-waist').value;
-            if(!d || !w) return alert("Datum & Gewicht nötig");
-            app.stats.logs.push({date: d, w: w, cm: cm});
-            app.stats.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
-            // Update current weight in profile too
-            app.profile.weight = w;
-            save(); renderChart(); updateDashboard(); alert("Gespeichert");
+            const d = document.getElementById('log-date').value;
+            const w = document.getElementById('log-weight').value;
+            const cm = document.getElementById('log-waist').value;
+            if(!d || !w) return;
+            app.logs.push({date: d, w: w, cm: cm});
+            app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
+            save(); updateUI(); alert("OK");
+        }
+        function saveBase() {
+            app.base.h = document.getElementById('base-height').value;
+            app.base.a = document.getElementById('base-age').value;
+            save(); updateUI();
         }
 
         function renderChart() {
-            const el = document.getElementById('chart-container'); el.innerHTML = "";
-            if(app.stats.logs.length < 2) return el.innerHTML="<p style='width:100%;text-align:center;font-size:12px;color:#666'>Min 2 Einträge</p>";
-            
-            const vals = app.stats.logs.map(l => parseFloat(l.w));
-            const min = Math.min(...vals) * 0.98; const max = Math.max(...vals) * 1.02;
-            
-            app.stats.logs.slice(-10).forEach(l => {
-                const h = ((parseFloat(l.w) - min) / (max - min)) * 100;
-                const bar = document.createElement('div');
-                bar.style.cssText = `width:100%; background:var(--accent); opacity:0.7; border-radius:3px 3px 0 0; height:${h}%`;
-                el.appendChild(bar);
+            const c = document.getElementById('chart-wrap'); c.innerHTML = "";
+            if(app.logs.length < 2) return c.innerHTML="<p style='width:100%;text-align:center;font-size:12px;color:#444'>Zu wenig Daten</p>";
+            const vals = app.logs.map(l=>parseFloat(l.w));
+            const min = Math.min(...vals)*0.98; const max = Math.max(...vals)*1.02;
+            app.logs.slice(-7).forEach(l => {
+                const h = ((parseFloat(l.w)-min)/(max-min))*100;
+                const b = document.createElement('div');
+                b.style.cssText = `flex:1; background:#fff; height:${h}%; opacity:0.8;`;
+                c.appendChild(b);
             });
         }
-
+        
         function renderHistory() {
-            const lst = document.getElementById('history-list'); lst.innerHTML = "";
-            app.stats.history.slice().reverse().slice(0, 5).forEach(h => {
+            const l = document.getElementById('history-list'); l.innerHTML = "";
+            app.history.slice().reverse().slice(0,5).forEach(h => {
                 const d = new Date(h.date).toLocaleDateString();
-                lst.innerHTML += `<div class="history-item"><span>${h.name}</span><span class="history-date">${d}</span></div>`;
+                l.innerHTML += `<div class="hist-item"><span>Training</span><span>RPE ${h.rpe} • ${d}</span></div>`;
             });
-        }
-
-        // --- WATER ---
-        function renderWater() {
-            const bars = document.querySelectorAll('.water-bar');
-            const today = new Date().toDateString();
-            if(app.stats.lastWater !== today) { app.stats.water = 0; app.stats.lastWater = today; }
-            
-            document.getElementById('water-count').innerText = app.stats.water + " / 8";
-            bars.forEach((b, i) => {
-                b.style.background = i < app.stats.water ? "var(--accent)" : "var(--input)";
-            });
-        }
-        function addWater() {
-            if(app.stats.water < 8) app.stats.water++;
-            save(); renderWater();
         }
 
         // --- AUDIO ---
-        function toggleMute() { app.settings.sound = !app.settings.sound; document.getElementById('mute-icon').style.opacity=app.settings.sound?1:0.3; }
-        function beep(f1, f2, dur=0.3) {
-            if(!app.settings.sound || !ac) return;
+        function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
+        function beep(f1, f2, dur=0.2) {
+            if(!sound || !ac) return;
             const o = ac.createOscillator(); const g = ac.createGain();
             o.connect(g); g.connect(ac.destination); o.type='sawtooth';
-            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.linearRampToValueAtTime(f2, ac.currentTime+dur);
-            g.gain.setValueAtTime(0.5, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
+            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur);
+            g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
             o.start(); o.stop(ac.currentTime+dur);
         }
 
-        // --- SYSTEM ---
+        // --- UTILS ---
         function nav(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
         }
-        function updateBase() {
-            app.profile.height = document.getElementById('set-height').value;
-            app.profile.age = document.getElementById('set-age').value;
-            save(); updateDashboard();
-        }
-        function save() { localStorage.setItem('bpe_data', JSON.stringify(app)); }
+        function resetOnboarding() { if(confirm("Plan zurücksetzen?")) { localStorage.clear(); location.reload(); } }
+        function hardReset() { if(confirm("ALLES LÖSCHEN?")) { localStorage.clear(); location.reload(); } }
         function exportData() {
-            const a = document.createElement('a');
-            a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(app));
-            a.download = "bodypulse_elite.json"; a.click();
+            const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app));
+            a.download = "bodypulse_pure.json"; a.click();
         }
         function importData(el) {
-            const r = new FileReader();
-            r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); };
+            const r = new FileReader(); r.onload=e=>{ app=JSON.parse(e.target.result); save(); location.reload(); };
             r.readAsText(el.files[0]);
         }
-        function factoryReset() { if(confirm("ALLES löschen?")) { localStorage.clear(); location.reload(); } }
-
     </script>
 </body>
 </html>
