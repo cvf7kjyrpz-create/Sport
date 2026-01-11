@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20</title>
+    <title>Body Pulse ULTIMATE v24</title>
     
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
-
     <style>
         :root {
             --bg: #000000;
@@ -47,6 +45,7 @@
         .card { 
             background: var(--surface); padding: 20px; border: 1px solid var(--border); 
             margin-bottom: 15px; border-radius: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -61,20 +60,23 @@
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
         .btn-close { background: transparent; border: none; font-size: 24px; color: var(--secondary); padding: 10px; }
 
-        input:not([type="checkbox"]):not([type="range"]) {
+        input:not([type="checkbox"]):not([type="range"]):not([type="date"]) {
             width: 100%; background: var(--surface-light); border: 1px solid var(--border);
             color: var(--primary); padding: 14px; font-size: 16px; font-family: var(--font);
             border-radius: 8px; margin-bottom: 20px; appearance: none;
         }
-        input:focus { border-color: var(--primary); }
+        input[type="date"] {
+            width: 100%; background: var(--surface-light); border: 1px solid var(--border);
+            color: var(--primary); padding: 10px; border-radius: 8px; margin-bottom: 20px;
+        }
 
         .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
         input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
         input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
 
-        .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+        .chart-container { width: 100%; height: 120px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); }
         svg.chart { width: 100%; height: 100%; overflow: visible; }
-        polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
+        polyline { fill: none; stroke: var(--primary); stroke-width: 2; }
         .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
         .full-overlay {
@@ -95,7 +97,7 @@
         .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
         .time-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .time-huge { font-size: 80px; font-weight: 700; font-family: monospace; letter-spacing: -3px; line-height: 1; }
-        .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; color: var(--accent); }
+        .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; }
         
         .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
 
@@ -107,7 +109,7 @@
             background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(20px);
             display: flex; justify-content: space-around; padding-bottom: var(--safe-bottom); z-index: 1000;
         }
-        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.4; font-size: 24px; cursor: pointer; transition: 0.2s; }
+        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.4; font-size: 24px; cursor: pointer; transition: 0.2s; color: white; }
         .nav-btn.active { opacity: 1; transform: scale(1.1); color: var(--primary); }
 
         @keyframes fade { from{opacity:0;} to{opacity:1;} }
@@ -118,7 +120,7 @@
 
     <div id="view-onboarding" class="full-overlay">
         <div id="wiz-1" class="wiz-step active">
-            <h1 style="margin-top:20px;">ZIELSETZUNG</h1>
+            <h1 style="margin-top:20px;">DEIN ZIEL</h1>
             <p class="label">Schritt 1 von 3</p>
             <div style="margin-top:20px;">
                 <div class="opt-item" onclick="wizSet('goal', 'lose', this)">ABNEHMEN</div>
@@ -134,13 +136,13 @@
                 <div class="opt-item" onclick="wizToggle('parts', 'bauch', this)">BAUCH & CORE</div>
                 <div class="opt-item" onclick="wizToggle('parts', 'beine', this)">BEINE & PO</div>
                 <div class="opt-item" onclick="wizToggle('parts', 'ober', this)">OBERKÖRPER</div>
-                <div class="opt-item" onclick="wizToggle('parts', 'cardio', this)">CARDIO</div>
+                <div class="opt-item" onclick="wizToggle('parts', 'cardio', this)">CARDIO / HIIT</div>
             </div>
             <button class="btn" style="margin-top:auto" onclick="wizNext(2)">WEITER</button>
         </div>
         <div id="wiz-3" class="wiz-step">
-            <h1 style="margin-top:20px;">STAMMDATEN</h1>
-            <p class="label">Für deine Statistik</p>
+            <h1 style="margin-top:20px;">PROFIL</h1>
+            <p class="label">Basis für deine Statistik</p>
             <div class="card" style="margin-top:20px;">
                 <input type="number" id="wiz-age" placeholder="Alter">
                 <div class="input-row">
@@ -176,7 +178,7 @@
             <div>
                 <span class="label">WOCHENZIEL</span>
                 <div class="val-big" id="week-val">...</div>
-                <div class="sub-text" style="font-size:12px; margin-top:4px;">Bleib diszipliniert!</div>
+                <div class="sub-text" id="goal-info" style="font-size:12px; margin-top:4px;">Bleib diszipliniert!</div>
             </div>
             <div style="position:relative; width:60px; height:60px;">
                 <svg class="goal-ring" width="60" height="60" viewBox="0 0 60 60">
@@ -188,11 +190,11 @@
 
         <div class="card" style="border: 1px solid var(--primary);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2>HEUTE</h2>
+                <h2>HEUTE (VARIABEL)</h2>
                 <span style="font-size:10px; color:#666;" id="last-workout">Last: Nie</span>
             </div>
-            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px; color:var(--primary);" id="next-title">Lade Plan...</div>
-            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
+            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px; color:var(--primary);" id="next-title">Mix Workout</div>
+            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px; line-height: 1.4;" id="next-desc">Lade Plan...</div>
             <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
         </div>
     </div>
@@ -207,6 +209,7 @@
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; color:var(--secondary);">
                 <span>Start</span>
+                <span>Trend</span>
                 <span>Heute</span>
             </div>
         </div>
@@ -229,42 +232,39 @@
             <h2>MESSUNG EINTRAGEN</h2>
             <input type="date" id="log-date">
             <div class="input-row">
-                <div><span class="label">Gewicht</span><input type="number" id="log-weight" placeholder="kg"></div>
-                <div><span class="label">Bauch</span><input type="number" id="log-waist" placeholder="cm"></div>
+                <div><span class="label">Gewicht (kg)</span><input type="number" id="log-weight" step="0.1"></div>
+                <div><span class="label">Bauch (cm)</span><input type="number" id="log-waist"></div>
             </div>
             <div class="input-row">
-                <div><span class="label">Po/Hüfte</span><input type="number" id="log-hips" placeholder="cm"></div>
-                <div><span class="label">Brust</span><input type="number" id="log-chest" placeholder="cm"></div>
+                <div><span class="label">Po/Hüfte (cm)</span><input type="number" id="log-hips"></div>
+                <div><span class="label">Brust (cm)</span><input type="number" id="log-chest"></div>
             </div>
              <div class="input-row">
-                <div><span class="label">Oberschenkel</span><input type="number" id="log-thigh" placeholder="cm"></div>
+                <div><span class="label">Oberschenkel (cm)</span><input type="number" id="log-thigh"></div>
                 <div></div>
             </div>
             <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
         </div>
 
-        <div class="card">
-            <h2>HISTORIE</h2>
-            <div id="hist-list"></div>
-        </div>
+        <div id="hist-list"></div>
     </div>
 
     <div id="tab-settings" class="screen">
         <h1>SYSTEM</h1>
         
         <div class="card">
-            <h2>ZIEL & TIMER</h2>
+            <h2>TIMER & ZIELE</h2>
             <div style="margin-bottom:25px;">
-                <div class="toggle-row"><span>Wochenziel: <b id="lbl-goal">3</b> x</span></div>
-                <input type="range" min="1" max="7" step="1" id="rng-goal" oninput="updateRangeLbl()" onchange="saveSettings()">
+                <div class="toggle-row"><span>Wochenziel: <b id="lbl-goal">5</b> x</span></div>
+                <input type="range" min="1" max="7" step="1" id="rng-goal" oninput="updateRangeSettings()">
             </div>
             <div style="margin-bottom:20px;">
                 <div class="toggle-row"><span>Belastung: <b id="lbl-work">40</b> Sek</span></div>
-                <input type="range" min="20" max="90" step="5" id="rng-work" oninput="updateRangeLbl()" onchange="saveSettings()">
+                <input type="range" min="20" max="90" step="5" id="rng-work" oninput="updateRangeSettings()">
             </div>
             <div>
                 <div class="toggle-row"><span>Pause: <b id="lbl-rest">20</b> Sek</span></div>
-                <input type="range" min="10" max="60" step="5" id="rng-rest" oninput="updateRangeLbl()" onchange="saveSettings()">
+                <input type="range" min="10" max="60" step="5" id="rng-rest" oninput="updateRangeSettings()">
             </div>
         </div>
 
@@ -279,41 +279,35 @@
         <div class="card">
             <h2>DEIN PROFIL</h2>
             <div class="input-row">
-                <div><span class="label">Größe</span><input type="number" id="set-height" onchange="saveSettings()"></div>
-                <div><span class="label">Alter</span><input type="number" id="set-age" onchange="saveSettings()"></div>
+                <div><span class="label">Größe (cm)</span><input type="number" id="set-height" onchange="save()"></div>
+                <div><span class="label">Alter</span><input type="number" id="set-age" onchange="save()"></div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>DATEN</h2>
-            <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
-            <input type="file" id="import-input" style="display:none" onchange="importData(this)">
-            <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
-            <button class="btn btn-outline" style="margin-top:20px; color:#c0392b; border-color:#c0392b;" onclick="resetApp()">WERKSEINSTELLUNGEN</button>
-        </div>
+        <button class="btn btn-outline" style="color:#ff453a; border-color:#ff453a; margin-top:20px;" onclick="resetApp()">WERKSEINSTELLUNGEN</button>
     </div>
 
     <div id="view-player" class="full-overlay" style="background:#000000; z-index:3000;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-close" onclick="closePlayer()">✕</button>
-            <span style="font-size:12px; letter-spacing:1px;" id="round-disp">RUNDE 1/3</span>
+            <span id="round-disp" style="font-size:12px; letter-spacing:1px;">RUNDE 1/3</span>
             <button class="btn-close" style="font-size:20px;" onclick="toggleMute()" id="mute-icon">🔊</button>
         </div>
 
         <div class="timer-wrap">
-            <svg class="progress-ring" width="260" height="260" viewBox="0 0 260 260">
+            <svg class="progress-ring" width="260" height="260">
                 <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/>
                 <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130"/>
             </svg>
             <div class="time-center">
                 <div class="time-huge" id="time-disp">00</div>
-                <span class="phase-lbl" id="phase-disp">READY</span>
+                <span id="phase-disp" class="phase-lbl">READY</span>
             </div>
         </div>
 
         <div style="margin-bottom: 40px; text-align:center;">
-            <div style="font-size:24px; font-weight:700; margin-bottom:5px;" id="ex-name">Übung</div>
-            <div style="color:var(--secondary); font-size:14px; margin-bottom:20px;" id="next-ex">Next: ...</div>
+            <div id="ex-name" style="font-size:24px; font-weight:700;">Übung</div>
+            <div id="next-ex" style="color:var(--secondary); font-size:14px; margin-bottom:20px;">...</div>
             <button class="btn-outline" style="padding:10px 20px; font-size:12px;" onclick="showInfo()">ANLEITUNG</button>
             <button id="skip-btn" onclick="skipRest()" style="display:none; width:100%; border:none; background:#222; color:#fff; padding:15px; margin-top:20px;">PAUSE ÜBERSPRINGEN</button>
         </div>
@@ -321,10 +315,10 @@
         <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 4000;">
+    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.97); z-index: 4000;">
         <button class="btn-close" onclick="document.getElementById('view-info').style.display='none'">✕</button>
-        <h1 id="info-title" style="margin-top:40px;">TITEL</h1>
-        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;">...</p>
+        <h1 id="info-title" style="margin-top:40px;">ÜBUNG</h1>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;"></p>
     </div>
 
     <div id="view-rpe" class="full-overlay" style="z-index: 4000; justify-content:center;">
@@ -333,7 +327,7 @@
         <button class="btn" onclick="finishWorkout()">ABSCHLIESSEN</button>
     </div>
 
-    <div id="view-supps" class="full-overlay" style="z-index: 4000; justify-content:center; text-align:center;">
+    <div id="view-supps" class="full-overlay" style="z-index: 5000; justify-content:center; text-align:center;">
         <h1>POST-WORKOUT</h1>
         <p class="label" style="margin-bottom:30px;">Vergiss deine Nährstoffe nicht!</p>
         <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
@@ -342,7 +336,7 @@
             <div class="check-item">💊 Magnesium</div>
             <div class="check-item">🔩 Eisen</div>
         </div>
-        <button class="btn" style="margin-top:50px;" onclick="closeSupps()">ERLEDIGT</button>
+        <button class="btn" style="margin-top:50px;" onclick="location.reload()">ERLEDIGT</button>
     </div>
 
     <nav class="nav">
@@ -352,65 +346,72 @@
     </nav>
 
     <script>
-        // --- CONFIG ---
-        const STORE_KEY = 'bp_final_v20'; // New Key = Fresh Start
-        
+        // --- DATA POOL ---
         const DB = {
-            bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
-            beine: [ {n:"Squats", d:"Kniebeugen."}, {n:"Lunges", d:"Ausfallschritte."}, {n:"Glute Bridges", d:"Hüfte heben."}, {n:"Calf Raises", d:"Wadenheben."} ],
-            ober: [ {n:"Push-Ups", d:"Liegestütze."}, {n:"Dips", d:"Trizeps drücken."}, {n:"Superman", d:"Rückenstrecker."}, {n:"Shoulder Taps", d:"Plank, Schulter tippen."} ],
-            cardio: [ {n:"Jumping Jacks", d:"Hampelmann."}, {n:"Burpees", d:"Liegestütz-Sprung."}, {n:"High Knees", d:"Knie hoch."} ]
+            bauch: [
+                {n:"Crunches", d:"Rückenlage, Beine angewinkelt. Hebe kontrolliert die Schultern vom Boden."},
+                {n:"Leg Raises", d:"Rückenlage, Hände unter den Po. Hebe die gestreckten Beine auf 90 Grad."},
+                {n:"Plank", d:"Unterarmstütz. Körper bildet eine Linie. Core fest anspannen."},
+                {n:"Russian Twist", d:"Sitzend, Beine leicht in der Luft. Oberkörper rotiert links/rechts."},
+                {n:"Bicycle Crunches", d:"Abwechselnd Ellbogen zum gegenüberliegenden Knie führen."},
+                {n:"Mountain Climbers", d:"Hohe Plank. Knie schnell abwechselnd zur Brust ziehen."},
+                {n:"Side Plank L", d:"Seitlicher Unterarmstütz links. Hüfte aktiv hochdrücken."},
+                {n:"Side Plank R", d:"Seitlicher Unterarmstütz rechts. Hüfte aktiv hochdrücken."}
+            ],
+            beine: [
+                {n:"Squats", d:"Kniebeugen. Rücken gerade, Gewicht auf die Fersen verlagern."},
+                {n:"Lunges", d:"Ausfallschritte. Knie kontrolliert tief führen."},
+                {n:"Glute Bridges", d:"Rückenlage. Füße nah am Po. Hüfte maximal nach oben drücken."},
+                {n:"Calf Raises", d:"Wadenheben im Stehen. Auf die Zehenspitzen drücken."},
+                {n:"Sumo Squats", d:"Breiter Stand, Zehen leicht nach außen. Tief in die Hocke."},
+                {n:"Wall Sit", d:"Rücken an die Wand, Beine im 90 Grad Winkel halten."},
+                {n:"Bulgarian Split", d:"Ein Fuß auf eine Erhöhung hinter dir. Ausfallschritte machen."}
+            ],
+            ober: [
+                {n:"Push-Ups", d:"Liegestütze. Hände unter den Schultern. Körper bleibt fest."},
+                {n:"Dips", d:"An Stuhlkante/Bank. Arme beugen und wieder strecken."},
+                {n:"Superman", d:"Bauchlage. Arme und Beine gleichzeitig leicht anheben."},
+                {n:"Shoulder Taps", d:"Hohe Plank. Abwechselnd mit der Hand die andere Schulter tippen."},
+                {n:"Diamond Pushups", d:"Enger Liegestütz. Hände bilden ein Dreieck unter der Brust."},
+                {n:"Pike Pushups", d:"Po hoch in die Luft (V-Form). Kopf Richtung Boden senken."}
+            ],
+            cardio: [
+                {n:"Jumping Jacks", d:"Hampelmann. Arme und Beine gleichzeitig öffnen/schließen."},
+                {n:"Burpees", d:"Liegestütz, Hocksprung und Strecksprung in einer Bewegung."},
+                {n:"High Knees", d:"Laufen auf der Stelle, Knie so hoch wie möglich ziehen."},
+                {n:"Butt Kicks", d:"Laufen auf der Stelle, Fersen berühren den Po."},
+                {n:"Skaters", d:"Seitliche Sprünge wie ein Eisschnellläufer."}
+            ]
         };
 
-        // --- STATE ---
+        const STORE_KEY = 'bp_ultimate_v24_final';
         let app = { 
             profile: { h: '', w: '', a: '' }, 
-            goal: '', parts: [], plan: [], planIdx: 0, logs: [], history: [],
-            settings: { supps: true, work: 40, rest: 20, weeklyGoal: 3 }
+            goal: '', parts: [], history: [], logs: [],
+            settings: { supps: true, work: 40, rest: 20, weeklyGoal: 5 },
+            currentWorkout: []
         };
-        let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
+        let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null, sound: true };
         let wiz = { goal: '', parts: [] };
-        let ac; let sound = true;
+        let ac = null;
 
-        // Circle UI
         const circle = document.getElementById('progress-circle');
         const circumference = 2 * Math.PI * 115; 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference;
-        const goalCirc = 2 * Math.PI * 24;
-        document.getElementById('week-circle').style.strokeDasharray = `${goalCirc} ${goalCirc}`;
 
-        // --- INIT ---
         window.onload = () => {
             const d = localStorage.getItem(STORE_KEY);
-            let hasData = false;
             if(d) {
-                try {
-                    const loaded = JSON.parse(d);
-                    if(loaded && loaded.profile && loaded.profile.h) {
-                        app = { ...app, ...loaded };
-                        if(!app.settings) app.settings = { supps:true, work:40, rest:20, weeklyGoal:3 };
-                        if(!app.settings.weeklyGoal) app.settings.weeklyGoal = 3;
-                        hasData = true;
-                    }
-                } catch(e) { console.log("Data corrupted"); }
-            }
-            
-            if(!hasData) {
+                app = JSON.parse(d);
+                initApp();
+            } else {
                 document.getElementById('view-onboarding').style.display = 'flex';
                 document.getElementById('wiz-1').classList.add('active');
-            } else {
-                initApp();
             }
         };
 
         function initApp() {
             document.getElementById('view-onboarding').style.display = 'none';
-            const h = new Date().getHours();
-            let greet = "GUTEN ABEND";
-            if(h < 11) greet = "GUTEN MORGEN"; else if(h < 18) greet = "GUTEN TAG";
-            document.getElementById('greeting').innerText = greet;
-
             document.getElementById('set-height').value = app.profile.h;
             document.getElementById('set-age').value = app.profile.a;
             document.getElementById('tog-supps').checked = app.settings.supps;
@@ -418,244 +419,212 @@
             document.getElementById('rng-rest').value = app.settings.rest;
             document.getElementById('rng-goal').value = app.settings.weeklyGoal;
             
-            updateRangeLbl(); // Sync UI with saved settings
-            document.getElementById('log-date').valueAsDate = new Date();
-
-            if(!app.plan || app.plan.length === 0) genPlan();
+            if(app.currentWorkout.length === 0) generateWorkout();
+            updateRangeSettings();
+            updateGreeting();
             updateUI();
         }
 
-        // --- WIZARD ---
-        function wizSet(k, v, el) { wiz[k]=v; el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected')); el.classList.add('selected'); }
-        function wizToggle(k, v, el) {
-            if(!wiz[k]) wiz[k]=[];
-            const i = wiz[k].indexOf(v);
-            if(i>-1) { wiz[k].splice(i,1); el.classList.remove('selected'); }
-            else { wiz[k].push(v); el.classList.add('selected'); }
-        }
-        function wizNext(s) { 
-            document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); 
-            document.getElementById('wiz-'+(s+1)).classList.add('active'); 
-        }
-        function wizFinish() {
-            const h = document.getElementById('wiz-height').value;
-            const w = document.getElementById('wiz-weight').value;
-            const a = document.getElementById('wiz-age').value;
-            if(!h || !w || !a) return alert("Bitte alles ausfüllen");
-            app.profile = { h: h, w: w, a: a };
-            app.goal = wiz.goal; app.parts = wiz.parts;
-            app.logs.push({date: new Date().toISOString().split('T')[0], w: w});
-            genPlan();
-            document.getElementById('view-onboarding').style.display='none';
-            save(); initApp();
-        }
-
-        function genPlan() {
+        // --- ROTATION LOGIC ---
+        function generateWorkout() {
             let pool = [];
             if(!app.parts || app.parts.length === 0) app.parts = ['bauch','beine','ober','cardio']; 
             app.parts.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
             pool.sort(()=>Math.random()-0.5);
-            app.plan = [];
-            for(let i=0; i<3; i++) {
-                let ex = [];
-                for(let j=0; j<5; j++) ex.push(pool[(i*5+j)%pool.length]);
-                app.plan.push({ name: "TRAINING "+(i+1), ex: ex });
-            }
-            app.planIdx = 0;
+            app.currentWorkout = pool.slice(0, 6);
+            save();
         }
 
-        // --- UI UPDATES (Fixed Order) ---
         function updateUI() {
-            // 1. UPDATE GOALS & STATS FIRST (Independent of Plan)
             document.getElementById('disp-count').innerText = app.history.length;
+            document.getElementById('lvl-badge').innerText = "LVL " + (Math.floor(app.history.length / 5) + 1);
             
             // Weekly Goal
             const startOfWeek = new Date();
             startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
             startOfWeek.setHours(0,0,0,0);
             const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
-            const target = parseInt(app.settings.weeklyGoal) || 3;
+            const target = parseInt(app.settings.weeklyGoal);
             document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
             const pct = Math.min(thisWeek / target, 1);
-            document.getElementById('week-circle').style.strokeDashoffset = goalCirc - (goalCirc * pct);
+            document.getElementById('week-circle').style.strokeDashoffset = 150 - (150 * pct);
             document.getElementById('week-circle').setAttribute("stroke", pct>=1 ? "#32d74b" : "white");
+            document.getElementById('goal-info').innerText = pct >= 1 ? "Ziel erreicht! ★" : `Noch ${target - thisWeek} Einheiten nötig`;
 
-            // Kcal
+            // Lifetime Kcal
             let totalKcal = 0;
-            app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
+            app.history.forEach(h => totalKcal += (h.kcal || 0));
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
+            // Month Stats
             const now = new Date();
             let mWork = 0; let mKcal = 0;
             app.history.forEach(h => {
                 const hd = new Date(h.date);
                 if(hd.getMonth() === now.getMonth() && hd.getFullYear() === now.getFullYear()) {
-                    mWork++; if(h.kcal) mKcal += parseInt(h.kcal);
+                    mWork++; mKcal += (h.kcal || 0);
                 }
             });
             document.getElementById('month-workouts').innerText = mWork;
             document.getElementById('month-kcal').innerText = mKcal.toLocaleString();
 
-            // 2. NOW UPDATE PLAN (Only if exists)
-            if(app.plan && app.plan.length > 0) {
-                const plan = app.plan[app.planIdx % app.plan.length];
-                document.getElementById('next-title').innerText = plan.name;
-                document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
+            // Next Workout
+            document.getElementById('next-desc').innerText = app.currentWorkout.map(e => e.n).join(' • ');
+
+            if(app.history.length > 0) {
+                const diff = Math.floor((new Date() - new Date(app.history[app.history.length-1].date)) / 86400000);
+                document.getElementById('last-workout').innerText = diff === 0 ? "Last: Heute" : `Last: Vor ${diff} Tagen`;
             }
 
             renderChart(); renderHist();
         }
 
-        // --- RANGE SLIDER LOGIC ---
-        function updateRangeLbl() {
-            // Update Internal State Immediately
-            app.settings.work = document.getElementById('rng-work').value;
-            app.settings.rest = document.getElementById('rng-rest').value;
-            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
-
-            // Update Text
-            document.getElementById('lbl-work').innerText = app.settings.work;
-            document.getElementById('lbl-rest').innerText = app.settings.rest;
-            document.getElementById('lbl-goal').innerText = app.settings.weeklyGoal;
-
-            // Force Dashboard Refresh
-            updateUI();
-        }
-
-        function saveSettings() {
-            app.profile.h = document.getElementById('set-height').value;
-            app.profile.a = document.getElementById('set-age').value;
-            // updateRangeLbl already synced state, so just save
-            save(); 
-        }
-
-        function toggleSupps() { app.settings.supps = document.getElementById('tog-supps').checked; save(); }
-
-        // --- PLAYER ---
+        // --- PLAYER LOGIC ---
         function openPlayer() {
-            sess.active = app.plan[app.planIdx % app.plan.length].ex;
-            sess.r = 1; sess.idx = 0;
+            if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
+            sess.idx = 0; sess.r = 1; sess.t = 10; sess.work = false;
             document.getElementById('view-player').style.display = 'flex';
             startPhase('PREP');
-            if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
         }
-        function closePlayer() { clearInterval(sess.int); sess.run = false; document.getElementById('view-player').style.display = 'none'; }
-        
+
         function startPhase(type) {
             sess.work = (type === 'WORK');
             const ph = document.getElementById('phase-disp');
-            const skip = document.getElementById('skip-btn');
             if(type === 'PREP') {
-                sess.t = sess.max = 10; ph.innerText = "READY";
-                document.getElementById('ex-name').innerText = sess.active[0].n;
-                document.getElementById('next-ex').innerText = ""; skip.style.display='none';
+                sess.t = 10; sess.max = 10; ph.innerText = "READY";
             } else if(type === 'WORK') {
-                sess.t = sess.max = parseInt(app.settings.work); ph.innerText = "WORK"; ph.style.color = "#fff";
-                document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
-                document.getElementById('next-ex').innerText = "Pause folgt"; skip.style.display='none'; beep(400, 800);
+                sess.t = parseInt(app.settings.work); sess.max = sess.t; ph.innerText = "WORK"; ph.style.color = "#fff";
+                beep(400, 0.4);
             } else {
-                sess.t = sess.max = parseInt(app.settings.rest); ph.innerText = "REST"; ph.style.color = "#888";
-                let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<3?sess.active[0].n:"ENDE");
-                document.getElementById('next-ex').innerText = "Next: " + n; skip.style.display='block'; beep(600, 300);
+                sess.t = parseInt(app.settings.rest); sess.max = sess.t; ph.innerText = "REST"; ph.style.color = "#32d74b";
+                beep(600, 0.3);
             }
-            drawTimer(); if(!sess.run) toggleTimer();
+            updatePlayerUI();
+            if(!sess.run) toggleTimer();
         }
 
-        function tick() { if(sess.t > 0) { sess.t--; drawTimer(); if(sess.t <= 3) beep(1000, 1000, 0.05); } else { nextStep(); } }
+        function tick() {
+            if(sess.t > 0) {
+                sess.t--;
+                if(sess.t <= 3) beep(800, 0.1);
+                updatePlayerUI();
+            } else {
+                nextStep();
+            }
+        }
+
         function nextStep() {
             if(document.getElementById('phase-disp').innerText === "READY") startPhase('WORK');
             else if(sess.work) {
-                if(sess.idx >= sess.active.length-1 && sess.r >= 3) showRPE();
+                if(sess.idx >= app.currentWorkout.length-1 && sess.r >= 3) showRPE();
                 else startPhase('REST');
             } else {
                 sess.idx++;
-                if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
-                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3"; startPhase('WORK');
+                if(sess.idx >= app.currentWorkout.length) { sess.idx = 0; sess.r++; }
+                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3";
+                startPhase('WORK');
             }
         }
-        function skipRest() { nextStep(); }
-        function drawTimer() {
+
+        function updatePlayerUI() {
             document.getElementById('time-disp').innerText = sess.t;
-            const offset = circumference - (sess.t / sess.max) * circumference;
-            circle.style.strokeDashoffset = offset;
+            circle.style.strokeDashoffset = circumference - (sess.t / sess.max) * circumference;
+            document.getElementById('ex-name').innerText = app.currentWorkout[sess.idx].n;
+            let n = (sess.idx+1 < app.currentWorkout.length) ? app.currentWorkout[sess.idx+1].n : (sess.r<3?"Runde "+(sess.r+1):"ENDE");
+            document.getElementById('next-ex').innerText = "Next: " + n;
+            document.getElementById('skip-btn').style.display = (!sess.work && sess.t > 2) ? "block" : "none";
         }
+
         function toggleTimer() {
             const b = document.getElementById('play-btn');
             if(sess.run) { clearInterval(sess.int); sess.run = false; b.innerText="WEITER"; }
             else { sess.int = setInterval(tick, 1000); sess.run = true; b.innerText="STOP"; }
         }
 
-        function showRPE() { closePlayer(); document.getElementById('view-rpe').style.display='flex'; }
+        function showRPE() { clearInterval(sess.int); document.getElementById('view-rpe').style.display = 'flex'; }
         function finishWorkout() {
             const rpe = document.getElementById('rpe-slider').value;
             const weight = parseFloat(app.profile.w) || 75;
             const kcal = Math.floor((6 * 3.5 * weight / 200) * 15);
-            app.history.push({date: new Date(), rpe: rpe, kcal: kcal});
-            app.planIdx++;
-            save(); updateUI();
-            document.getElementById('view-rpe').style.display='none';
-            if(app.settings.supps) document.getElementById('view-supps').style.display='flex';
+            app.history.push({date: new Date().toISOString(), rpe: rpe, kcal: kcal});
+            generateWorkout(); 
+            save();
+            document.getElementById('view-rpe').style.display = 'none';
+            if(app.settings.supps) document.getElementById('view-supps').style.display = 'flex';
+            else location.reload();
         }
-        function closeSupps() { document.getElementById('view-supps').style.display='none'; }
-        function showInfo() { if(sess.run) toggleTimer(); const e = sess.active[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display='flex'; }
 
-        // --- UTILS ---
+        // --- STATS & UTILS ---
+        function saveLog() {
+            const d = document.getElementById('log-date').value || new Date().toISOString().split('T')[0];
+            const w = document.getElementById('log-weight').value;
+            if(!w) return alert("Gewicht nötig!");
+            app.logs.push({date:d, w:w, waist:document.getElementById('log-waist').value, hips:document.getElementById('log-hips').value, chest:document.getElementById('log-chest').value, thigh:document.getElementById('log-thigh').value});
+            app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
+            save(); updateUI(); alert("Gespeichert");
+        }
+
+        function updateRangeSettings() {
+            app.settings.work = document.getElementById('rng-work').value;
+            app.settings.rest = document.getElementById('rng-rest').value;
+            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
+            document.getElementById('lbl-work').innerText = app.settings.work;
+            document.getElementById('lbl-rest').innerText = app.settings.rest;
+            document.getElementById('lbl-goal').innerText = app.settings.weeklyGoal;
+            save(); updateUI();
+        }
+
         function renderChart() {
             const svg = document.getElementById('weight-chart'); svg.innerHTML = "";
             if(app.logs.length < 2) return;
             const data = app.logs.slice(-10).map(l => parseFloat(l.w));
             const max = Math.max(...data) + 1; const min = Math.min(...data) - 1;
-            const range = max - min;
             let points = "";
             data.forEach((val, i) => {
                 const x = i * (100 / (data.length - 1));
-                const y = 100 - ((val - min) / range * 100);
+                const y = 100 - ((val - min) / (max - min) * 100);
                 points += `${x},${y} `;
                 const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
+                dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 2.5);
                 dot.setAttribute("class", "chart-dot");
                 svg.appendChild(dot);
             });
             const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            pl.setAttribute("points", points); svg.prepend(pl);
+            pl.setAttribute("points", points); svg.appendChild(pl);
         }
 
-        function saveLog() {
-            const d = document.getElementById('log-date').value;
-            const w = document.getElementById('log-weight').value;
-            const cm = document.getElementById('log-waist').value;
-            const hi = document.getElementById('log-hips').value;
-            const ch = document.getElementById('log-chest').value;
-            const th = document.getElementById('log-thigh').value;
-            if(!d || !w) return alert("Datum & Gewicht nötig.");
-            app.logs.push({date:d, w:w, cm:cm, hips:hi, chest:ch, thigh:th});
-            app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
-            save(); updateUI(); alert("Gespeichert");
-        }
-        
         function renderHist() {
-            const l = document.getElementById('hist-list'); l.innerHTML="";
-            app.history.slice().reverse().slice(0,5).forEach(h => {
-                const d = new Date(h.date).toLocaleDateString();
-                const k = h.kcal ? `${h.kcal} kcal` : '';
-                l.innerHTML += `<div class="hist-item"><span>TRAINING (${h.rpe}/10)</span><span style="color:#666">${d} • ${k}</span></div>`;
-            });
-            app.logs.slice().reverse().slice(0,3).forEach(log => {
-                l.innerHTML += `<div class="hist-item"><span style="color:#aaa">CHECK: ${log.w}kg</span><span style="color:#666">${log.date}</span></div>`;
+            const l = document.getElementById('hist-list'); l.innerHTML = "<h2>VERLAUF</h2>";
+            app.history.slice(-5).reverse().forEach(h => {
+                l.innerHTML += `<div class="hist-item"><span>TRAINING (${h.rpe}/10)</span><span style="color:#666">${new Date(h.date).toLocaleDateString()} • ${h.kcal}kcal</span></div>`;
             });
         }
+
+        function wizSet(k, v, el) { wiz[k]=v; el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected')); el.classList.add('selected'); }
+        function wizToggle(k, v, el) { if(!wiz[k]) wiz[k]=[]; const i=wiz[k].indexOf(v); if(i>-1){wiz[k].splice(i,1); el.classList.remove('selected');} else {wiz[k].push(v); el.classList.add('selected');} }
+        function wizNext(s) { document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); document.getElementById('wiz-'+(s+1)).classList.add('active'); }
+        function wizFinish() {
+            app.profile = { h: document.getElementById('wiz-height').value, a: document.getElementById('wiz-age').value, w: document.getElementById('wiz-weight').value };
+            app.parts = wiz.parts; app.goal = wiz.goal;
+            if(app.profile.w) app.logs.push({date: new Date().toISOString().split('T')[0], w: app.profile.w});
+            save(); initApp();
+        }
+
         function nav(id, el) { 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); 
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
             el.classList.add('active'); 
         }
+
+        function beep(freq, dur) { if(!sess.sound || !ac) return; const o=ac.createOscillator(); const g=ac.createGain(); o.connect(g); g.connect(ac.destination); o.frequency.value=freq; g.gain.setValueAtTime(0.05, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
+        function toggleMute() { sess.sound = !sess.sound; document.getElementById('mute-icon').innerText = sess.sound ? "🔊" : "🔇"; }
+        function updateGreeting() { const h = new Date().getHours(); let g = "GUTEN ABEND"; if(h < 11) g = "GUTEN MORGEN"; else if(h < 18) g = "GUTEN TAG"; document.getElementById('greeting').innerText = g; }
+        function showInfo() { const e = app.currentWorkout[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display = 'flex'; }
+        function skipRest() { nextStep(); }
+        function closePlayer() { clearInterval(sess.int); location.reload(); }
         function save() { localStorage.setItem(STORE_KEY, JSON.stringify(app)); }
-        function resetApp() { if(confirm("ALLES LÖSCHEN?")) { localStorage.removeItem(STORE_KEY); location.reload(); } }
-        function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
-        function beep(f1, f2, dur=0.2) { if(!sound || !ac) return; const o = ac.createOscillator(); const g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.type='sawtooth'; o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
-        function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download = "backup.json"; a.click(); }
-        function importData(el) { const r = new FileReader(); r.onload=e=>{ app=JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(el.files[0]); }
+        function resetApp() { if(confirm("App komplett zurücksetzen? Alle Daten gehen verloren.")) { localStorage.clear(); location.reload(); } }
     </script>
 </body>
 </html>
