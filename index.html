@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse Architect</title>
+    <title>Body Pulse Obsidian</title>
+    
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
     <style>
         :root {
             --bg: #000000;
-            --card: #111111;
-            --border: #333333;
-            --text: #ffffff;
-            --text-dim: #666666;
-            --accent: #ffffff; 
+            --surface: #0f0f0f;
+            --border: #222222;
+            --primary: #ffffff;
+            --secondary: #666666;
             --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
@@ -24,47 +24,48 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
         
         body {
-            background-color: var(--bg); color: var(--text); font-family: var(--font);
+            background-color: var(--bg); color: var(--primary); font-family: var(--font);
             margin: 0; height: 100vh; display: flex; flex-direction: column;
             padding-top: var(--safe-top); overflow: hidden;
         }
 
         /* --- TYPO --- */
-        h1 { font-size: 24px; font-weight: 700; margin: 0 0 5px; letter-spacing: -0.5px; text-transform: uppercase; }
-        h2 { font-size: 11px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
-        .val-big { font-size: 28px; font-weight: 300; }
-        .label { color: var(--text-dim); font-size: 13px; margin-bottom: 5px; display: block; }
-        .quote { font-style: italic; color: var(--text-dim); font-size: 14px; line-height: 1.4; border-left: 2px solid var(--text); padding-left: 15px; margin-bottom: 20px; }
-
+        h1 { font-size: 22px; font-weight: 800; margin: 0 0 20px; text-transform: uppercase; letter-spacing: 1px; }
+        h2 { font-size: 10px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
+        .val-big { font-size: 28px; font-weight: 300; letter-spacing: -0.5px; }
+        .label { color: var(--secondary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        
         /* --- LAYOUT --- */
         .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
         .screen.active { display: flex; animation: fade 0.3s ease; }
         
         .card { 
-            background: var(--card); padding: 20px; border: 1px solid var(--border); 
-            margin-bottom: 15px; position: relative;
+            background: var(--surface); padding: 25px; border: 1px solid var(--border); 
+            margin-bottom: 15px; border-radius: 4px;
         }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
 
         /* --- BUTTONS --- */
         .btn {
-            width: 100%; padding: 18px; border: 1px solid var(--text); background: var(--text); 
+            width: 100%; padding: 18px; border: 1px solid var(--primary); background: var(--primary); 
             color: var(--bg); font-size: 14px; font-weight: 800; text-transform: uppercase; 
-            cursor: pointer; transition: 0.1s; margin-top: 10px;
+            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 1px;
         }
         .btn:active { transform: scale(0.98); opacity: 0.8; }
-        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-        .btn-close { background: transparent; border: none; font-size: 24px; color: var(--text); padding: 10px; }
+        .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
+        .btn-close { background: transparent; border: none; font-size: 24px; color: var(--primary); padding: 10px; }
 
         /* --- INPUTS --- */
-        input, select {
+        input {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border);
-            color: var(--text); padding: 15px 0; font-size: 18px; font-family: var(--font);
-            border-radius: 0; margin-bottom: 15px;
+            color: var(--primary); padding: 10px 0; font-size: 16px; font-family: var(--font);
+            border-radius: 0; margin-bottom: 20px;
         }
-        input:focus { border-bottom-color: var(--text); }
+        input:focus { border-bottom-color: var(--primary); }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* --- WIZARD (ONBOARDING) --- */
+        /* --- WIZARD --- */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
             z-index: 500; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
@@ -74,16 +75,29 @@
         
         .opt-item {
             padding: 20px; border: 1px solid var(--border); margin-bottom: 10px;
-            cursor: pointer; font-size: 16px;
+            cursor: pointer; font-size: 16px; transition: 0.2s;
         }
-        .opt-item.selected { border-color: var(--text); background: var(--card); }
+        .opt-item.selected { border-color: var(--primary); background: var(--surface); }
 
-        /* --- PLAYER --- */
-        .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .time-huge { font-size: 120px; font-weight: 100; font-variant-numeric: tabular-nums; line-height: 1; }
-        .phase-lbl { font-size: 20px; font-weight: 700; letter-spacing: 4px; margin-top: 10px; }
-        .progress-bar { width: 100%; height: 4px; background: var(--border); margin-top: 30px; position: relative; }
-        .progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--text); width: 0%; transition: width 1s linear; }
+        /* --- CIRCLE TIMER --- */
+        .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        
+        .progress-ring { width: 300px; height: 300px; transform: rotate(-90deg); }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1.0s linear;
+            transform-origin: 50% 50%;
+        }
+        
+        .time-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .time-huge { 
+            font-size: 80px; font-weight: 700; 
+            font-variant-numeric: tabular-nums; line-height: 1; 
+            font-family: monospace; letter-spacing: -3px;
+        }
+        .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; }
 
         /* --- NAV --- */
         .nav {
@@ -94,7 +108,6 @@
         .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.3; font-size: 22px; cursor: pointer; }
         .nav-btn.active { opacity: 1; }
 
-        /* --- ANIMATIONS --- */
         @keyframes fade { from{opacity:0;} to{opacity:1;} }
         @keyframes slide { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
     </style>
@@ -102,20 +115,19 @@
 <body>
 
     <div id="view-onboarding" class="full-overlay" style="z-index:900;">
-        
         <div id="wiz-1" class="wiz-step active">
-            <h1 style="margin-top:20px;">Dein Ziel</h1>
+            <h1 style="margin-top:20px;">ZIELSETZUNG</h1>
             <p class="label">Schritt 1 von 3</p>
             <div style="margin-top:20px;">
-                <div class="opt-item" onclick="wizSet('goal', 'lose', this)">ABNEHMEN (HIIT)</div>
+                <div class="opt-item" onclick="wizSet('goal', 'lose', this)">ABNEHMEN</div>
                 <div class="opt-item" onclick="wizSet('goal', 'build', this)">MUSKELAUFBAU</div>
-                <div class="opt-item" onclick="wizSet('goal', 'fit', this)">ALLG. FITNESS</div>
+                <div class="opt-item" onclick="wizSet('goal', 'fit', this)">FITNESS & MOBILITY</div>
             </div>
             <button class="btn" style="margin-top:auto" onclick="wizNext(1)">WEITER</button>
         </div>
 
         <div id="wiz-2" class="wiz-step">
-            <h1 style="margin-top:20px;">Fokus Zonen</h1>
+            <h1 style="margin-top:20px;">FOKUS ZONEN</h1>
             <p class="label">Mehrfachwahl möglich</p>
             <div style="margin-top:20px;">
                 <div class="opt-item" onclick="wizToggle('parts', 'bauch', this)">BAUCH & CORE</div>
@@ -127,8 +139,8 @@
         </div>
 
         <div id="wiz-3" class="wiz-step">
-            <h1 style="margin-top:20px;">Über dich</h1>
-            <p class="label">Für Statistiken & BMI</p>
+            <h1 style="margin-top:20px;">STAMMDATEN</h1>
+            <p class="label">Für deine Statistik</p>
             <div class="card" style="margin-top:20px;">
                 <input type="number" id="wiz-age" placeholder="Alter">
                 <div class="input-row">
@@ -142,58 +154,66 @@
 
     <div id="tab-home" class="screen active">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h1>ARCHITECT</h1>
-            <div style="font-size:12px; border:1px solid var(--border); padding:5px 10px;" id="lvl-badge">LEVEL 1</div>
+            <h1>COCKPIT</h1>
+            <div style="font-size:12px; border:1px solid var(--border); padding:5px 10px;" id="lvl-badge">LVL 1</div>
         </div>
 
-        <div id="quote-area" class="quote">
-            "Der Schmerz von heute ist die Kraft von morgen."
-        </div>
+        <div style="font-style:italic; color:#666; margin-bottom:20px; font-size:14px;" id="quote-area">...</div>
 
         <div class="card">
-            <h2>NÄCHSTES TRAINING</h2>
-            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade...</div>
-            <div style="color: var(--text-dim); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
-            <button class="btn" onclick="openPlayer()">STARTEN</button>
+            <h2>HEUTE</h2>
+            <div style="font-size: 24px; font-weight: 700; margin-bottom: 5px;" id="next-title">Lade...</div>
+            <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
+            <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
         </div>
 
-        <div class="input-row">
-            <div class="card">
-                <h2>BMI</h2>
-                <div class="val-big" id="disp-bmi">--</div>
+        <div class="stat-grid">
+            <div class="card" style="margin:0; text-align:center;">
+                <span class="label">WORKOUTS</span>
+                <span class="val-big" id="disp-count">0</span>
             </div>
-            <div class="card">
-                <h2>WORKOUTS</h2>
-                <div class="val-big" id="disp-count">0</div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2>PROFIL DATEN</h2>
-            <div style="display:flex; justify-content:space-between; font-size:14px; color:var(--text-dim);">
-                <span id="prof-age">Alter: --</span>
-                <span id="prof-height">Größe: --</span>
-                <span id="prof-weight">Gewicht: --</span>
+            <div class="card" style="margin:0; text-align:center;">
+                <span class="label">BMI</span>
+                <span class="val-big" id="disp-bmi">--</span>
             </div>
         </div>
     </div>
 
     <div id="tab-stats" class="screen">
-        <h1>TRACKING</h1>
+        <h1>KÖRPERDATEN</h1>
         
         <div class="card">
-            <h2>LOGBUCH</h2>
-            <input type="date" id="log-date">
-            <div class="input-row">
-                <input type="number" id="log-weight" placeholder="Gewicht (kg)">
-                <input type="number" id="log-waist" placeholder="Bauch (cm)">
+            <h2>AKTUELLE FORM</h2>
+            <div class="input-row" style="margin-bottom:10px;">
+                <div><span class="label">GEWICHT</span><span class="val-big" id="st-w">--</span></div>
+                <div><span class="label">BAUCH</span><span class="val-big" id="st-b">--</span></div>
             </div>
-            <button class="btn btn-outline" onclick="saveLog()">SPEICHERN</button>
+            <div class="input-row">
+                <div><span class="label">PO / HÜFTE</span><span class="val-big" id="st-h">--</span></div>
+                <div><span class="label">BRUST</span><span class="val-big" id="st-c">--</span></div>
+            </div>
+            <div style="margin-top:15px;">
+                <span class="label">OBERSCHENKEL</span><span class="val-big" id="st-l">--</span>
+             </div>
         </div>
 
         <div class="card">
-            <h2>GEWICHTSVERLAUF</h2>
-            <div id="chart-wrap" style="height: 100px; display:flex; align-items:flex-end; gap:5px; margin-top:20px;"></div>
+            <h2>MESSUNG EINTRAGEN</h2>
+            <input type="date" id="log-date">
+            
+            <div class="input-row">
+                <div><span class="label">Gewicht (kg)</span><input type="number" id="log-weight" placeholder="0.0"></div>
+                <div><span class="label">Bauch (cm)</span><input type="number" id="log-waist" placeholder="0"></div>
+            </div>
+            <div class="input-row">
+                <div><span class="label">Po/Hüfte (cm)</span><input type="number" id="log-hips" placeholder="0"></div>
+                <div><span class="label">Brust (cm)</span><input type="number" id="log-chest" placeholder="0"></div>
+            </div>
+             <div class="input-row">
+                <div><span class="label">Oberschenkel (cm)</span><input type="number" id="log-thigh" placeholder="0"></div>
+                <div></div>
+            </div>
+            <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
         </div>
 
         <div class="card">
@@ -206,17 +226,16 @@
         <h1>SYSTEM</h1>
 
         <div class="card">
-            <h2>STAMMDATEN ÄNDERN</h2>
+            <h2>DEIN PROFIL</h2>
             <div class="input-row">
-                <input type="number" id="set-height" placeholder="Größe" onchange="saveSettings()">
-                <input type="number" id="set-age" placeholder="Alter" onchange="saveSettings()">
+                <div><span class="label">Größe (cm)</span><input type="number" id="set-height" onchange="saveSettings()"></div>
+                <div><span class="label">Alter</span><input type="number" id="set-age" onchange="saveSettings()"></div>
             </div>
         </div>
 
         <div class="card">
-            <h2>PLANUNG</h2>
-            <p class="label">Setzt den Wizard zurück</p>
-            <button class="btn btn-outline" onclick="resetApp()">ZIEL NEU DEFINIEREN</button>
+            <h2>TRAINING</h2>
+            <button class="btn btn-outline" onclick="resetApp()">NEU DEFINIEREN</button>
         </div>
 
         <div class="card">
@@ -235,14 +254,19 @@
         </div>
 
         <div class="timer-wrap">
-            <div class="time-huge" id="time-disp">00</div>
-            <div class="phase-lbl" id="phase-disp">READY</div>
-            <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+            <svg class="progress-ring" width="300" height="300">
+                <circle stroke="#222" stroke-width="8" fill="transparent" r="130" cx="150" cy="150"/>
+                <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="130" cx="150" cy="150"/>
+            </svg>
+            <div class="time-center">
+                <div class="time-huge" id="time-disp">00</div>
+                <span class="phase-lbl" id="phase-disp">READY</span>
+            </div>
         </div>
 
         <div style="margin-bottom: 40px; text-align:center;">
             <div style="font-size:24px; font-weight:700; margin-bottom:5px;" id="ex-name">Übung</div>
-            <div style="color:var(--text-dim); font-size:14px; margin-bottom:20px;" id="next-ex">Next: ...</div>
+            <div style="color:var(--secondary); font-size:14px; margin-bottom:20px;" id="next-ex">Next: ...</div>
             <button class="btn-outline" style="padding:10px 20px; font-size:12px;" onclick="showInfo()">ANLEITUNG</button>
             <button id="skip-btn" onclick="skipRest()" style="display:none; width:100%; border:none; background:#222; color:#fff; padding:15px; margin-top:20px;">PAUSE ÜBERSPRINGEN</button>
         </div>
@@ -253,7 +277,7 @@
     <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 600;">
         <button class="btn-close" onclick="document.getElementById('view-info').style.display='none'">✕</button>
         <h1 id="info-title" style="margin-top:40px;">TITEL</h1>
-        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--text-dim); margin-top:20px;">...</p>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;">...</p>
     </div>
 
     <div id="view-rpe" class="full-overlay" style="z-index: 700; justify-content:center;">
@@ -272,53 +296,37 @@
         // --- CONTENT ---
         const QUOTES = [
             "Der Schmerz von heute ist die Kraft von morgen.",
-            "Disziplin bedeutet, das zu tun, was getan werden muss.",
-            "Dein einziger Gegner bist du selbst.",
-            "Erfolg ist kein Glück, sondern nur das Ergebnis von Blut, Schweiß und Tränen.",
-            "Mach es einfach."
+            "Disziplin ist Freiheit.",
+            "Einfach machen.",
+            "Keine Ausreden.",
+            "Fokus auf das Ziel."
         ];
         
         const DB = {
-            bauch: [
-                {n:"Crunches", d:"Rückenlage. Schultern heben, Bauch fest."},
-                {n:"Leg Raises", d:"Rückenlage. Beine gestreckt heben."},
-                {n:"Plank", d:"Unterarmstütz halten. Gerade Linie."},
-                {n:"Russian Twist", d:"Sitzend, Füße hoch, Oberkörper drehen."}
-            ],
-            beine: [
-                {n:"Squats", d:"Kniebeugen. Gewicht auf Fersen."},
-                {n:"Lunges", d:"Ausfallschritte nach hinten."},
-                {n:"Glute Bridges", d:"Rückenlage, Hüfte hochdrücken."},
-                {n:"Calf Raises", d:"Auf Zehenspitzen stehen, senken."}
-            ],
-            ober: [
-                {n:"Push-Ups", d:"Liegestütze. Körper fest."},
-                {n:"Dips", d:"Rücklings an Kante stützen, beugen."},
-                {n:"Superman", d:"Bauchlage, Arme & Beine heben."},
-                {n:"Shoulder Taps", d:"Plank, Hand tippt Schulter."}
-            ],
-            cardio: [
-                {n:"Jumping Jacks", d:"Hampelmänner."},
-                {n:"Mountain Climbers", d:"Stütz, Knie zur Brust ziehen."},
-                {n:"Burpees", d:"Liegestütz -> Sprung."}
-            ]
+            bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
+            beine: [ {n:"Squats", d:"Kniebeugen."}, {n:"Lunges", d:"Ausfallschritte."}, {n:"Glute Bridges", d:"Hüfte heben."}, {n:"Calf Raises", d:"Wadenheben."} ],
+            ober: [ {n:"Push-Ups", d:"Liegestütze."}, {n:"Dips", d:"Trizeps drücken."}, {n:"Superman", d:"Rückenstrecker."}, {n:"Shoulder Taps", d:"Plank, Schulter tippen."} ],
+            cardio: [ {n:"Jumping Jacks", d:"Hampelmann."}, {n:"Burpees", d:"Liegestütz-Sprung."}, {n:"High Knees", d:"Knie hoch."} ]
         };
 
         // --- STATE ---
-        let app = {
-            profile: { h: '', w: '', a: '' },
-            goal: '', parts: [], 
-            plan: [], planIdx: 0,
-            logs: [], history: []
-        };
+        let app = { profile: { h: '', w: '', a: '' }, goal: '', parts: [], plan: [], planIdx: 0, logs: [], history: [] };
         let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
         let wiz = { goal: '', parts: [] };
-        let CFG = { WORK: 40, REST: 20, RNDS: 3 };
+        let CFG = { WORK: 40, REST: 20, RNDS: 3 }; 
         let ac; let sound = true;
+
+        // Circle UI
+        const circle = document.getElementById('progress-circle');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference;
 
         // --- INIT ---
         window.onload = () => {
-            if(localStorage.getItem('bp_arch')) app = JSON.parse(localStorage.getItem('bp_arch'));
+            const d = localStorage.getItem('bp_obsidian');
+            if(d) app = JSON.parse(d);
             
             if(!app.profile.h || !app.goal) {
                 document.getElementById('view-onboarding').style.display = 'flex';
@@ -329,18 +337,16 @@
         };
 
         function initApp() {
-            // Random Quote
             document.getElementById('quote-area').innerText = QUOTES[Math.floor(Math.random() * QUOTES.length)];
             
-            // Config
             if(app.goal === 'lose') { CFG.WORK=45; CFG.REST=15; }
             else if(app.goal === 'build') { CFG.WORK=40; CFG.REST=40; }
             else { CFG.WORK=40; CFG.REST=20; }
             
-            // Fill Settings Inputs
             document.getElementById('set-height').value = app.profile.h;
             document.getElementById('set-age').value = app.profile.a;
-            
+            document.getElementById('log-date').valueAsDate = new Date();
+
             updateUI();
         }
 
@@ -365,12 +371,11 @@
             app.profile = { h: h, w: w, a: a };
             app.goal = wiz.goal; app.parts = wiz.parts;
             
+            // Initial log
+            app.logs.push({date: new Date().toISOString().split('T')[0], w: w, cm: '', hips: '', chest: '', thigh: ''});
+            
             genPlan();
             document.getElementById('view-onboarding').style.display='none';
-            
-            // Initial log
-            app.logs.push({date: new Date().toISOString().split('T')[0], w: w, cm: ''});
-            
             save(); initApp();
         }
 
@@ -387,7 +392,7 @@
             app.planIdx = 0;
         }
 
-        // --- UI & DASHBOARD ---
+        // --- UI ---
         function updateUI() {
             const plan = app.plan[app.planIdx % app.plan.length];
             document.getElementById('next-title').innerText = plan.name;
@@ -395,22 +400,23 @@
             
             const count = app.history.length;
             document.getElementById('disp-count').innerText = count;
-            document.getElementById('lvl-badge').innerText = "LEVEL " + (Math.floor(count/5)+1);
+            document.getElementById('lvl-badge').innerText = "LVL " + (Math.floor(count/5)+1);
             
-            // Profil
-            document.getElementById('prof-age').innerText = "Alter: " + app.profile.a;
-            document.getElementById('prof-height').innerText = "Größe: " + app.profile.h + "cm";
-            
-            // BMI Calculation (Current Weight)
-            let currentW = app.profile.w;
-            if(app.logs.length > 0) currentW = app.logs[app.logs.length-1].w;
-            document.getElementById('prof-weight').innerText = "Gewicht: " + currentW + "kg";
+            // Stats & BMI
+            let last = { w: app.profile.w, cm: '--', hips: '--', chest: '--', thigh: '--' };
+            if(app.logs.length > 0) last = app.logs[app.logs.length-1];
+
+            document.getElementById('st-w').innerText = last.w + " kg";
+            document.getElementById('st-b').innerText = (last.cm || "--") + " cm";
+            document.getElementById('st-h').innerText = (last.hips || "--") + " cm";
+            document.getElementById('st-c').innerText = (last.chest || "--") + " cm";
+            document.getElementById('st-l').innerText = (last.thigh || "--") + " cm";
             
             const h_m = app.profile.h / 100;
-            const bmi = (currentW / (h_m*h_m)).toFixed(1);
+            const bmi = (last.w / (h_m*h_m)).toFixed(1);
             document.getElementById('disp-bmi').innerText = bmi;
             
-            renderChart(); renderHist();
+            renderHist();
         }
 
         // --- PLAYER ---
@@ -441,7 +447,7 @@
                 sess.t = sess.max = CFG.WORK;
                 ph.innerText = "WORK"; ph.style.color = "#fff";
                 document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
-                document.getElementById('next-ex').innerText = "Pause folgt";
+                document.getElementById('next-ex').innerText = "Danach: Pause";
                 skip.style.display='none';
                 beep(400, 800);
             } else {
@@ -480,9 +486,17 @@
         }
         function skipRest() { nextStep(); }
 
+        // CIRCLE TIMER DRAW
         function drawTimer() {
             document.getElementById('time-disp').innerText = sess.t;
-            document.getElementById('prog-fill').style.width = ((sess.t/sess.max)*100)+"%";
+            
+            // Calculate SVG Offset
+            // empty when time = 0, full when time = max
+            const offset = circumference - (sess.t / sess.max) * circumference;
+            
+            // NOTE: To make it look like it's "emptying" counter-clockwise or clockwise, we adjust logic.
+            // Standard: offset = circumference * (1 - pct)
+            circle.style.strokeDashoffset = offset;
         }
 
         function toggleTimer() {
@@ -509,50 +523,44 @@
             document.getElementById('view-info').style.display='flex';
         }
 
-        // --- STATS ---
+        // --- SAVING ---
         function saveLog() {
             const d = document.getElementById('log-date').value;
             const w = document.getElementById('log-weight').value;
-            if(!d || !w) return;
-            app.logs.push({date:d, w:w});
+            const cm = document.getElementById('log-waist').value;
+            const hi = document.getElementById('log-hips').value;
+            const ch = document.getElementById('log-chest').value;
+            const th = document.getElementById('log-thigh').value;
+
+            if(!d || !w) return alert("Datum & Gewicht nötig.");
+            app.logs.push({date:d, w:w, cm:cm, hips:hi, chest:ch, thigh:th});
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
-            save(); updateUI(); alert("Gespeichert");
+            save(); updateUI(); alert("OK");
+            
+            // Clear inputs
+            document.getElementById('log-weight').value='';
+            document.getElementById('log-waist').value='';
+            document.getElementById('log-hips').value='';
+            document.getElementById('log-chest').value='';
+            document.getElementById('log-thigh').value='';
         }
+        
         function saveSettings() {
             app.profile.h = document.getElementById('set-height').value;
             app.profile.a = document.getElementById('set-age').value;
             save(); updateUI();
         }
 
-        function renderChart() {
-            const c = document.getElementById('chart-wrap'); c.innerHTML="";
-            if(app.logs.length < 2) return c.innerHTML="<p style='width:100%;text-align:center;font-size:12px;color:#444'>Zu wenig Daten</p>";
-            const vals = app.logs.map(l=>parseFloat(l.w));
-            const min = Math.min(...vals)*0.98; const max = Math.max(...vals)*1.02;
-            app.logs.slice(-7).forEach(l => {
-                const h = ((parseFloat(l.w)-min)/(max-min))*100;
-                const b = document.createElement('div');
-                b.style.cssText = `flex:1; background:#fff; height:${h}%; opacity:0.8;`;
-                c.appendChild(b);
-            });
-        }
         function renderHist() {
             const l = document.getElementById('hist-list'); l.innerHTML="";
             app.history.slice().reverse().slice(0,5).forEach(h => {
                 const d = new Date(h.date).toLocaleDateString();
-                l.innerHTML += `<div class="hist-item"><span>TRAINING (RPE ${h.rpe})</span><span style="color:#666">${d}</span></div>`;
+                l.innerHTML += `<div class="hist-item"><span>TRAINING (Intensität ${h.rpe})</span><span style="color:#666">${d}</span></div>`;
             });
-        }
-
-        // --- AUDIO ---
-        function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
-        function beep(f1, f2, dur=0.2) {
-            if(!sound || !ac) return;
-            const o = ac.createOscillator(); const g = ac.createGain();
-            o.connect(g); g.connect(ac.destination); o.type='sawtooth';
-            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur);
-            g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
-            o.start(); o.stop(ac.currentTime+dur);
+            // Logs
+             app.logs.slice().reverse().slice(0,3).forEach(log => {
+                 l.innerHTML += `<div class="hist-item"><span style="color:#aaa">CHECK: ${log.w}kg</span><span style="color:#666">${log.date}</span></div>`;
+             });
         }
 
         // --- UTILS ---
@@ -562,8 +570,19 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
         }
-        function save() { localStorage.setItem('bp_arch', JSON.stringify(app)); }
-        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_arch'); location.reload(); } }
+        function save() { localStorage.setItem('bp_obsidian', JSON.stringify(app)); }
+        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_obsidian'); location.reload(); } }
+        
+        function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
+        function beep(f1, f2, dur=0.2) {
+            if(!sound || !ac) return;
+            const o = ac.createOscillator(); const g = ac.createGain();
+            o.connect(g); g.connect(ac.destination); o.type='sawtooth';
+            o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur);
+            g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur);
+            o.start(); o.stop(ac.currentTime+dur);
+        }
+        
         function exportData() {
             const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app));
             a.download = "backup.json"; a.click();
