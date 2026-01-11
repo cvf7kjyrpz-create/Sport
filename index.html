@@ -46,8 +46,8 @@
         h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
         .btn-icon { background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
 
-        /* LISTE DER WORKOUTS */
-        .workout-list { flex-grow: 1; overflow-y: auto; padding-bottom: 20px; }
+        /* LISTE */
+        .scroll-area { flex-grow: 1; overflow-y: auto; padding-bottom: 20px; }
         .card {
             background-color: var(--card);
             border-radius: 20px;
@@ -62,6 +62,17 @@
         .card h2 { margin: 0 0 5px 0; font-size: 20px; }
         .card p { margin: 0; color: var(--text-dim); font-size: 14px; line-height: 1.4; }
         .card .tag { position: absolute; top: 20px; right: 20px; font-size: 24px; color: var(--text-dim); opacity: 0.3; }
+
+        /* PREVIEW SCREEN SPECIFICS */
+        .preview-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 10px;
+        }
+        .preview-name { font-weight: 600; font-size: 16px; }
+        .btn-start-big {
+            width: 100%; background: var(--work); color: black; font-size: 18px; font-weight: bold;
+            padding: 20px; border-radius: 20px; border: none; margin-top: 10px; cursor: pointer;
+        }
 
         /* TIMER SCREEN */
         .timer-container {
@@ -78,7 +89,6 @@
             transition: stroke-dashoffset 1s linear, stroke 0.3s;
             transform-origin: 50% 50%;
         }
-        
         .timer-value {
             position: absolute;
             font-size: 80px;
@@ -86,22 +96,13 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: -2px;
         }
-        
         .phase-label {
-            position: absolute;
-            top: 65%;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-            color: var(--text-dim);
+            position: absolute; top: 65%; font-size: 16px; text-transform: uppercase;
+            letter-spacing: 2px; font-weight: 600; color: var(--text-dim);
         }
 
         .info-area { text-align: center; margin-bottom: 30px; min-height: 80px; position: relative;}
-        
-        /* Flexbox für Titel und Info Button */
         .title-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
-        
         .current-ex { font-size: 24px; font-weight: 700; line-height: 1.2; }
         .next-ex { color: var(--text-dim); font-size: 14px; }
 
@@ -116,16 +117,14 @@
             font-size: 24px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: transform 0.1s; color: #000;
         }
-        .btn-control:active { transform: scale(0.9); }
         .play { background-color: #fff; }
         .pause { background-color: var(--rest); }
 
         .state-work .progress-ring__circle { stroke: var(--work); }
         .state-rest .progress-ring__circle { stroke: var(--rest); }
-        
         .round-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
 
-        /* INFO MODAL OVERLAY */
+        /* MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 100;
@@ -134,6 +133,7 @@
         .modal-card {
             background: var(--card); width: 100%; max-width: 400px; padding: 30px;
             border-radius: 25px; text-align: left; border: 1px solid #333;
+            max-height: 80vh; overflow-y: auto;
         }
         .modal-card h3 { margin-top: 0; color: var(--accent); font-size: 22px; }
         .modal-card p { font-size: 16px; line-height: 1.6; color: #ddd; }
@@ -153,28 +153,41 @@
     <div id="home" class="screen active">
         <header>
             <h1>Body Pulse</h1>
-            <div style="font-size:12px; color: var(--text-dim);">v3.0</div>
+            <div style="font-size:12px; color: var(--text-dim);">v4.0</div>
         </header>
 
-        <div class="workout-list">
-            <div class="card" onclick="loadWorkout(0)">
+        <div class="scroll-area">
+            <div class="card" onclick="openPreview(0)">
                 <h2>Tag 1: Po & Beine</h2>
                 <p>Squats, Bridges, Lunges, Kicks</p>
                 <div class="tag">🍑</div>
             </div>
 
-            <div class="card" onclick="loadWorkout(1)">
+            <div class="card" onclick="openPreview(1)">
                 <h2>Tag 2: Oberkörper</h2>
                 <p>Push-Ups, Superman, Dips, Angels</p>
                 <div class="tag">💪</div>
             </div>
 
-            <div class="card" onclick="loadWorkout(2)">
+            <div class="card" onclick="openPreview(2)">
                 <h2>Tag 3: Core & Bauch</h2>
                 <p>Bicycle, Leg Raises, Plank, Twist</p>
                 <div class="tag">🔥</div>
             </div>
         </div>
+    </div>
+
+    <div id="preview" class="screen">
+        <header>
+            <button class="btn-icon" onclick="switchScreen('home')">←</button>
+            <h1 id="preview-title" style="font-size: 20px;">Übersicht</h1>
+            <div style="width:40px;"></div>
+        </header>
+
+        <div class="scroll-area" id="preview-list">
+            </div>
+
+        <button class="btn-start-big" onclick="startActualWorkout()">Training starten</button>
     </div>
 
     <div id="workout" class="screen">
@@ -208,9 +221,9 @@
 
     <div id="info-modal" class="modal-overlay">
         <div class="modal-card">
-            <h3 id="modal-title">Übungs-Titel</h3>
-            <p id="modal-desc">Erklärungstext...</p>
-            <button class="btn-close-modal" onclick="closeInfo()">Verstanden</button>
+            <h3 id="modal-title">Titel</h3>
+            <p id="modal-desc">Text...</p>
+            <button class="btn-close-modal" onclick="closeInfo()">Schließen</button>
         </div>
     </div>
 
@@ -219,7 +232,7 @@
             <div class="big-icon">🎉</div>
             <h1>Training beendet!</h1>
             <p style="color: var(--text-dim); margin-top: 10px;">Starke Leistung.</p>
-            <button class="card" style="margin-top: 40px; width: 100%; text-align: center; background: var(--work); color: black;" onclick="quitWorkout()">
+            <button class="card" style="margin-top: 40px; width: 100%; text-align: center; background: var(--work); color: black;" onclick="switchScreen('home')">
                 <h2>Zurück zum Start</h2>
             </button>
         </div>
@@ -232,10 +245,10 @@
         const PREP_TIME = 10;
         const TOTAL_ROUNDS = 3;
 
-        // DATA MIT ERKLÄRUNGEN
+        // DATA
         const plans = [
             { 
-                name: "Tag 1", 
+                name: "Tag 1: Po & Beine", 
                 exercises: [
                     { name: "Kniebeugen", desc: "Füße schulterbreit. Po nach hinten unten setzen, als ob da ein Stuhl wäre. Rücken gerade lassen. Gewicht auf den Fersen. Tief runter, und beim Hochkommen Po fest anspannen." },
                     { name: "Glute Bridges", desc: "Rückenlage, Beine angewinkelt aufstellen. Hüfte so hoch wie möglich zur Decke drücken. Oben den Po maximal zusammenkneifen und kurz halten." },
@@ -244,7 +257,7 @@
                 ] 
             },
             { 
-                name: "Tag 2", 
+                name: "Tag 2: Oberkörper", 
                 exercises: [
                     { name: "Liegestütze", desc: "Hände etwas breiter als Schultern. Körper bildet eine Linie (Bauch fest!). Brust tief absenken und kraftvoll hochdrücken. Geht auch auf den Knien." },
                     { name: "Superman Pull", desc: "Bauchlage. Arme und Beine schweben über dem Boden. Arme heranziehen (Ellbogen Richtung Körper), als ob du etwas zu dir ziehst. Rücken anspannen." },
@@ -253,7 +266,7 @@
                 ] 
             },
             { 
-                name: "Tag 3", 
+                name: "Tag 3: Core & Bauch", 
                 exercises: [
                     { name: "Bicycle Crunches", desc: "Rückenlage, Hände an den Kopf. Rechter Ellbogen zum linken Knie (anderes Bein strecken). Im Wechsel. Schultern bleiben weg vom Boden." },
                     { name: "Leg Raises", desc: "Rückenlage, Hände flach unter den Po (schützt Rücken). Gestreckte Beine langsam heben und senken. Nicht ganz ablegen! Bauchspannung halten." },
@@ -274,7 +287,7 @@
         let interval = null;
         let soundEnabled = true;
 
-        // UI ELEMENTS
+        // UI VARS
         const timerText = document.getElementById('timer-text');
         const phaseText = document.getElementById('phase-text');
         const circle = document.getElementById('progress-circle');
@@ -284,12 +297,12 @@
         const mainBtn = document.getElementById('main-btn');
         const container = document.getElementById('workout');
         
-        // Modal Elements
+        // Modal
         const modal = document.getElementById('info-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalDesc = document.getElementById('modal-desc');
 
-        // CIRCLE SETUP
+        // Circle Setup
         const radius = circle.r.baseVal.value;
         const circumference = radius * 2 * Math.PI;
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
@@ -300,14 +313,49 @@
             circle.style.strokeDashoffset = offset;
         }
 
-        function loadWorkout(id) {
+        // --- NAVIGATION ---
+
+        function openPreview(id) {
             currentPlan = plans[id];
+            
+            // Build Preview List
+            document.getElementById('preview-title').innerText = currentPlan.name;
+            const list = document.getElementById('preview-list');
+            list.innerHTML = ""; // clear
+            
+            currentPlan.exercises.forEach((ex, index) => {
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                item.innerHTML = `
+                    <span class="preview-name">${index + 1}. ${ex.name}</span>
+                    <button class="btn-info-small" onclick="showInfo(${index})">i</button>
+                `;
+                list.appendChild(item);
+            });
+
+            switchScreen('preview');
+        }
+
+        function startActualWorkout() {
             round = 1;
             exIndex = 0;
             startPhase('PREP');
             switchScreen('workout');
             if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e => {});
         }
+
+        function quitWorkout() {
+            clearInterval(interval);
+            isRunning = false;
+            switchScreen('home');
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- TIMER LOGIC ---
 
         function startPhase(type) {
             isWork = (type === 'WORK');
@@ -360,7 +408,6 @@
             } else if (!isWork) {
                 startPhase('WORK');
             } else {
-                // Work done
                 if (isWork) {
                     exIndex++;
                     if (exIndex >= currentPlan.exercises.length) {
@@ -394,33 +441,44 @@
             }
         }
 
-        // INFO MODAL LOGIC
-        function showInfo() {
-            // Timer pausieren
-            if (isRunning) toggleTimer();
+        function finish() {
+            clearInterval(interval);
+            switchScreen('done');
+            playBeep(1000, 'success');
+        }
+
+        // --- INFO MODAL ---
+        function showInfo(specificIndex) {
+            // Wenn der User im Preview-Screen klickt, übergeben wir den Index.
+            // Wenn der User im Workout-Screen klickt, ist specificIndex undefined -> wir nehmen aktuelle Logik
             
-            // Text setzen
-            // Wenn Pause ist, zeige Info zur NÄCHSTEN Übung, sonst zur aktuellen
-            let exToShow = currentPlan.exercises[exIndex];
-            
-            // Spezialfall: Wenn wir gerade Pause machen, wollen wir oft wissen, was als nächstes kommt.
-            // Aber der User klickt vielleicht auf "Info", um die *kommende* Übung zu sehen.
-            // Da im UI "Nächste: ..." steht, lassen wir die Info beim Klick oben sich auf den Namen oben beziehen.
-            // Oben steht "Erholen" in der Pause? Nein, wir wollen die Info der nächsten Übung sehen.
-            // Der Einfachheit halber: Der Info-Button bezieht sich auf die Übung, die gerade "dran" ist oder "gleich kommt".
-            
-            // Wenn Pause ist, ist exIndex schon auf die nächste Übung hochgezählt worden in nextPhase(), 
-            // ABER exName zeigt "Erholen". Wir wollen die Info zur NÄCHSTEN Übung.
-            // In startPhase('REST') haben wir exIndex noch nicht erhöht? Doch, wir erhöhen VOR startPhase('REST').
-            // Also ist exIndex korrekt auf die nächste Übung gesetzt.
-            
-            if (phaseText.innerText === "PAUSE" || phaseText.innerText === "Erholen") {
-                 // exIndex zeigt auf die nächste Übung
-                 modalTitle.innerText = "Nächste: " + exToShow.name;
+            let exToShow;
+
+            if (specificIndex !== undefined) {
+                // Aufruf aus der Preview-Liste
+                exToShow = currentPlan.exercises[specificIndex];
             } else {
-                 modalTitle.innerText = exToShow.name;
+                // Aufruf aus dem aktiven Timer
+                if (isRunning) toggleTimer(); // Auto-Pause
+                
+                // Pause-Logik: Info Button soll nächste Übung zeigen
+                if (phaseText.innerText === "PAUSE" || phaseText.innerText === "Erholen") {
+                     exToShow = currentPlan.exercises[exIndex]; // exIndex ist in Pause schon auf Next gesetzt
+                     modalTitle.innerText = "Nächste: " + exToShow.name;
+                } else {
+                     exToShow = currentPlan.exercises[exIndex];
+                     modalTitle.innerText = exToShow.name;
+                }
             }
-            
+
+            // Wenn es Preview war (specificIndex gesetzt), dann normalen Titel nutzen
+            if (specificIndex !== undefined) {
+                modalTitle.innerText = exToShow.name;
+            } else if (phaseText.innerText !== "PAUSE" && phaseText.innerText !== "Erholen") {
+                // Auch bei normalem Work
+                modalTitle.innerText = exToShow.name;
+            }
+
             modalDesc.innerText = exToShow.desc;
             modal.style.display = 'flex';
         }
@@ -429,24 +487,7 @@
             modal.style.display = 'none';
         }
 
-        function finish() {
-            clearInterval(interval);
-            switchScreen('done');
-            playBeep(1000, 'success');
-        }
-
-        function quitWorkout() {
-            clearInterval(interval);
-            isRunning = false;
-            switchScreen('home');
-        }
-
-        function switchScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        // AUDIO
+        // --- AUDIO ---
         let audioCtx;
         function initAudio() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
