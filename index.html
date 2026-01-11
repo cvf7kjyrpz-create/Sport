@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse</title>
+    <title>Body Pulse V2</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -31,14 +31,12 @@
             padding-top: var(--safe-top); overflow: hidden;
         }
 
-        /* --- TYPOGRAPHY --- */
         h1 { font-size: 28px; font-weight: 800; margin: 0 0 5px; letter-spacing: 0.5px; }
         h2 { font-size: 11px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
         .val-big { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
         .label { color: var(--secondary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .sub-text { font-size: 13px; color: var(--secondary); }
 
-        /* --- LAYOUT --- */
         .screen { 
             display: none; flex-direction: column; height: 100%; 
             padding: 20px; padding-bottom: 110px; overflow-y: auto; 
@@ -54,7 +52,6 @@
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* --- CONTROLS --- */
         .btn {
             width: 100%; padding: 18px; border: none; background: var(--primary); 
             color: var(--bg); font-size: 15px; font-weight: 700; text-transform: uppercase; 
@@ -75,13 +72,11 @@
         input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
         input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
 
-        /* --- GRAPH & CHART --- */
         .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
         svg.chart { width: 100%; height: 100%; overflow: visible; }
         polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
         .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
-        /* --- WIZARD OVERLAY --- */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
             z-index: 2000; display: none; flex-direction: column; padding: var(--safe-top) 25px 25px 25px;
@@ -95,7 +90,6 @@
         }
         .opt-item.selected { border-color: var(--primary); background: var(--surface-light); color: var(--primary); }
 
-        /* --- TIMER RINGS --- */
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .progress-ring { width: 260px; height: 260px; transform: rotate(-90deg); }
         .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
@@ -105,11 +99,9 @@
         
         .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
 
-        /* --- LISTS --- */
         .check-item { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 15px; }
         .hist-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 
-        /* --- NAVIGATION --- */
         .nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 85px;
             background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(20px);
@@ -360,8 +352,9 @@
     </nav>
 
     <script>
-        // --- KEY ---
-        const STORE_KEY = 'bp_v1_clean'; // Changing key forces reset for user
+        // --- CONFIG & RESET ---
+        // I changed this key to FORCE a fresh start for you, ensuring no bad old data persists.
+        const STORE_KEY = 'bp_v2_stable'; 
         
         const DB = {
             bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
@@ -380,7 +373,7 @@
         let wiz = { goal: '', parts: [] };
         let ac; let sound = true;
 
-        // Circle UI
+        // Circle UI Setup
         const circle = document.getElementById('progress-circle');
         const circumference = 2 * Math.PI * 115; 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
@@ -397,13 +390,15 @@
                     const loaded = JSON.parse(d);
                     if(loaded && loaded.profile && loaded.profile.h) {
                         app = { ...app, ...loaded };
+                        // REPAIR: Ensure settings exist if loading form old
+                        if(!app.settings) app.settings = { supps:true, work:40, rest:20, weeklyGoal:3 };
+                        if(!app.settings.weeklyGoal) app.settings.weeklyGoal = 3;
                         hasData = true;
                     }
-                } catch(e) { console.log("Data corrupted"); }
+                } catch(e) { console.log("Data corrupted, resetting"); }
             }
             
             if(!hasData) {
-                // FORCE ONBOARDING
                 document.getElementById('view-onboarding').style.display = 'flex';
                 document.getElementById('wiz-1').classList.add('active');
             } else {
@@ -412,16 +407,13 @@
         };
 
         function initApp() {
-            // Hide Onboarding explicitly
             document.getElementById('view-onboarding').style.display = 'none';
 
-            // Greeting
             const h = new Date().getHours();
             let greet = "GUTEN ABEND";
             if(h < 11) greet = "GUTEN MORGEN"; else if(h < 18) greet = "GUTEN TAG";
             document.getElementById('greeting').innerText = greet;
 
-            // Load Values
             document.getElementById('set-height').value = app.profile.h;
             document.getElementById('set-age').value = app.profile.a;
             document.getElementById('tog-supps').checked = app.settings.supps;
@@ -432,7 +424,7 @@
             updateRangeLbl();
             document.getElementById('log-date').valueAsDate = new Date();
 
-            if(app.plan.length === 0) genPlan(); // Safety
+            if(!app.plan || app.plan.length === 0) genPlan();
             updateUI();
         }
 
@@ -463,7 +455,7 @@
 
         function genPlan() {
             let pool = [];
-            if(app.parts.length === 0) app.parts = ['bauch','beine','ober','cardio']; // Fallback
+            if(!app.parts || app.parts.length === 0) app.parts = ['bauch','beine','ober','cardio']; 
             app.parts.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
             pool.sort(()=>Math.random()-0.5);
             app.plan = [];
@@ -483,12 +475,10 @@
             document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
             document.getElementById('disp-count').innerText = app.history.length;
             
-            // Calc Kcal
             let totalKcal = 0;
             app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
-            // Month Stats
             const now = new Date();
             let mWork = 0; let mKcal = 0;
             app.history.forEach(h => {
@@ -500,7 +490,6 @@
             document.getElementById('month-workouts').innerText = mWork;
             document.getElementById('month-kcal').innerText = mKcal.toLocaleString();
 
-            // Body Stats
             let last = { w: app.profile.w };
             if(app.logs.length > 0) last = app.logs[app.logs.length-1];
             document.getElementById('st-w').innerText = last.w + " kg";
@@ -509,7 +498,7 @@
             document.getElementById('st-c').innerText = (last.chest || "--") + " cm";
             document.getElementById('st-l').innerText = (last.thigh || "--") + " cm";
 
-            // Weekly Goal
+            // Weekly Goal Fix
             const startOfWeek = new Date();
             startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
             startOfWeek.setHours(0,0,0,0);
@@ -554,7 +543,6 @@
             document.getElementById('lbl-goal').innerText = document.getElementById('rng-goal').value;
         }
 
-        // --- PLAYER ---
         function openPlayer() {
             sess.active = app.plan[app.planIdx % app.plan.length].ex;
             sess.r = 1; sess.idx = 0;
@@ -622,7 +610,6 @@
         function closeSupps() { document.getElementById('view-supps').style.display='none'; }
         function showInfo() { if(sess.run) toggleTimer(); const e = sess.active[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display='flex'; }
 
-        // --- UTILS ---
         function saveLog() {
             const d = document.getElementById('log-date').value;
             const w = document.getElementById('log-weight').value;
