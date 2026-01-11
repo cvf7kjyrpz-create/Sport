@@ -14,15 +14,18 @@
         :root {
             --bg: #000000;
             --card: #1c1c1e;
+            --input-bg: #2c2c2e;
             --text: #ffffff;
             --text-dim: #8e8e93;
             --accent: #0a84ff;
             --work: #32d74b;
             --rest: #ff9f0a;
+            --danger: #ff453a;
+            --nav-height: 60px;
             --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         body {
             background-color: var(--bg);
@@ -32,186 +35,253 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: 0; /* Handled by Nav */
             overflow: hidden;
         }
 
-        /* SCREEN MANAGEMENT */
-        .screen { display: none; height: 100%; flex-direction: column; }
-        .active { display: flex; animation: fadein 0.3s ease; }
-        @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- LAYOUT --- */
+        .main-view {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px; /* Space for Bottom Nav */
+            display: none; /* Hidden by default */
+        }
+        .main-view.active { display: block; animation: fadein 0.2s; }
 
-        /* HEADER */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 10px; }
-        h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
-        .btn-icon { background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .full-screen-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 50;
+            display: none; flex-direction: column;
+            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
+        }
+        .full-screen-overlay.active { display: flex; }
 
-        /* LISTE */
-        .scroll-area { flex-grow: 1; overflow-y: auto; padding-bottom: 20px; }
+        /* --- COMPONENTS --- */
+        h1 { margin: 0 0 5px 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+        h2 { font-size: 20px; margin: 0 0 5px 0; }
+        .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; display: block; }
+
         .card {
             background-color: var(--card);
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 15px;
-            transition: transform 0.1s;
-            cursor: pointer;
             position: relative;
             overflow: hidden;
         }
-        .card:active { transform: scale(0.98); background-color: #2c2c2e; }
-        .card h2 { margin: 0 0 5px 0; font-size: 20px; }
-        .card p { margin: 0; color: var(--text-dim); font-size: 14px; line-height: 1.4; }
-        .card .tag { position: absolute; top: 20px; right: 20px; font-size: 24px; color: var(--text-dim); opacity: 0.3; }
+        .clickable:active { transform: scale(0.98); background-color: #2c2c2e; transition: 0.1s; }
 
-        /* PREVIEW SCREEN SPECIFICS */
-        .preview-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 10px;
-        }
-        .preview-name { font-weight: 600; font-size: 16px; }
-        .btn-start-big {
-            width: 100%; background: var(--work); color: black; font-size: 18px; font-weight: bold;
-            padding: 20px; border-radius: 20px; border: none; margin-top: 10px; cursor: pointer;
-        }
+        .tag { position: absolute; top: 20px; right: 20px; font-size: 24px; opacity: 0.3; }
 
-        /* TIMER SCREEN */
-        .timer-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+        /* --- STATS & INPUTS --- */
+        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .input-wrapper label { font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 5px; }
+        input[type="number"], input[type="date"] {
+            width: 100%; background: var(--input-bg); border: 1px solid #333; color: white;
+            padding: 12px; border-radius: 10px; font-size: 16px; font-family: var(--font-main);
         }
+        .btn-save {
+            width: 100%; background: var(--accent); color: white; border: none; padding: 15px;
+            border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer;
+        }
+        .btn-save:active { opacity: 0.8; }
 
+        /* CHART */
+        .chart-container { height: 200px; width: 100%; margin-top: 20px; position: relative; border-bottom: 1px solid #333; border-left: 1px solid #333;}
+        .chart-line { fill: none; stroke: var(--work); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-dot { fill: var(--bg); stroke: var(--work); stroke-width: 2; r: 4; }
+        .no-data { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-dim); font-size: 14px; }
+        
+        .chart-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; scrollbar-width: none; }
+        .chart-tab {
+            background: var(--input-bg); border: none; color: var(--text-dim); padding: 8px 16px;
+            border-radius: 20px; font-size: 13px; white-space: nowrap; flex-shrink: 0;
+        }
+        .chart-tab.active { background: var(--accent); color: white; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(28,28,30, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid #333; display: flex; justify-content: space-around;
+            padding-bottom: env(safe-area-inset-bottom); z-index: 100;
+        }
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-dim); font-size: 10px; cursor: pointer;
+        }
+        .nav-item.active { color: var(--accent); }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+
+        /* --- TIMER & PREVIEW (Reusable) --- */
+        .timer-container { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .progress-ring { width: 280px; height: 280px; transform: rotate(-90deg); }
-        .progress-ring__circle {
-            transition: stroke-dashoffset 1s linear, stroke 0.3s;
-            transform-origin: 50% 50%;
-        }
-        .timer-value {
-            position: absolute;
-            font-size: 80px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -2px;
-        }
-        .phase-label {
-            position: absolute; top: 65%; font-size: 16px; text-transform: uppercase;
-            letter-spacing: 2px; font-weight: 600; color: var(--text-dim);
-        }
+        .progress-ring__circle { transition: stroke-dashoffset 1s linear; transform-origin: 50% 50%; }
+        .timer-value { position: absolute; font-size: 80px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .phase-label { position: absolute; top: 65%; font-size: 16px; font-weight: 600; color: var(--text-dim); letter-spacing: 2px; }
+        
+        .controls { display: flex; justify-content: center; margin-bottom: 30px; }
+        .btn-control { width: 80px; height: 80px; border-radius: 50%; border: none; font-size: 30px; display: flex; align-items: center; justify-content: center; }
+        .play { background-color: #fff; color: black; } .pause { background-color: var(--rest); color: white; }
 
-        .info-area { text-align: center; margin-bottom: 30px; min-height: 80px; position: relative;}
-        .title-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
-        .current-ex { font-size: 24px; font-weight: 700; line-height: 1.2; }
-        .next-ex { color: var(--text-dim); font-size: 14px; }
+        /* --- PROFILE --- */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: var(--input-bg); padding: 15px; border-radius: 12px; text-align: center; }
+        .stat-num { font-size: 24px; font-weight: 800; color: var(--work); display: block; }
+        .stat-label { font-size: 12px; color: var(--text-dim); }
 
-        .btn-info-small {
-            background: var(--accent); color: white; border: none; width: 24px; height: 24px; border-radius: 50%;
-            font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-
-        .controls { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; }
-        .btn-control {
-            width: 70px; height: 70px; border-radius: 50%; border: none;
-            font-size: 24px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.1s; color: #000;
-        }
-        .play { background-color: #fff; }
-        .pause { background-color: var(--rest); }
-
+        /* --- HELPERS --- */
         .state-work .progress-ring__circle { stroke: var(--work); }
         .state-rest .progress-ring__circle { stroke: var(--rest); }
-        .round-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-icon { background: rgba(255,255,255,0.1); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; font-size: 18px; }
 
-        /* MODAL */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 100;
-            display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-card {
-            background: var(--card); width: 100%; max-width: 400px; padding: 30px;
-            border-radius: 25px; text-align: left; border: 1px solid #333;
-            max-height: 80vh; overflow-y: auto;
-        }
-        .modal-card h3 { margin-top: 0; color: var(--accent); font-size: 22px; }
-        .modal-card p { font-size: 16px; line-height: 1.6; color: #ddd; }
-        .btn-close-modal {
-            background: #333; color: white; border: none; width: 100%; padding: 15px;
-            border-radius: 15px; font-size: 16px; font-weight: bold; margin-top: 20px; cursor: pointer;
-        }
-
-        /* DONE SCREEN */
-        .done-content { text-align: center; justify-content: center; align-items: center; flex-grow: 1; display: flex; flex-direction: column;}
-        .big-icon { font-size: 80px; margin-bottom: 20px; }
-
+        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="home" class="screen active">
-        <header>
-            <h1>Body Pulse</h1>
-            <div style="font-size:12px; color: var(--text-dim);">v4.0</div>
-        </header>
+    <div id="tab-workouts" class="main-view active">
+        <h1>Body Pulse</h1>
+        <span class="subtitle">Dein 15-Minuten Plan</span>
 
-        <div class="scroll-area">
-            <div class="card" onclick="openPreview(0)">
-                <h2>Tag 1: Po & Beine</h2>
-                <p>Squats, Bridges, Lunges, Kicks</p>
-                <div class="tag">🍑</div>
+        <div class="card clickable" onclick="openPreview(0)">
+            <h2>Tag 1: Po & Beine</h2>
+            <p style="color:var(--text-dim); font-size:14px;">Squats, Bridges, Lunges, Kicks</p>
+            <div class="tag">🍑</div>
+        </div>
+
+        <div class="card clickable" onclick="openPreview(1)">
+            <h2>Tag 2: Oberkörper</h2>
+            <p style="color:var(--text-dim); font-size:14px;">Push-Ups, Superman, Dips, Angels</p>
+            <div class="tag">💪</div>
+        </div>
+
+        <div class="card clickable" onclick="openPreview(2)">
+            <h2>Tag 3: Core & Bauch</h2>
+            <p style="color:var(--text-dim); font-size:14px;">Bicycle, Leg Raises, Plank, Twist</p>
+            <div class="tag">🔥</div>
+        </div>
+    </div>
+
+    <div id="tab-stats" class="main-view">
+        <h1>Tracking</h1>
+        <span class="subtitle">Beobachte deine Veränderung</span>
+
+        <div class="card">
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <label>Datum</label>
+                    <input type="date" id="input-date">
+                </div>
+                <div class="input-wrapper">
+                    <label>Gewicht (kg)</label>
+                    <input type="number" id="input-weight" placeholder="0.0" step="0.1">
+                </div>
+                <div class="input-wrapper">
+                    <label>Bauch (cm)</label>
+                    <input type="number" id="input-waist" placeholder="0" step="0.5">
+                </div>
+                <div class="input-wrapper">
+                    <label>Oberarm (cm)</label>
+                    <input type="number" id="input-arm" placeholder="0" step="0.5">
+                </div>
+                <div class="input-wrapper">
+                    <label>Brust (cm)</label>
+                    <input type="number" id="input-chest" placeholder="0" step="0.5">
+                </div>
             </div>
+            <button class="btn-save" onclick="saveStats()">Speichern</button>
+        </div>
 
-            <div class="card" onclick="openPreview(1)">
-                <h2>Tag 2: Oberkörper</h2>
-                <p>Push-Ups, Superman, Dips, Angels</p>
-                <div class="tag">💪</div>
+        <div class="card">
+            <h2>Verlauf</h2>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="setChartMode('weight', this)">Gewicht</button>
+                <button class="chart-tab" onclick="setChartMode('waist', this)">Bauch</button>
+                <button class="chart-tab" onclick="setChartMode('arm', this)">Arme</button>
+                <button class="chart-tab" onclick="setChartMode('chest', this)">Brust</button>
             </div>
-
-            <div class="card" onclick="openPreview(2)">
-                <h2>Tag 3: Core & Bauch</h2>
-                <p>Bicycle, Leg Raises, Plank, Twist</p>
-                <div class="tag">🔥</div>
+            
+            <div class="chart-container" id="chart-area">
+                <div class="no-data">Noch keine Daten</div>
             </div>
         </div>
     </div>
 
-    <div id="preview" class="screen">
-        <header>
-            <button class="btn-icon" onclick="switchScreen('home')">←</button>
-            <h1 id="preview-title" style="font-size: 20px;">Übersicht</h1>
-            <div style="width:40px;"></div>
-        </header>
+    <div id="tab-profile" class="main-view">
+        <h1>Profil</h1>
+        <span class="subtitle">Deine Erfolge</span>
 
-        <div class="scroll-area" id="preview-list">
+        <div class="stat-grid">
+            <div class="stat-box">
+                <span class="stat-num" id="stat-workouts">0</span>
+                <span class="stat-label">Workouts</span>
             </div>
+            <div class="stat-box">
+                <span class="stat-num" id="stat-streak">0</span>
+                <span class="stat-label">Tage Streak</span>
+            </div>
+        </div>
 
-        <button class="btn-start-big" onclick="startActualWorkout()">Training starten</button>
+        <div class="card">
+            <h2>BMI Rechner</h2>
+            <div class="input-group" style="margin-top:10px;">
+                <input type="number" id="bmi-height" placeholder="Größe (cm)">
+                <input type="number" id="bmi-weight" placeholder="Gewicht (kg)">
+            </div>
+            <button class="btn-save" style="background: #333; margin-top:5px;" onclick="calcBMI()">Berechnen</button>
+            <div id="bmi-result" style="margin-top:15px; font-weight:bold; color: var(--accent);"></div>
+        </div>
+
+        <button onclick="resetData()" style="width:100%; padding:15px; background:none; border:1px solid #333; color:#555; border-radius:12px; margin-top:30px;">
+            Alle Daten löschen
+        </button>
     </div>
 
-    <div id="workout" class="screen">
-        <header>
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('tab-workouts', this)">
+            <div class="nav-icon">🏋️</div>
+            <span>Training</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-stats', this)">
+            <div class="nav-icon">📈</div>
+            <span>Stats</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('tab-profile', this)">
+            <div class="nav-icon">👤</div>
+            <span>Profil</span>
+        </div>
+    </nav>
+
+    <div id="view-preview" class="full-screen-overlay">
+        <div class="header-row">
+            <button class="btn-icon" onclick="closeOverlay('view-preview')">←</button>
+            <h2 id="preview-title">Übersicht</h2>
+            <div style="width:40px;"></div>
+        </div>
+        <div style="flex-grow:1; overflow-y:auto;" id="preview-list"></div>
+        <button class="btn-save" style="background:var(--work); color:black;" onclick="startWorkout()">Training Starten</button>
+    </div>
+
+    <div id="view-runner" class="full-screen-overlay">
+        <div class="header-row">
             <button class="btn-icon" onclick="quitWorkout()">✕</button>
-            <div class="round-badge" id="round-display">Runde 1/3</div>
+            <div style="font-weight:bold; color:#888;" id="round-disp">Runde 1/3</div>
             <button class="btn-icon" onclick="toggleSound()" id="sound-btn">🔊</button>
-        </header>
+        </div>
 
         <div class="timer-container">
-            <svg class="progress-ring" width="280" height="280">
-                <circle stroke="#333" stroke-width="12" fill="transparent" r="120" cx="140" cy="140"/>
-                <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="12" stroke-linecap="round" fill="transparent" r="120" cx="140" cy="140"/>
-            </svg>
-            <div class="timer-value" id="timer-text">00</div>
-            <div class="phase-label" id="phase-text">BEREIT</div>
+            <svg class="progress-ring"><circle stroke="#333" stroke-width="12" fill="transparent" r="120" cx="140" cy="140"/><circle id="prog-circle" class="progress-ring__circle" stroke="white" stroke-width="12" stroke-linecap="round" fill="transparent" r="120" cx="140" cy="140"/></svg>
+            <div class="timer-value" id="time-disp">00</div>
+            <div class="phase-label" id="phase-disp">BEREIT</div>
         </div>
 
-        <div class="info-area">
-            <div class="title-row">
-                <div class="current-ex" id="ex-name">Übung Name</div>
-                <button class="btn-info-small" onclick="showInfo()">i</button>
-            </div>
-            <div class="next-ex" id="next-ex">Nächste: ...</div>
+        <div style="text-align:center; margin-bottom:30px; min-height:80px;">
+            <div style="font-size:24px; font-weight:700; margin-bottom:5px;" id="ex-name">Übung</div>
+            <div style="color:#888; font-size:14px;" id="next-ex">...</div>
         </div>
 
         <div class="controls">
@@ -219,306 +289,293 @@
         </div>
     </div>
 
-    <div id="info-modal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 id="modal-title">Titel</h3>
-            <p id="modal-desc">Text...</p>
-            <button class="btn-close-modal" onclick="closeInfo()">Schließen</button>
-        </div>
-    </div>
-
-    <div id="done" class="screen">
-        <div class="done-content">
-            <div class="big-icon">🎉</div>
-            <h1>Training beendet!</h1>
-            <p style="color: var(--text-dim); margin-top: 10px;">Starke Leistung.</p>
-            <button class="card" style="margin-top: 40px; width: 100%; text-align: center; background: var(--work); color: black;" onclick="switchScreen('home')">
-                <h2>Zurück zum Start</h2>
-            </button>
-        </div>
-    </div>
-
     <script>
-        // CONFIG
-        const WORK_TIME = 40;
-        const REST_TIME = 20;
-        const PREP_TIME = 10;
-        const TOTAL_ROUNDS = 3;
-
-        // DATA
+        // --- DATA ---
         const plans = [
-            { 
-                name: "Tag 1: Po & Beine", 
-                exercises: [
-                    { name: "Kniebeugen", desc: "Füße schulterbreit. Po nach hinten unten setzen, als ob da ein Stuhl wäre. Rücken gerade lassen. Gewicht auf den Fersen. Tief runter, und beim Hochkommen Po fest anspannen." },
-                    { name: "Glute Bridges", desc: "Rückenlage, Beine angewinkelt aufstellen. Hüfte so hoch wie möglich zur Decke drücken. Oben den Po maximal zusammenkneifen und kurz halten." },
-                    { name: "Reverse Lunges", desc: "Großer Ausfallschritt nach hinten. Das hintere Knie fast bis zum Boden senken. Vorderes Knie bleibt stabil über dem Fuß. Abwechselnd links/rechts." },
-                    { name: "Donkey Kicks", desc: "Vierfüßlerstand. Ein Bein angewinkelt nach oben zur Decke treten (Fußsohle zeigt hoch). Rücken nicht durchhängen lassen. Nach 20 Sek. Seite wechseln." }
-                ] 
-            },
-            { 
-                name: "Tag 2: Oberkörper", 
-                exercises: [
-                    { name: "Liegestütze", desc: "Hände etwas breiter als Schultern. Körper bildet eine Linie (Bauch fest!). Brust tief absenken und kraftvoll hochdrücken. Geht auch auf den Knien." },
-                    { name: "Superman Pull", desc: "Bauchlage. Arme und Beine schweben über dem Boden. Arme heranziehen (Ellbogen Richtung Körper), als ob du etwas zu dir ziehst. Rücken anspannen." },
-                    { name: "Trizeps Dips", desc: "Rücklings an Stuhl/Bettkante stützen. Beine lang oder aufgestellt. Po absenken (Ellbogen nach hinten beugen) und wieder hochdrücken." },
-                    { name: "Snow Angels", desc: "Bauchlage, Blick zum Boden. Arme gestreckt vom Po über die Seite bis über den Kopf führen (wie ein Schneeengel), ohne den Boden zu berühren." }
-                ] 
-            },
-            { 
-                name: "Tag 3: Core & Bauch", 
-                exercises: [
-                    { name: "Bicycle Crunches", desc: "Rückenlage, Hände an den Kopf. Rechter Ellbogen zum linken Knie (anderes Bein strecken). Im Wechsel. Schultern bleiben weg vom Boden." },
-                    { name: "Leg Raises", desc: "Rückenlage, Hände flach unter den Po (schützt Rücken). Gestreckte Beine langsam heben und senken. Nicht ganz ablegen! Bauchspannung halten." },
-                    { name: "Plank", desc: "Unterarmstütz. Ellbogen unter den Schultern. Körper ist ein Brett. Bauchnabel fest einziehen, Po nicht durchhängen lassen. Atmen!" },
-                    { name: "Russian Twist", desc: "Hinsetzen, Oberkörper leicht zurücklehnen, Füße in die Luft. Hände berühren abwechselnd links und rechts neben der Hüfte den Boden." }
-                ] 
-            }
+            { name: "Tag 1: Po & Beine", ex: ["Kniebeugen", "Glute Bridges", "Reverse Lunges", "Donkey Kicks"] },
+            { name: "Tag 2: Oberkörper", ex: ["Liegestütze", "Superman Pull", "Trizeps Dips", "Snow Angels"] },
+            { name: "Tag 3: Core & Bauch", ex: ["Bicycle Crunches", "Leg Raises", "Plank", "Russian Twist"] }
         ];
 
-        // STATE
+        // --- STATE ---
+        let appData = {
+            logs: [],
+            totalWorkouts: 0,
+            streak: 0,
+            lastWorkout: null
+        };
+
         let currentPlan = null;
-        let round = 1;
-        let exIndex = 0;
-        let timeLeft = 0;
-        let maxTime = 0;
-        let isWork = false;
-        let isRunning = false;
-        let interval = null;
-        let soundEnabled = true;
+        let round = 1, exIndex = 0, timeLeft = 0, maxTime = 0;
+        let isWork = false, isRunning = false, interval = null;
+        let soundOn = true;
+        let currentChartMode = 'weight';
 
-        // UI VARS
-        const timerText = document.getElementById('timer-text');
-        const phaseText = document.getElementById('phase-text');
-        const circle = document.getElementById('progress-circle');
-        const exName = document.getElementById('ex-name');
-        const nextExInfo = document.getElementById('next-ex');
-        const roundDisplay = document.getElementById('round-display');
-        const mainBtn = document.getElementById('main-btn');
-        const container = document.getElementById('workout');
-        
-        // Modal
-        const modal = document.getElementById('info-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-desc');
+        const WORK_T = 40, REST_T = 20, PREP_T = 10, ROUNDS = 3;
 
-        // Circle Setup
-        const radius = circle.r.baseVal.value;
-        const circumference = radius * 2 * Math.PI;
-        circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference;
-
-        function setProgress(percent) {
-            const offset = circumference - (percent / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-        }
+        // --- INIT ---
+        window.onload = function() {
+            loadData();
+            document.getElementById('input-date').valueAsDate = new Date();
+            renderStats();
+            updateProfile();
+        };
 
         // --- NAVIGATION ---
+        function switchTab(id, el) {
+            document.querySelectorAll('.main-view').forEach(d => d.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            if(id === 'tab-stats') renderChart(); // Refresh chart size
+        }
+        function closeOverlay(id) { document.getElementById(id).classList.remove('active'); }
 
-        function openPreview(id) {
-            currentPlan = plans[id];
-            
-            // Build Preview List
-            document.getElementById('preview-title').innerText = currentPlan.name;
-            const list = document.getElementById('preview-list');
-            list.innerHTML = ""; // clear
-            
-            currentPlan.exercises.forEach((ex, index) => {
-                const item = document.createElement('div');
-                item.className = 'preview-item';
-                item.innerHTML = `
-                    <span class="preview-name">${index + 1}. ${ex.name}</span>
-                    <button class="btn-info-small" onclick="showInfo(${index})">i</button>
-                `;
-                list.appendChild(item);
-            });
-
-            switchScreen('preview');
+        // --- STORAGE & STATS ---
+        function loadData() {
+            const stored = localStorage.getItem('bodyPulseData_v5');
+            if(stored) appData = JSON.parse(stored);
+        }
+        function saveData() {
+            localStorage.setItem('bodyPulseData_v5', JSON.stringify(appData));
+            updateProfile();
         }
 
-        function startActualWorkout() {
-            round = 1;
-            exIndex = 0;
-            startPhase('PREP');
-            switchScreen('workout');
-            if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e => {});
+        function saveStats() {
+            const date = document.getElementById('input-date').value;
+            const w = parseFloat(document.getElementById('input-weight').value);
+            const waist = parseFloat(document.getElementById('input-waist').value);
+            const arm = parseFloat(document.getElementById('input-arm').value);
+            const chest = parseFloat(document.getElementById('input-chest').value);
+
+            if(!date) return alert("Datum fehlt!");
+
+            // Check if entry exists for date, else push
+            let entry = appData.logs.find(l => l.date === date);
+            if(entry) {
+                if(w) entry.weight = w;
+                if(waist) entry.waist = waist;
+                if(arm) entry.arm = arm;
+                if(chest) entry.chest = chest;
+            } else {
+                appData.logs.push({ date, weight: w, waist, arm, chest });
+            }
+            
+            // Sort by date
+            appData.logs.sort((a,b) => new Date(a.date) - new Date(b.date));
+            
+            saveData();
+            alert("Gespeichert!");
+            renderChart();
+            
+            // Clear inputs (except date)
+            document.getElementById('input-weight').value = '';
+            document.getElementById('input-waist').value = '';
+            document.getElementById('input-arm').value = '';
+            document.getElementById('input-chest').value = '';
+        }
+
+        function setChartMode(mode, btn) {
+            currentChartMode = mode;
+            document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderChart();
+        }
+
+        function renderChart() {
+            const container = document.getElementById('chart-area');
+            const data = appData.logs.filter(l => l[currentChartMode]).map(l => ({ val: l[currentChartMode], date: l.date }));
+            
+            if(data.length < 2) {
+                container.innerHTML = '<div class="no-data">Mindestens 2 Einträge nötig</div>';
+                return;
+            }
+
+            // Simple SVG Chart
+            const w = container.offsetWidth;
+            const h = container.offsetHeight;
+            const padding = 20;
+            
+            const vals = data.map(d => d.val);
+            const min = Math.min(...vals) * 0.95;
+            const max = Math.max(...vals) * 1.05;
+            const range = max - min;
+
+            let pathD = "";
+            let dots = "";
+
+            data.forEach((d, i) => {
+                const x = padding + (i / (data.length - 1)) * (w - 2 * padding);
+                const y = h - padding - ((d.val - min) / range) * (h - 2 * padding);
+                pathD += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+                dots += `<circle cx="${x}" cy="${y}" r="4" fill="#000" stroke="#32d74b" stroke-width="2" />`;
+            });
+
+            container.innerHTML = `
+                <svg width="${w}" height="${h}">
+                    <path d="${pathD}" fill="none" stroke="#32d74b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${dots}
+                </svg>
+            `;
+        }
+
+        function updateProfile() {
+            document.getElementById('stat-workouts').innerText = appData.totalWorkouts;
+            document.getElementById('stat-streak').innerText = appData.streak;
+        }
+
+        function calcBMI() {
+            const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            if(h && w) {
+                const bmi = (w / (h*h)).toFixed(1);
+                document.getElementById('bmi-result').innerText = `Dein BMI: ${bmi}`;
+            }
+        }
+
+        function resetData() {
+            if(confirm("Wirklich alles löschen?")) {
+                localStorage.removeItem('bodyPulseData_v5');
+                location.reload();
+            }
+        }
+
+        // --- WORKOUT LOGIC ---
+        function openPreview(id) {
+            currentPlan = plans[id];
+            const list = document.getElementById('preview-list');
+            list.innerHTML = "";
+            currentPlan.ex.forEach((e, i) => {
+                list.innerHTML += `<div style="padding:15px; border-bottom:1px solid #333;">${i+1}. ${e}</div>`;
+            });
+            document.getElementById('view-preview').classList.add('active');
+        }
+
+        function startWorkout() {
+            closeOverlay('view-preview');
+            document.getElementById('view-runner').classList.add('active');
+            round = 1; exIndex = 0; startPhase('PREP');
+            if('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(e=>{});
         }
 
         function quitWorkout() {
-            clearInterval(interval);
-            isRunning = false;
-            switchScreen('home');
+            clearInterval(interval); isRunning = false;
+            closeOverlay('view-runner');
         }
 
-        function switchScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        function workoutComplete() {
+            quitWorkout();
+            
+            // Gamification Logic
+            appData.totalWorkouts++;
+            
+            const today = new Date().toDateString();
+            const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+            
+            if(appData.lastWorkout === yesterday.toDateString()) {
+                appData.streak++;
+            } else if(appData.lastWorkout !== today) {
+                appData.streak = 1; // Reset or Start
+            }
+            appData.lastWorkout = today;
+            saveData();
+            
+            alert("Training beendet! Starke Leistung! 🔥");
         }
 
-        // --- TIMER LOGIC ---
+        // --- TIMER ENGINE ---
+        const circle = document.getElementById('prog-circle');
+        const radius = circle.r.baseVal.value;
+        const circ = radius * 2 * Math.PI;
+        circle.style.strokeDasharray = `${circ} ${circ}`;
 
         function startPhase(type) {
             isWork = (type === 'WORK');
-            
-            if (type === 'PREP') {
-                timeLeft = PREP_TIME; maxTime = PREP_TIME;
-                phaseText.innerText = "BEREIT MACHEN";
-                exName.innerText = currentPlan.exercises[0].name;
-                nextExInfo.innerText = "";
-                container.classList.remove('state-work', 'state-rest');
-            } else if (type === 'WORK') {
-                timeLeft = WORK_TIME; maxTime = WORK_TIME;
-                phaseText.innerText = "GO / ARBEITEN";
-                exName.innerText = currentPlan.exercises[exIndex].name;
-                nextExInfo.innerText = "Danach: Pause";
-                container.classList.add('state-work'); container.classList.remove('state-rest');
-                playBeep(800, 'start');
+            const cont = document.getElementById('view-runner');
+            const phTxt = document.getElementById('phase-disp');
+            const exTxt = document.getElementById('ex-name');
+            const nxTxt = document.getElementById('next-ex');
+
+            if(type === 'PREP') {
+                timeLeft = maxTime = PREP_T;
+                phTxt.innerText = "BEREIT MACHEN";
+                exTxt.innerText = currentPlan.ex[0];
+                nxTxt.innerText = "";
+                cont.className = "full-screen-overlay active";
+            } else if(type === 'WORK') {
+                timeLeft = maxTime = WORK_T;
+                phTxt.innerText = "GO!";
+                exTxt.innerText = currentPlan.ex[exIndex];
+                nxTxt.innerText = "Danach: Pause";
+                cont.className = "full-screen-overlay active state-work";
+                playBeep(800);
             } else {
-                timeLeft = REST_TIME; maxTime = REST_TIME;
-                phaseText.innerText = "PAUSE";
-                exName.innerText = "Erholen";
-                
-                let nextIdx = exIndex + 1;
-                let nextTxt = "";
-                if (nextIdx < currentPlan.exercises.length) nextTxt = currentPlan.exercises[nextIdx].name;
-                else if (round < TOTAL_ROUNDS) nextTxt = currentPlan.exercises[0].name;
-                else nextTxt = "Training beendet";
-                
-                nextExInfo.innerText = "Nächste: " + nextTxt;
-                container.classList.add('state-rest'); container.classList.remove('state-work');
-                playBeep(400, 'end');
+                timeLeft = maxTime = REST_T;
+                phTxt.innerText = "PAUSE";
+                exTxt.innerText = "Erholen";
+                let nxt = (exIndex+1 < currentPlan.ex.length) ? currentPlan.ex[exIndex+1] : ((round<ROUNDS) ? currentPlan.ex[0] : "Ende");
+                nxTxt.innerText = "Nächste: " + nxt;
+                cont.className = "full-screen-overlay active state-rest";
+                playBeep(400);
             }
-            updateTimerUI();
-            if (!isRunning) toggleTimer();
+            updateTimer();
+            if(!isRunning) toggleTimer();
         }
 
         function tick() {
-            if (timeLeft > 0) {
+            if(timeLeft > 0) {
                 timeLeft--;
-                updateTimerUI();
-                if (timeLeft > 0 && timeLeft <= 3) playBeep(600, 'short');
+                updateTimer();
+                if(timeLeft <= 3 && timeLeft > 0) playBeep(600, 'short');
             } else {
-                nextPhase();
-            }
-        }
-
-        function nextPhase() {
-            if (phaseText.innerText === 'BEREIT MACHEN') {
-                 startPhase('WORK');
-            } else if (!isWork) {
-                startPhase('WORK');
-            } else {
-                if (isWork) {
-                    exIndex++;
-                    if (exIndex >= currentPlan.exercises.length) {
-                        exIndex = 0; round++;
-                        if (round > TOTAL_ROUNDS) { finish(); return; }
+                if(document.getElementById('phase-disp').innerText === "BEREIT MACHEN") {
+                    startPhase('WORK');
+                } else if(isWork) {
+                    // Check finish
+                    if(exIndex >= currentPlan.ex.length -1 && round >= ROUNDS) {
+                        workoutComplete(); return;
                     }
+                    startPhase('REST');
+                } else {
+                    exIndex++;
+                    if(exIndex >= currentPlan.ex.length) { exIndex = 0; round++; }
+                    document.getElementById('round-disp').innerText = `Runde ${round}/${ROUNDS}`;
+                    startPhase('WORK');
                 }
-                startPhase('REST'); 
             }
-            roundDisplay.innerText = `Runde ${round}/${TOTAL_ROUNDS}`;
         }
 
-        function updateTimerUI() {
-            timerText.innerText = timeLeft;
-            let percent = (timeLeft / maxTime) * 100;
-            setProgress(100 - percent); 
+        function updateTimer() {
+            document.getElementById('time-disp').innerText = timeLeft;
+            const offset = circ - ((timeLeft / maxTime) * circ);
+            circle.style.strokeDashoffset = isWork ? offset : (circ - offset); // Count down vs up visual
         }
 
         function toggleTimer() {
-            if (isRunning) {
-                clearInterval(interval);
-                isRunning = false;
-                mainBtn.innerText = "▶";
-                mainBtn.classList.remove('pause'); mainBtn.classList.add('play');
+            if(isRunning) {
+                clearInterval(interval); isRunning=false;
+                document.getElementById('main-btn').innerText = "▶";
+                document.getElementById('main-btn').className = "btn-control play";
             } else {
-                interval = setInterval(tick, 1000);
-                isRunning = true;
-                mainBtn.innerText = "⏸";
-                mainBtn.classList.remove('play'); mainBtn.classList.add('pause');
+                interval = setInterval(tick, 1000); isRunning=true;
+                document.getElementById('main-btn').innerText = "⏸";
+                document.getElementById('main-btn').className = "btn-control pause";
                 initAudio();
             }
         }
 
-        function finish() {
-            clearInterval(interval);
-            switchScreen('done');
-            playBeep(1000, 'success');
-        }
-
-        // --- INFO MODAL ---
-        function showInfo(specificIndex) {
-            // Wenn der User im Preview-Screen klickt, übergeben wir den Index.
-            // Wenn der User im Workout-Screen klickt, ist specificIndex undefined -> wir nehmen aktuelle Logik
-            
-            let exToShow;
-
-            if (specificIndex !== undefined) {
-                // Aufruf aus der Preview-Liste
-                exToShow = currentPlan.exercises[specificIndex];
-            } else {
-                // Aufruf aus dem aktiven Timer
-                if (isRunning) toggleTimer(); // Auto-Pause
-                
-                // Pause-Logik: Info Button soll nächste Übung zeigen
-                if (phaseText.innerText === "PAUSE" || phaseText.innerText === "Erholen") {
-                     exToShow = currentPlan.exercises[exIndex]; // exIndex ist in Pause schon auf Next gesetzt
-                     modalTitle.innerText = "Nächste: " + exToShow.name;
-                } else {
-                     exToShow = currentPlan.exercises[exIndex];
-                     modalTitle.innerText = exToShow.name;
-                }
-            }
-
-            // Wenn es Preview war (specificIndex gesetzt), dann normalen Titel nutzen
-            if (specificIndex !== undefined) {
-                modalTitle.innerText = exToShow.name;
-            } else if (phaseText.innerText !== "PAUSE" && phaseText.innerText !== "Erholen") {
-                // Auch bei normalem Work
-                modalTitle.innerText = exToShow.name;
-            }
-
-            modalDesc.innerText = exToShow.desc;
-            modal.style.display = 'flex';
-        }
-
-        function closeInfo() {
-            modal.style.display = 'none';
-        }
-
         // --- AUDIO ---
-        let audioCtx;
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
-
+        let audCtx;
+        function initAudio() { if(!audCtx) audCtx = new (window.AudioContext||window.webkitAudioContext)(); if(audCtx.state==='suspended') audCtx.resume(); }
+        function toggleSound() { soundOn = !soundOn; document.getElementById('sound-btn').style.opacity = soundOn?1:0.5; }
         function playBeep(freq, type) {
-            if (!soundEnabled || !audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.frequency.value = freq;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
-            
-            if (type === 'success') {
-                osc.start(now); osc.stop(now + 0.1);
-                setTimeout(() => playBeep(1200, 'short'), 150);
-                setTimeout(() => playBeep(1500, 'short'), 300);
-                return;
-            }
-            osc.start(now);
-            gain.gain.exponentialRampToValueAtTime(0.00001, now + (type === 'short' ? 0.1 : 0.5));
-            osc.stop(now + (type === 'short' ? 0.1 : 0.5));
+            if(!soundOn || !audCtx) return;
+            const o = audCtx.createOscillator(); const g = audCtx.createGain();
+            o.frequency.value = freq; o.connect(g); g.connect(audCtx.destination);
+            const now = audCtx.currentTime;
+            o.start(now); g.gain.exponentialRampToValueAtTime(0.0001, now + (type==='short'?0.1:0.5)); o.stop(now+(type==='short'?0.1:0.5));
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('sound-btn').innerText = soundEnabled ? "🔊" : "🔇";
-            document.getElementById('sound-btn').style.opacity = soundEnabled ? "1" : "0.5";
-        }
     </script>
 </body>
 </html>
