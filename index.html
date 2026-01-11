@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse DEFINITIVE</title>
+    <title>Body Pulse</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
     <style>
         :root {
             --bg: #000000;
-            --surface: #0a0a0a;
-            --surface-light: #141414;
-            --border: #222222;
+            --surface: #111111;
+            --surface-light: #1c1c1e;
+            --border: #2c2c2e;
             --primary: #ffffff;
             --accent: #32d74b;
-            --secondary: #666666;
+            --secondary: #8e8e93;
             --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
@@ -31,85 +31,92 @@
             padding-top: var(--safe-top); overflow: hidden;
         }
 
-        /* --- TYPO --- */
-        h1 { font-size: 24px; font-weight: 800; margin: 0 0 5px; letter-spacing: 0.5px; }
+        /* --- TYPOGRAPHY --- */
+        h1 { font-size: 28px; font-weight: 800; margin: 0 0 5px; letter-spacing: 0.5px; }
         h2 { font-size: 11px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
-        .val-big { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+        .val-big { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
         .label { color: var(--secondary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .sub-text { font-size: 14px; color: var(--secondary); }
+        .sub-text { font-size: 13px; color: var(--secondary); }
 
         /* --- LAYOUT --- */
-        .screen { display: none; flex-direction: column; height: 100%; padding: 20px; padding-bottom: 100px; overflow-y: auto; }
+        .screen { 
+            display: none; flex-direction: column; height: 100%; 
+            padding: 20px; padding-bottom: 110px; overflow-y: auto; 
+            z-index: 10; position: relative;
+        }
         .screen.active { display: flex; animation: fade 0.3s ease; }
         
         .card { 
             background: var(--surface); padding: 20px; border: 1px solid var(--border); 
-            margin-bottom: 15px; border-radius: 12px;
-            /* Subtle shadow for depth */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 15px; border-radius: 14px;
         }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* --- BUTTONS --- */
+        /* --- CONTROLS --- */
         .btn {
-            width: 100%; padding: 18px; border: 1px solid var(--primary); background: var(--primary); 
-            color: var(--bg); font-size: 14px; font-weight: 800; text-transform: uppercase; 
-            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 1px; border-radius: 8px;
+            width: 100%; padding: 18px; border: none; background: var(--primary); 
+            color: var(--bg); font-size: 15px; font-weight: 700; text-transform: uppercase; 
+            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 0.5px; border-radius: 10px;
         }
-        .btn:active { transform: scale(0.98); opacity: 0.8; }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
-        .btn-close { background: transparent; border: none; font-size: 24px; color: var(--primary); padding: 10px; }
+        .btn-close { background: transparent; border: none; font-size: 24px; color: var(--secondary); padding: 10px; }
 
-        /* --- INPUTS --- */
         input:not([type="checkbox"]):not([type="range"]) {
             width: 100%; background: var(--surface-light); border: 1px solid var(--border);
-            color: var(--primary); padding: 12px; font-size: 16px; font-family: var(--font);
-            border-radius: 8px; margin-bottom: 20px;
+            color: var(--primary); padding: 14px; font-size: 16px; font-family: var(--font);
+            border-radius: 8px; margin-bottom: 20px; appearance: none;
         }
         input:focus { border-color: var(--primary); }
-        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
         input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
         input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
 
-        /* --- GRAPH --- */
+        /* --- GRAPH & CHART --- */
         .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
         svg.chart { width: 100%; height: 100%; overflow: visible; }
         polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
         .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
-        /* --- WIZARD --- */
-        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 500; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px; }
+        /* --- WIZARD OVERLAY --- */
+        .full-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
+            z-index: 2000; display: none; flex-direction: column; padding: var(--safe-top) 25px 25px 25px;
+            overflow-y: auto;
+        }
         .wiz-step { display: none; flex-direction: column; height: 100%; }
         .wiz-step.active { display: flex; animation: slide 0.3s ease; }
-        .opt-item { padding: 20px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; border-radius: 8px; }
-        .opt-item.selected { border-color: var(--primary); background: var(--surface-light); }
+        .opt-item { 
+            padding: 22px; border: 1px solid var(--border); margin-bottom: 12px; 
+            cursor: pointer; border-radius: 12px; background: var(--surface); font-weight: 500;
+        }
+        .opt-item.selected { border-color: var(--primary); background: var(--surface-light); color: var(--primary); }
 
-        /* --- CIRCLE TIMER (FIXED SIZE) --- */
+        /* --- TIMER RINGS --- */
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        /* Reduced size to ensure no cut-off */
         .progress-ring { width: 260px; height: 260px; transform: rotate(-90deg); }
         .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
         .time-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .time-huge { font-size: 80px; font-weight: 700; font-family: monospace; letter-spacing: -3px; line-height: 1; }
-        .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; }
+        .phase-lbl { font-size: 16px; font-weight: 600; letter-spacing: 4px; margin-top: 10px; display: block; color: var(--accent); }
         
-        /* Mini Goal Circle (FIXED SIZE) */
         .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
 
         /* --- LISTS --- */
         .check-item { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 15px; }
         .hist-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 
-        /* --- NAV --- */
+        /* --- NAVIGATION --- */
         .nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-around; padding-bottom: var(--safe-bottom); z-index: 100;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 85px;
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(20px);
+            display: flex; justify-content: space-around; padding-bottom: var(--safe-bottom); z-index: 1000;
         }
-        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.3; font-size: 22px; cursor: pointer; transition: 0.2s; }
-        .nav-btn.active { opacity: 1; transform: scale(1.1); }
+        .nav-btn { flex: 1; display: flex; justify-content: center; align-items: center; opacity: 0.4; font-size: 24px; cursor: pointer; transition: 0.2s; }
+        .nav-btn.active { opacity: 1; transform: scale(1.1); color: var(--primary); }
 
         @keyframes fade { from{opacity:0;} to{opacity:1;} }
         @keyframes slide { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
@@ -117,7 +124,7 @@
 </head>
 <body>
 
-    <div id="view-onboarding" class="full-overlay" style="z-index:900;">
+    <div id="view-onboarding" class="full-overlay">
         <div id="wiz-1" class="wiz-step active">
             <h1 style="margin-top:20px;">ZIELSETZUNG</h1>
             <p class="label">Schritt 1 von 3</p>
@@ -149,17 +156,17 @@
                     <input type="number" id="wiz-weight" placeholder="Gewicht (kg)">
                 </div>
             </div>
-            <button class="btn" style="margin-top:auto" onclick="wizFinish()">FERTIGSTELLEN</button>
+            <button class="btn" style="margin-top:auto" onclick="wizFinish()">SETUP ABSCHLIESSEN</button>
         </div>
     </div>
 
     <div id="tab-home" class="screen active">
         <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:20px;">
             <div>
-                <span class="label" id="greeting">GUTEN TAG</span>
+                <span class="label" id="greeting">HALLO</span>
                 <h1>COCKPIT</h1>
             </div>
-            <div style="font-size:12px; border:1px solid var(--border); padding:5px 10px; border-radius:20px;" id="lvl-badge">LVL 1</div>
+            <div style="font-size:12px; background:var(--surface-light); border:1px solid var(--border); padding:5px 12px; border-radius:20px;" id="lvl-badge">LVL 1</div>
         </div>
 
         <div class="stat-grid">
@@ -177,22 +184,22 @@
             <div>
                 <span class="label">WOCHENZIEL</span>
                 <div class="val-big" id="week-val">0 / 3</div>
-                <div class="sub-text" style="font-size:12px; margin-top:4px;">Bleib dran!</div>
+                <div class="sub-text" style="font-size:12px; margin-top:4px;">Bleib diszipliniert!</div>
             </div>
             <div style="position:relative; width:60px; height:60px;">
                 <svg class="goal-ring" width="60" height="60" viewBox="0 0 60 60">
-                    <circle stroke="#222" stroke-width="4" fill="transparent" r="24" cx="30" cy="30"/>
-                    <circle id="week-circle" stroke="white" stroke-width="4" stroke-linecap="round" fill="transparent" r="24" cx="30" cy="30" stroke-dasharray="150 150" stroke-dashoffset="150"/>
+                    <circle stroke="#222" stroke-width="5" fill="transparent" r="24" cx="30" cy="30"/>
+                    <circle id="week-circle" stroke="white" stroke-width="5" stroke-linecap="round" fill="transparent" r="24" cx="30" cy="30" stroke-dasharray="150 150" stroke-dashoffset="150"/>
                 </svg>
             </div>
         </div>
 
-        <div class="card" style="border-color: var(--primary);">
+        <div class="card" style="border: 1px solid var(--primary);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2>HEUTE</h2>
                 <span style="font-size:10px; color:#666;" id="last-workout">Last: Nie</span>
             </div>
-            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px; color:var(--secondary);" id="next-title">Lade Plan...</div>
+            <div style="font-size: 22px; font-weight: 700; margin-bottom: 5px; color:var(--primary);" id="next-title">Lade Plan...</div>
             <div style="color: var(--secondary); font-size: 14px; margin-bottom: 20px;" id="next-desc">...</div>
             <button class="btn" onclick="openPlayer()">TRAINING STARTEN</button>
         </div>
@@ -227,30 +234,18 @@
         </div>
 
         <div class="card">
-            <h2>AKTUELLE FORM</h2>
-            <div class="input-row" style="margin-bottom:10px;">
-                <div><span class="label">GEWICHT</span><span class="val-big" id="st-w">--</span></div>
-                <div><span class="label">BAUCH</span><span class="val-big" id="st-b">--</span></div>
-            </div>
-            <div class="input-row">
-                <div><span class="label">BMI</span><span class="val-big" id="disp-bmi">--</span></div>
-                <div><span class="label">OBERSCHENKEL</span><span class="val-big" id="st-l">--</span></div>
-            </div>
-        </div>
-
-        <div class="card">
             <h2>MESSUNG EINTRAGEN</h2>
             <input type="date" id="log-date">
             <div class="input-row">
-                <div><span class="label">Gewicht (kg)</span><input type="number" id="log-weight" placeholder="0.0"></div>
-                <div><span class="label">Bauch (cm)</span><input type="number" id="log-waist" placeholder="0"></div>
+                <div><span class="label">Gewicht</span><input type="number" id="log-weight" placeholder="kg"></div>
+                <div><span class="label">Bauch</span><input type="number" id="log-waist" placeholder="cm"></div>
             </div>
             <div class="input-row">
-                <div><span class="label">Po/Hüfte (cm)</span><input type="number" id="log-hips" placeholder="0"></div>
-                <div><span class="label">Brust (cm)</span><input type="number" id="log-chest" placeholder="0"></div>
+                <div><span class="label">Po/Hüfte</span><input type="number" id="log-hips" placeholder="cm"></div>
+                <div><span class="label">Brust</span><input type="number" id="log-chest" placeholder="cm"></div>
             </div>
              <div class="input-row">
-                <div><span class="label">Oberschenkel (cm)</span><input type="number" id="log-thigh" placeholder="0"></div>
+                <div><span class="label">Oberschenkel</span><input type="number" id="log-thigh" placeholder="cm"></div>
                 <div></div>
             </div>
             <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
@@ -266,25 +261,17 @@
         <h1>SYSTEM</h1>
         
         <div class="card">
-            <h2>TRAININGS-KONFIG</h2>
-            
+            <h2>ZIEL & TIMER</h2>
             <div style="margin-bottom:25px;">
-                <div class="toggle-row">
-                    <span>Wochenziel: <b id="lbl-goal">3</b> x</span>
-                </div>
+                <div class="toggle-row"><span>Wochenziel: <b id="lbl-goal">3</b> x</span></div>
                 <input type="range" min="1" max="7" step="1" id="rng-goal" oninput="updateRangeLbl()" onchange="saveSettings()">
             </div>
-
             <div style="margin-bottom:20px;">
-                <div class="toggle-row">
-                    <span>Belastung: <b id="lbl-work">40</b> Sek</span>
-                </div>
+                <div class="toggle-row"><span>Belastung: <b id="lbl-work">40</b> Sek</span></div>
                 <input type="range" min="20" max="90" step="5" id="rng-work" oninput="updateRangeLbl()" onchange="saveSettings()">
             </div>
             <div>
-                <div class="toggle-row">
-                    <span>Pause: <b id="lbl-rest">20</b> Sek</span>
-                </div>
+                <div class="toggle-row"><span>Pause: <b id="lbl-rest">20</b> Sek</span></div>
                 <input type="range" min="10" max="60" step="5" id="rng-rest" oninput="updateRangeLbl()" onchange="saveSettings()">
             </div>
         </div>
@@ -300,7 +287,7 @@
         <div class="card">
             <h2>DEIN PROFIL</h2>
             <div class="input-row">
-                <div><span class="label">Größe (cm)</span><input type="number" id="set-height" onchange="saveSettings()"></div>
+                <div><span class="label">Größe</span><input type="number" id="set-height" onchange="saveSettings()"></div>
                 <div><span class="label">Alter</span><input type="number" id="set-age" onchange="saveSettings()"></div>
             </div>
         </div>
@@ -310,11 +297,11 @@
             <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
             <input type="file" id="import-input" style="display:none" onchange="importData(this)">
             <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
-            <button class="btn btn-outline" style="margin-top:20px; color:#666; border-color:#333;" onclick="resetApp()">NEUSTART (RESET)</button>
+            <button class="btn btn-outline" style="margin-top:20px; color:#c0392b; border-color:#c0392b;" onclick="resetApp()">WERKSEINSTELLUNGEN</button>
         </div>
     </div>
 
-    <div id="view-player" class="full-overlay">
+    <div id="view-player" class="full-overlay" style="background:#000000; z-index:3000;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-close" onclick="closePlayer()">✕</button>
             <span style="font-size:12px; letter-spacing:1px;" id="round-disp">RUNDE 1/3</span>
@@ -342,19 +329,19 @@
         <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 600;">
+    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 4000;">
         <button class="btn-close" onclick="document.getElementById('view-info').style.display='none'">✕</button>
         <h1 id="info-title" style="margin-top:40px;">TITEL</h1>
         <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;">...</p>
     </div>
 
-    <div id="view-rpe" class="full-overlay" style="z-index: 700; justify-content:center;">
+    <div id="view-rpe" class="full-overlay" style="z-index: 4000; justify-content:center;">
         <h1 style="text-align:center;">INTENSITÄT (1-10)</h1>
         <input type="range" min="1" max="10" value="5" id="rpe-slider" style="margin: 40px 0;">
         <button class="btn" onclick="finishWorkout()">ABSCHLIESSEN</button>
     </div>
 
-    <div id="view-supps" class="full-overlay" style="z-index: 800; justify-content:center; text-align:center;">
+    <div id="view-supps" class="full-overlay" style="z-index: 4000; justify-content:center; text-align:center;">
         <h1>POST-WORKOUT</h1>
         <p class="label" style="margin-bottom:30px;">Vergiss deine Nährstoffe nicht!</p>
         <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
@@ -373,7 +360,9 @@
     </nav>
 
     <script>
-        // --- DATA ---
+        // --- KEY ---
+        const STORE_KEY = 'bp_v1_clean'; // Changing key forces reset for user
+        
         const DB = {
             bauch: [ {n:"Crunches", d:"Rückenlage. Schultern heben."}, {n:"Leg Raises", d:"Beine gestreckt heben."}, {n:"Plank", d:"Unterarmstütz halten."}, {n:"Russian Twist", d:"Oberkörper drehen."} ],
             beine: [ {n:"Squats", d:"Kniebeugen."}, {n:"Lunges", d:"Ausfallschritte."}, {n:"Glute Bridges", d:"Hüfte heben."}, {n:"Calf Raises", d:"Wadenheben."} ],
@@ -391,29 +380,30 @@
         let wiz = { goal: '', parts: [] };
         let ac; let sound = true;
 
-        // Circle UI Setup (New sizes)
+        // Circle UI
         const circle = document.getElementById('progress-circle');
-        // Radius is now 115. Circumference = 2 * PI * r
         const circumference = 2 * Math.PI * 115; 
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
         circle.style.strokeDashoffset = circumference;
-
-        // Goal Circle Setup (New size: r=24)
-        const goalCirc = 2 * Math.PI * 24; // approx 150.8
+        const goalCirc = 2 * Math.PI * 24;
         document.getElementById('week-circle').style.strokeDasharray = `${goalCirc} ${goalCirc}`;
-        document.getElementById('week-circle').style.strokeDashoffset = goalCirc;
-
 
         // --- INIT ---
         window.onload = () => {
-            const d = localStorage.getItem('bp_definitive_v17');
+            const d = localStorage.getItem(STORE_KEY);
+            let hasData = false;
             if(d) {
-                const loaded = JSON.parse(d);
-                app = { ...app, ...loaded };
-                if(app.settings.weeklyGoal === undefined) app.settings.weeklyGoal = 3;
+                try {
+                    const loaded = JSON.parse(d);
+                    if(loaded && loaded.profile && loaded.profile.h) {
+                        app = { ...app, ...loaded };
+                        hasData = true;
+                    }
+                } catch(e) { console.log("Data corrupted"); }
             }
             
-            if(!app.profile.h || !app.goal) {
+            if(!hasData) {
+                // FORCE ONBOARDING
                 document.getElementById('view-onboarding').style.display = 'flex';
                 document.getElementById('wiz-1').classList.add('active');
             } else {
@@ -422,17 +412,18 @@
         };
 
         function initApp() {
-            // Dynamic Greeting
+            // Hide Onboarding explicitly
+            document.getElementById('view-onboarding').style.display = 'none';
+
+            // Greeting
             const h = new Date().getHours();
             let greet = "GUTEN ABEND";
-            if(h < 11) greet = "GUTEN MORGEN";
-            else if(h < 18) greet = "GUTEN TAG";
+            if(h < 11) greet = "GUTEN MORGEN"; else if(h < 18) greet = "GUTEN TAG";
             document.getElementById('greeting').innerText = greet;
 
+            // Load Values
             document.getElementById('set-height').value = app.profile.h;
             document.getElementById('set-age').value = app.profile.a;
-            
-            // Set Controls
             document.getElementById('tog-supps').checked = app.settings.supps;
             document.getElementById('rng-work').value = app.settings.work;
             document.getElementById('rng-rest').value = app.settings.rest;
@@ -441,6 +432,7 @@
             updateRangeLbl();
             document.getElementById('log-date').valueAsDate = new Date();
 
+            if(app.plan.length === 0) genPlan(); // Safety
             updateUI();
         }
 
@@ -452,7 +444,10 @@
             if(i>-1) { wiz[k].splice(i,1); el.classList.remove('selected'); }
             else { wiz[k].push(v); el.classList.add('selected'); }
         }
-        function wizNext(s) { document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); document.getElementById('wiz-'+(s+1)).classList.add('active'); }
+        function wizNext(s) { 
+            document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); 
+            document.getElementById('wiz-'+(s+1)).classList.add('active'); 
+        }
         function wizFinish() {
             const h = document.getElementById('wiz-height').value;
             const w = document.getElementById('wiz-weight').value;
@@ -468,6 +463,7 @@
 
         function genPlan() {
             let pool = [];
+            if(app.parts.length === 0) app.parts = ['bauch','beine','ober','cardio']; // Fallback
             app.parts.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
             pool.sort(()=>Math.random()-0.5);
             app.plan = [];
@@ -481,103 +477,75 @@
 
         // --- UI ---
         function updateUI() {
+            if(!app.plan || app.plan.length === 0) return;
             const plan = app.plan[app.planIdx % app.plan.length];
             document.getElementById('next-title').innerText = plan.name;
-            document.getElementById('next-title').style.color = var(--primary); // Reset color
             document.getElementById('next-desc').innerText = plan.ex.map(e=>e.n).join(', ');
+            document.getElementById('disp-count').innerText = app.history.length;
             
-            const count = app.history.length;
-            document.getElementById('disp-count').innerText = count;
-            document.getElementById('lvl-badge').innerText = "LVL " + (Math.floor(count/5)+1);
-            
-            // LIFETIME KCAL
+            // Calc Kcal
             let totalKcal = 0;
             app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
-            // MONTHLY PERFORMANCE (NEW)
+            // Month Stats
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            
-            let monthWorkouts = 0;
-            let monthKcal = 0;
-            
+            let mWork = 0; let mKcal = 0;
             app.history.forEach(h => {
-                const hDate = new Date(h.date);
-                if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) {
-                    monthWorkouts++;
-                    if(h.kcal) monthKcal += parseInt(h.kcal);
+                const hd = new Date(h.date);
+                if(hd.getMonth() === now.getMonth() && hd.getFullYear() === now.getFullYear()) {
+                    mWork++; if(h.kcal) mKcal += parseInt(h.kcal);
                 }
             });
-            document.getElementById('month-workouts').innerText = monthWorkouts;
-            document.getElementById('month-kcal').innerText = monthKcal.toLocaleString();
+            document.getElementById('month-workouts').innerText = mWork;
+            document.getElementById('month-kcal').innerText = mKcal.toLocaleString();
 
-
-            // Stats Body
+            // Body Stats
             let last = { w: app.profile.w };
             if(app.logs.length > 0) last = app.logs[app.logs.length-1];
-
             document.getElementById('st-w').innerText = last.w + " kg";
             document.getElementById('st-b').innerText = (last.cm || "--") + " cm";
             document.getElementById('st-h').innerText = (last.hips || "--") + " cm";
             document.getElementById('st-c').innerText = (last.chest || "--") + " cm";
             document.getElementById('st-l').innerText = (last.thigh || "--") + " cm";
-            
-            const h_m = app.profile.h / 100;
-            const bmi = (last.w / (h_m*h_m)).toFixed(1);
-            document.getElementById('disp-bmi').innerText = bmi;
 
             // Weekly Goal
             const startOfWeek = new Date();
             startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1);
             startOfWeek.setHours(0,0,0,0);
-            
-            const thisWeekWorkouts = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
-            const target = parseInt(app.settings.weeklyGoal);
-            document.getElementById('week-val').innerText = `${thisWeekWorkouts} / ${target}`;
-            const pct = Math.min(thisWeekWorkouts / target, 1);
+            const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
+            const target = parseInt(app.settings.weeklyGoal) || 3;
+            document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
+            const pct = Math.min(thisWeek / target, 1);
             document.getElementById('week-circle').style.strokeDashoffset = goalCirc - (goalCirc * pct);
-            
-            if(pct >= 1) document.getElementById('week-circle').setAttribute("stroke", "#32d74b");
-            else document.getElementById('week-circle').setAttribute("stroke", "white");
+            document.getElementById('week-circle').setAttribute("stroke", pct>=1 ? "#32d74b" : "white");
 
             if(app.history.length > 0) {
-                const lastDate = new Date(app.history[app.history.length-1].date);
-                const diff = Math.floor((new Date() - lastDate) / (1000*60*60*24));
+                const diff = Math.floor((new Date() - new Date(app.history[app.history.length-1].date)) / (86400000));
                 document.getElementById('last-workout').innerText = diff === 0 ? "Last: Heute" : `Last: Vor ${diff} Tagen`;
             }
 
-            renderChart();
-            renderHist();
+            renderChart(); renderHist();
         }
 
         function renderChart() {
-            const svg = document.getElementById('weight-chart');
-            svg.innerHTML = "";
+            const svg = document.getElementById('weight-chart'); svg.innerHTML = "";
             if(app.logs.length < 2) return;
-
             const data = app.logs.slice(-10).map(l => parseFloat(l.w));
-            const max = Math.max(...data) + 0.5;
-            const min = Math.min(...data) - 0.5;
+            const max = Math.max(...data) + 1; const min = Math.min(...data) - 1;
             const range = max - min;
-            const stepX = 100 / (data.length - 1);
-
             let points = "";
             data.forEach((val, i) => {
-                const x = i * stepX;
-                // Ensure range is not zero to avoid division by zero
-                const y = range === 0 ? 50 : 100 - ((val - min) / range * 100);
+                const x = i * (100 / (data.length - 1));
+                const y = 100 - ((val - min) / range * 100);
                 points += `${x},${y} `;
                 const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.setAttribute("r", 3);
                 dot.setAttribute("class", "chart-dot");
                 svg.appendChild(dot);
             });
-
-            const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            polyline.setAttribute("points", points);
-            svg.prepend(polyline);
+            const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+            pl.setAttribute("points", points); svg.prepend(pl);
         }
 
         function updateRangeLbl() {
@@ -595,35 +563,25 @@
             if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
         }
         function closePlayer() { clearInterval(sess.int); sess.run = false; document.getElementById('view-player').style.display = 'none'; }
-
+        
         function startPhase(type) {
             sess.work = (type === 'WORK');
             const ph = document.getElementById('phase-disp');
             const skip = document.getElementById('skip-btn');
-            
             if(type === 'PREP') {
-                sess.t = sess.max = 10;
-                ph.innerText = "READY";
+                sess.t = sess.max = 10; ph.innerText = "READY";
                 document.getElementById('ex-name').innerText = sess.active[0].n;
-                document.getElementById('next-ex').innerText = "";
-                skip.style.display='none';
+                document.getElementById('next-ex').innerText = ""; skip.style.display='none';
             } else if(type === 'WORK') {
-                sess.t = sess.max = parseInt(app.settings.work);
-                ph.innerText = "WORK"; ph.style.color = "#fff";
+                sess.t = sess.max = parseInt(app.settings.work); ph.innerText = "WORK"; ph.style.color = "#fff";
                 document.getElementById('ex-name').innerText = sess.active[sess.idx].n;
-                document.getElementById('next-ex').innerText = "Danach: Pause";
-                skip.style.display='none';
-                beep(400, 800);
+                document.getElementById('next-ex').innerText = "Pause folgt"; skip.style.display='none'; beep(400, 800);
             } else {
-                sess.t = sess.max = parseInt(app.settings.rest);
-                ph.innerText = "REST"; ph.style.color = "#666";
+                sess.t = sess.max = parseInt(app.settings.rest); ph.innerText = "REST"; ph.style.color = "#888";
                 let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<3?sess.active[0].n:"ENDE");
-                document.getElementById('next-ex').innerText = "Next: " + n;
-                skip.style.display='block';
-                beep(600, 300);
+                document.getElementById('next-ex').innerText = "Next: " + n; skip.style.display='block'; beep(600, 300);
             }
-            drawTimer();
-            if(!sess.run) toggleTimer();
+            drawTimer(); if(!sess.run) toggleTimer();
         }
 
         function tick() { if(sess.t > 0) { sess.t--; drawTimer(); if(sess.t <= 3) beep(1000, 1000, 0.05); } else { nextStep(); } }
@@ -635,8 +593,7 @@
             } else {
                 sess.idx++;
                 if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; }
-                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3";
-                startPhase('WORK');
+                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3"; startPhase('WORK');
             }
         }
         function skipRest() { nextStep(); }
@@ -677,7 +634,6 @@
             app.logs.push({date:d, w:w, cm:cm, hips:hi, chest:ch, thigh:th});
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
             save(); updateUI(); alert("Gespeichert");
-            document.getElementById('log-weight').value='';
         }
         function saveSettings() {
             app.profile.h = document.getElementById('set-height').value;
@@ -699,9 +655,14 @@
                 l.innerHTML += `<div class="hist-item"><span style="color:#aaa">CHECK: ${log.w}kg</span><span style="color:#666">${log.date}</span></div>`;
             });
         }
-        function nav(id, el) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
-        function save() { localStorage.setItem('bp_definitive_v17', JSON.stringify(app)); }
-        function resetApp() { if(confirm("Setup neu starten?")) { localStorage.removeItem('bp_definitive_v17'); location.reload(); } }
+        function nav(id, el) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
+        function save() { localStorage.setItem(STORE_KEY, JSON.stringify(app)); }
+        function resetApp() { if(confirm("ALLES LÖSCHEN?")) { localStorage.removeItem(STORE_KEY); location.reload(); } }
         function toggleMute() { sound = !sound; document.getElementById('mute-icon').style.opacity = sound?1:0.3; }
         function beep(f1, f2, dur=0.2) { if(!sound || !ac) return; const o = ac.createOscillator(); const g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.type='sawtooth'; o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); g.gain.setValueAtTime(0.3, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
         function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download = "backup.json"; a.click(); }
