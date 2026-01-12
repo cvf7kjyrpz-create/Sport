@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20 - Final Fixed</title>
+    <title>Body Pulse V20 - Final Complete</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -23,7 +23,7 @@
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        /* FIXIERTES LAYOUT */
+        /* LAYOUT FIX */
         html, body { 
             position: fixed; 
             overflow: hidden; 
@@ -121,7 +121,6 @@
         
         .goal-ring { width: 60px; height: 60px; transform: rotate(-90deg); }
 
-        /* NEUE CHECKBOX ITEMS STYLES */
         .check-item { 
             padding: 18px; 
             border: 1px solid var(--border); 
@@ -136,7 +135,7 @@
             transition: 0.2s;
         }
         .check-item.checked {
-            background: rgba(50, 215, 75, 0.2); /* Leicht grün */
+            background: rgba(50, 215, 75, 0.2);
             border-color: var(--accent);
             color: var(--accent);
         }
@@ -282,6 +281,14 @@
         </div>
 
         <div class="card">
+            <h2>OPTIONEN</h2>
+            <div class="toggle-row">
+                <span style="font-size:16px;">Supplements Erinnerung</span>
+                <input type="checkbox" id="tog-supps" onchange="toggleSuppsSetting()">
+            </div>
+        </div>
+
+        <div class="card">
             <h2>FOKUS & ZIELE</h2>
             <p class="label">Aktuelles Ziel:</p>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
@@ -317,11 +324,15 @@
             <svg class="progress-ring" width="260" height="260"><circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/><circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130"/></svg>
             <div class="time-center"><div class="time-huge" id="time-disp">00</div><span id="phase-disp" class="phase-lbl">READY</span></div>
         </div>
-        <div style="text-align:center; margin-bottom:40px;"><div id="ex-name" style="font-size:24px; font-weight:700;">Übung</div><button class="btn-outline" id="info-btn" style="padding:10px 20px; font-size:12px; margin-top:15px; border-radius:20px;" onclick="showInfoFromSess()">ANLEITUNG</button></div>
+        <div style="text-align:center; margin-bottom:40px;"><div id="ex-name" style="font-size:24px; font-weight:700;">Übung</div><button class="btn-outline" id="info-btn" style="padding:10px 20px; font-size:12px; margin-top:15px; border-radius:20px;" onclick="showInfoAndPause()">ANLEITUNG</button></div>
         <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="view-info" class="full-overlay" style="z-index:5000; background:rgba(0,0,0,0.98);"><button class="btn-close" onclick="document.getElementById('view-info').style.display='none'">✕</button><h1 id="info-title" style="margin-top:40px;">ÜBUNG</h1><p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;"></p></div>
+    <div id="view-info" class="full-overlay" style="z-index:5000; background:rgba(0,0,0,0.98);">
+        <button class="btn-close" onclick="closeInfoAndResume()">✕</button>
+        <h1 id="info-title" style="margin-top:40px;">ÜBUNG</h1>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;"></p>
+    </div>
     
     <div id="view-rpe" class="full-overlay" style="z-index: 4000; justify-content:center;"><h1 style="text-align:center;">INTENSITÄT (1-10)</h1><input type="range" min="1" max="10" value="5" id="rpe-slider" style="margin: 40px 0;"><button class="btn" onclick="finishWorkout()">ABSCHLIESSEN</button></div>
     
@@ -345,7 +356,7 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_final_fixed_v35';
+        const STORE_KEY = 'bp_final_repaired_v99';
         
         // --- 1. DATENBANK (Garantiert geladen) ---
         const DB = {
@@ -390,10 +401,10 @@
             parts: [], 
             history: [], 
             logs: [], 
-            settings: { work: 40, rest: 20, weeklyGoal: 3, duration: 10 }, 
+            settings: { work: 40, rest: 20, weeklyGoal: 3, duration: 10, supps: true }, 
             currentWorkout: [] 
         };
-        let sess = { run: false, int: null, t: 0, idx: 0, r: 1, work: false, sound: true, preview: null };
+        let sess = { run: false, int: null, t: 0, idx: 0, r: 1, work: false, sound: true, preview: null, wasRunning: false };
         let wiz = { goal: '', parts: [] };
         let ac = null;
         let sound = true;
@@ -407,7 +418,7 @@
             const d = localStorage.getItem(STORE_KEY);
             if(d) { app = JSON.parse(d); initApp(); }
             else { document.getElementById('view-onboarding').style.display = 'flex'; }
-            renderLibrary(); // WICHTIG: Immer rendern!
+            renderLibrary(); // Fix: Bibliothek immer laden!
         };
 
         function initApp() {
@@ -417,6 +428,7 @@
             document.getElementById('rng-goal').value = app.settings.weeklyGoal || 3;
             document.getElementById('rng-work').value = app.settings.work || 40;
             document.getElementById('rng-rest').value = app.settings.rest || 20;
+            document.getElementById('tog-supps').checked = app.settings.supps !== false;
 
             // Set Duration UI
             setWorkoutDuration(app.settings.duration || 10, document.getElementById('dur-' + (app.settings.duration || 10)));
@@ -440,16 +452,17 @@
             if(i > -1) app.parts.splice(i, 1); else app.parts.push(val); 
             save(); updateSettingsUI(); 
         }
+        function toggleSuppsSetting() {
+            app.settings.supps = document.getElementById('tog-supps').checked;
+            save();
+        }
         
         function updateSettingsUI() {
-            // Reset Styles
             document.querySelectorAll('#tab-settings .btn-outline').forEach(b => { 
                 b.style.background="transparent"; b.style.color="var(--primary)"; 
             });
-            // Set Active Goal
             const gBtn = document.getElementById('set-goal-' + app.goal); 
             if(gBtn) { gBtn.style.background="var(--primary)"; gBtn.style.color="var(--bg)"; }
-            // Set Active Parts
             app.parts.forEach(p => { 
                 const b = document.getElementById('set-part-' + p); 
                 if(b) { b.style.background="var(--accent)"; b.style.color="black"; } 
@@ -475,7 +488,6 @@
             let cat = (app.parts && app.parts.length > 0) ? app.parts : ['bauch','beine','ober','cardio'];
             cat.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
             
-            // Shuffle
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -487,7 +499,6 @@
 
         // --- 6. LOGIC: UI UPDATES ---
         function updateUI() {
-            // Weekly Progress
             const startOfWeek = new Date(); 
             startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1); 
             startOfWeek.setHours(0,0,0,0);
@@ -497,12 +508,10 @@
             const pct = Math.min(thisWeek / target, 1);
             document.getElementById('week-circle').style.strokeDashoffset = 150 - (150 * pct);
             
-            // Stats
             document.getElementById('disp-count').innerText = app.history.length;
             let totalKcal = 0; app.history.forEach(h => totalKcal += (h.kcal || 0));
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
-            // BMI Calculation
             if(app.profile.h && app.profile.w) { 
                 const hM = app.profile.h / 100;
                 const bmi = (app.profile.w / (hM * hM)).toFixed(1); 
@@ -511,7 +520,6 @@
                 document.getElementById('disp-bmi').innerText = "-";
             }
 
-            // Last Workout Text
             if(app.history.length > 0) {
                 const last = new Date(app.history[app.history.length-1].date);
                 document.getElementById('last-workout').innerText = "Letztes: " + last.toLocaleDateString();
@@ -546,7 +554,7 @@
             }
         }
 
-        // --- 7. LOGIC: PLAYER (MIT VORSCHAU FUNKTION) ---
+        // --- 7. LOGIC: PLAYER (PAUSE LOGIK NEU) ---
         function openPlayer() { 
             if(app.currentWorkout.length === 0) generateWorkout();
             if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); 
@@ -561,7 +569,7 @@
             if(type === 'PREP') { 
                 sess.t = 10; 
                 document.getElementById('phase-disp').innerText = "READY"; 
-                sess.preview = app.currentWorkout[0]; // Erste Übung
+                sess.preview = app.currentWorkout[0]; 
                 document.getElementById('ex-name').innerText = "Start: " + sess.preview.n;
 
             } else if(type === 'WORK') { 
@@ -572,18 +580,12 @@
                 beep(400, 800); 
 
             } else { 
-                // PAUSE PHASE - ZEIGE VORSCHAU
                 sess.t = parseInt(app.settings.rest); 
                 document.getElementById('phase-disp').innerText = "PAUSE"; 
                 beep(600, 300); 
                 
-                // Nächste Übung ermitteln
                 let nextIdx = sess.idx + 1;
-                if (nextIdx >= app.currentWorkout.length) nextIdx = 0; // Loop oder Ende der Runde
-                
-                // Aber wir sind noch in derselben Runde?
-                // Logic: Rest kommt NACH einer Übung. 
-                // Wenn sess.idx die letzte Übung war, kommt danach Runde++ oder Ende.
+                if (nextIdx >= app.currentWorkout.length) nextIdx = 0;
                 
                 if (sess.idx >= app.currentWorkout.length - 1 && sess.r >= 3) {
                      document.getElementById('ex-name').innerText = "FAST GESCHAFFT!";
@@ -597,12 +599,28 @@
             if(!sess.run) toggleTimer();
         }
 
-        function showInfoFromSess() { 
-            // Zeigt Info zur aktuellen Vorschau oder Übung
+        // NEU: ANLEITUNG ÖFFNEN UND ZEIT STOPPEN
+        function showInfoAndPause() {
             if (sess.preview) {
                 document.getElementById('info-title').innerText = sess.preview.n; 
                 document.getElementById('info-desc').innerText = sess.preview.d; 
                 document.getElementById('view-info').style.display = 'flex'; 
+                
+                // Automatisches Pausieren
+                if(sess.run) {
+                    toggleTimer(); // Stoppt timer
+                    sess.wasRunning = true; // Merken
+                } else {
+                    sess.wasRunning = false;
+                }
+            }
+        }
+
+        // NEU: ANLEITUNG SCHLIESSEN UND ZEIT WEITER
+        function closeInfoAndResume() {
+            document.getElementById('view-info').style.display = 'none';
+            if(sess.wasRunning && !sess.run) {
+                toggleTimer(); // Startet wieder
             }
         }
 
@@ -653,21 +671,28 @@
         }
 
         function finishWorkout() { 
-            // Kalorienberechnung gefixt: Dauer * 8 (ca. Wert)
+            // Fix: Kalorienberechnung
             const kcalCalc = app.settings.duration * 8; 
             app.history.push({date: new Date(), kcal: kcalCalc}); 
             save(); 
-            location.reload(); 
+            
+            // Logik: Wenn Supps aktiv, zeige Supps, sonst Reload
+            if (app.settings.supps !== false) {
+                document.getElementById('view-rpe').style.display='none';
+                document.getElementById('view-player').style.display='none';
+                document.getElementById('view-supps').style.display='flex';
+            } else {
+                location.reload(); 
+            }
         }
 
-        // --- 8. LOGIC: TRACKING (FIXED SAVE BUTTON) ---
+        // --- 8. LOGIC: TRACKING (FIXED BUTTON) ---
         function saveLog() { 
             const d = document.getElementById('log-date').value || new Date().toISOString().split('T')[0];
             const w = document.getElementById('log-weight').value;
             
-            // Validierung
-            if(!w || w === "") {
-                alert("Bitte mindestens das Gewicht eingeben!");
+            if(!w) {
+                alert("Bitte Gewicht eingeben!");
                 return;
             }
 
@@ -684,7 +709,7 @@
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
             save(); 
             updateUI(); 
-            alert("Werte erfolgreich gespeichert!");
+            alert("Werte gespeichert!");
         }
 
         function renderChart() { 
