@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20</title>
+    <title>Body Pulse V20 - Ultimate Master</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -23,7 +23,7 @@
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        /* FIXIERTES LAYOUT GEGEN WACKELN */
+        /* GRUNDLAYOUT - FIXIERT GEGEN WACKELN */
         html, body { 
             position: fixed; 
             overflow: hidden; 
@@ -31,66 +31,112 @@
             height: 100%; 
             margin: 0;
             padding: 0;
+            touch-action: none; /* Verhindert Bouncen auf iOS */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
         
         body {
             background-color: var(--bg); color: var(--primary); font-family: var(--font);
-            margin: 0; height: 100vh; display: flex; flex-direction: column;
-            padding-top: var(--safe-top); overflow: hidden;
+            display: flex; flex-direction: column;
+            padding-top: var(--safe-top);
         }
 
+        /* TYPOGRAPHIE */
         h1 { font-size: 28px; font-weight: 800; margin: 0 0 5px; letter-spacing: 0.5px; }
         h2 { font-size: 11px; font-weight: 700; margin: 0 0 15px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--secondary); }
         .val-big { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
         .label { color: var(--secondary); font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .sub-text { font-size: 13px; color: var(--secondary); }
 
+        /* SCREENS / TABS */
         .screen { 
-            display: none; flex-direction: column; height: 100%; 
-            padding: 20px; padding-bottom: 110px; overflow-y: auto; 
-            z-index: 10; position: relative;
+            display: none; 
+            flex-direction: column; 
+            height: 100%; 
+            padding: 20px; 
+            padding-bottom: 110px; /* Platz für Navbar */
+            overflow-y: auto; 
+            z-index: 10; 
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
         }
         .screen.active { display: flex; animation: fade 0.3s ease; }
         
+        /* KARTEN DESIGN */
         .card { 
-            background: var(--surface); padding: 20px; border: 1px solid var(--border); 
-            margin-bottom: 15px; border-radius: 14px;
+            background: var(--surface); 
+            padding: 20px; 
+            border: 1px solid var(--border); 
+            margin-bottom: 15px; 
+            border-radius: 14px;
         }
 
+        /* GRIDS & INPUTS */
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* Optimierte Input Row für Messungen */
+        .input-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-bottom: 15px;
+        }
 
+        /* BIBLIOTHEK ITEMS */
+        .lib-item { 
+            padding: 18px; 
+            background: var(--surface-light); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            margin-bottom: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            cursor: pointer; 
+        }
+        .lib-item:active { background: var(--border); }
+        .tag { 
+            font-size: 9px; 
+            padding: 4px 8px; 
+            background: var(--accent); 
+            color: #000; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+        }
+
+        /* BUTTONS */
         .btn {
             width: 100%; padding: 18px; border: none; background: var(--primary); 
             color: var(--bg); font-size: 15px; font-weight: 700; text-transform: uppercase; 
-            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 0.5px; border-radius: 10px;
+            cursor: pointer; transition: 0.1s; margin-top: 10px; letter-spacing: 0.5px; border-radius: 12px; text-align: center;
         }
         .btn:active { transform: scale(0.98); opacity: 0.9; }
         .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--border); }
         .btn-close { background: transparent; border: none; font-size: 24px; color: var(--secondary); padding: 10px; }
 
-        input:not([type="checkbox"]):not([type="range"]) {
+        /* FORMULARE */
+        input:not([type="checkbox"]):not([type="range"]):not([type="date"]) {
             width: 100%; background: var(--surface-light); border: 1px solid var(--border);
             color: var(--primary); padding: 14px; font-size: 16px; font-family: var(--font);
-            border-radius: 8px; margin-bottom: 20px; appearance: none;
+            border-radius: 10px; margin-bottom: 0; appearance: none;
         }
-        input:focus { border-color: var(--primary); }
-
-        /* BIBLIOTHEK STYLING */
-        .lib-item { padding: 15px; background: var(--surface-light); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .tag { font-size: 9px; padding: 3px 8px; background: var(--accent); color: #000; border-radius: 10px; font-weight: bold; text-transform: uppercase; }
-
+        input[type="date"] {
+            width: 100%; background: var(--surface-light); border: 1px solid var(--border);
+            color: var(--primary); padding: 14px; border-radius: 10px; margin-bottom: 15px; appearance: none; font-family: var(--font);
+        }
         .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
         input[type="checkbox"] { accent-color: var(--primary); width: 24px; height: 24px; cursor: pointer; }
-        input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); }
+        input[type="range"] { width: 100%; margin: 10px 0; accent-color: var(--primary); cursor: pointer; }
 
+        /* CHARTS */
         .chart-container { width: 100%; height: 150px; position: relative; margin-top: 10px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
         svg.chart { width: 100%; height: 100%; overflow: visible; }
         polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
-        .chart-dot { fill: var(--bg); stroke: var(--primary); stroke-width: 2; }
 
+        /* OVERLAYS */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
             z-index: 2000; display: none; flex-direction: column; padding: var(--safe-top) 25px 25px 25px;
@@ -98,12 +144,14 @@
         }
         .wiz-step { display: none; flex-direction: column; height: 100%; }
         .wiz-step.active { display: flex; animation: slide 0.3s ease; }
+        
         .opt-item { 
             padding: 22px; border: 1px solid var(--border); margin-bottom: 12px; 
             cursor: pointer; border-radius: 12px; background: var(--surface); font-weight: 500;
         }
         .opt-item.selected { border-color: var(--primary); background: var(--surface-light); color: var(--primary); }
 
+        /* PLAYER COMPONENTS */
         .timer-wrap { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .progress-ring { width: 260px; height: 260px; transform: rotate(-90deg); }
         .progress-ring__circle { transition: stroke-dashoffset 1.0s linear; transform-origin: 50% 50%; }
@@ -116,6 +164,7 @@
         .check-item { padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16px; display: flex; align-items: center; gap: 15px; }
         .hist-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
 
+        /* NAVIGATION */
         .nav {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 85px;
             background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(20px);
@@ -202,22 +251,25 @@
         <div class="card" style="border: 1px solid var(--primary);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2>TRAINING STARTEN</h2>
-                <span style="font-size:10px; color:#666;" id="last-workout">Last: Nie</span>
+                <span id="last-workout" style="font-size:10px; color:#666;">...</span>
             </div>
-            <p class="label">Wie viel Zeit hast du heute?</p>
+            
+            <p class="label">Wie lange hast du Zeit?</p>
             <div class="input-row" style="margin-top:10px;">
                 <button class="btn btn-outline" id="dur-10" onclick="setWorkoutDuration(10, this)">10 MIN</button>
                 <button class="btn btn-outline" id="dur-20" onclick="setWorkoutDuration(20, this)">20 MIN</button>
                 <button class="btn btn-outline" id="dur-30" onclick="setWorkoutDuration(30, this)">30 MIN</button>
             </div>
+            
             <button class="btn" style="margin-top:20px;" onclick="openPlayer()">WORKOUT STARTEN</button>
         </div>
     </div>
 
     <div id="tab-library" class="screen">
         <h1>BIBLIOTHEK</h1>
-        <p class="label" style="margin-bottom:20px;">Detaillierte Anleitungen</p>
-        <div id="lib-list"></div>
+        <p class="label" style="margin-bottom:20px;">Alle Übungen im Überblick</p>
+        <div id="lib-list">
+            </div>
     </div>
 
     <div id="tab-stats" class="screen">
@@ -237,23 +289,43 @@
         <div class="card">
             <h2>MESSUNG EINTRAGEN</h2>
             <input type="date" id="log-date">
+            
             <div class="input-row">
-                <div><span class="label">Gewicht (kg)</span><input type="number" id="log-weight" step="0.1"></div>
-                <div><span class="label">Bauch (cm)</span><input type="number" id="log-waist"></div>
+                <div>
+                    <span class="label">Gewicht (kg)</span>
+                    <input type="number" id="log-weight" step="0.1" placeholder="0.0">
+                </div>
+                <div>
+                    <span class="label">Bauch (cm)</span>
+                    <input type="number" id="log-waist" placeholder="0">
+                </div>
             </div>
+
             <div class="input-row">
-                <div><span class="label">Po/Hüfte (cm)</span><input type="number" id="log-hips"></div>
-                <div><span class="label">Brust (cm)</span><input type="number" id="log-chest"></div>
+                <div>
+                    <span class="label">Po/Hüfte (cm)</span>
+                    <input type="number" id="log-hips" placeholder="0">
+                </div>
+                <div>
+                    <span class="label">Brust (cm)</span>
+                    <input type="number" id="log-chest" placeholder="0">
+                </div>
             </div>
+            
              <div class="input-row">
-                <div><span class="label">Oberschenkel (cm)</span><input type="number" id="log-thigh"></div>
-                <div></div>
+                <div>
+                    <span class="label">Oberschenkel (cm)</span>
+                    <input type="number" id="log-thigh" placeholder="0">
+                </div>
+                <div>
+                    </div>
             </div>
+            
             <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
         </div>
 
         <div class="card">
-            <h2>HISTORIE</h2>
+            <h2>VERLAUF</h2>
             <div id="hist-list"></div>
         </div>
     </div>
@@ -278,61 +350,66 @@
         </div>
 
         <div class="card">
-            <h2>OPTIONEN</h2>
-            <div class="toggle-row">
-                <span style="font-size:16px;">Supplements Erinnerung</span>
-                <input type="checkbox" id="tog-supps" onchange="toggleSupps()" checked>
+            <h2>FOKUS & ZIELE</h2>
+            <p class="label">Aktuelles Ziel:</p>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-goal-lose" onclick="updateAppGoal('lose')">ABNEHMEN</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-goal-build" onclick="updateAppGoal('build')">MUSKELN</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-goal-fit" onclick="updateAppGoal('fit')">FITNESS</button>
+            </div>
+            
+            <p class="label">Fokus Zonen (Mehrfachwahl):</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-bauch" onclick="updateAppPart('bauch')">BAUCH</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-beine" onclick="updateAppPart('beine')">BEINE</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-ober" onclick="updateAppPart('ober')">OBERKÖRPER</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-cardio" onclick="updateAppPart('cardio')">CARDIO</button>
             </div>
         </div>
 
         <div class="card">
-            <h2>DEIN PROFIL</h2>
+            <h2>DATEN & BACKUP</h2>
             <div class="input-row">
-                <div><span class="label">Größe</span><input type="number" id="set-height" onchange="saveSettings()"></div>
+                <div><span class="label">Größe (cm)</span><input type="number" id="set-height" onchange="saveSettings()"></div>
                 <div><span class="label">Alter</span><input type="number" id="set-age" onchange="saveSettings()"></div>
             </div>
-        </div>
-
-        <div class="card">
-            <h2>DATEN</h2>
             <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
             <input type="file" id="import-input" style="display:none" onchange="importData(this)">
             <button class="btn btn-outline" style="margin-top:10px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
-            <button class="btn btn-outline" style="margin-top:20px; color:#c0392b; border-color:#c0392b;" onclick="resetApp()">WERKSEINSTELLUNGEN</button>
+            <button class="btn btn-outline" style="margin-top:20px; color:#ff453a; border-color:#ff453a;" onclick="resetApp()">WERKSEINSTELLUNGEN</button>
         </div>
     </div>
 
-    <div id="view-player" class="full-overlay" style="background:#000000; z-index:3000;">
+    <div id="view-player" class="full-overlay" style="background:#000; z-index:3000;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-close" onclick="closePlayer()">✕</button>
-            <span style="font-size:12px; letter-spacing:1px;" id="round-disp">RUNDE 1/3</span>
-            <button class="btn-close" style="font-size:20px;" onclick="toggleMute()" id="mute-icon">🔊</button>
+            <span id="round-disp">RUNDE 1</span>
+            <button class="btn-close" onclick="toggleMute()" id="mute-icon">🔊</button>
         </div>
 
         <div class="timer-wrap">
-            <svg class="progress-ring" width="260" height="260" viewBox="0 0 260 260">
+            <svg class="progress-ring" width="260" height="260">
                 <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/>
                 <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130"/>
             </svg>
             <div class="time-center">
                 <div class="time-huge" id="time-disp">00</div>
-                <span class="phase-lbl" id="phase-disp">READY</span>
+                <span id="phase-disp" class="phase-lbl">READY</span>
             </div>
         </div>
 
-        <div style="margin-bottom: 40px; text-align:center;">
-            <div style="font-size:24px; font-weight:700; margin-bottom:5px;" id="ex-name">Übung</div>
-            <button class="btn-outline" style="padding:10px 20px; font-size:12px; margin-top:15px; border-radius:20px;" onclick="showInfo()">ANLEITUNG</button>
-            <button id="skip-btn" onclick="skipRest()" style="display:none; width:100%; border:none; background:#222; color:#fff; padding:15px; margin-top:20px;">PAUSE ÜBERSPRINGEN</button>
+        <div style="text-align:center; margin-bottom:40px;">
+            <div id="ex-name" style="font-size:24px; font-weight:700;">Übung</div>
+            <button class="btn-outline" style="padding:10px 20px; font-size:12px; margin-top:15px; border-radius:20px;" onclick="showInfoFromSess()">ANLEITUNG</button>
         </div>
 
         <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
     </div>
 
-    <div id="view-info" class="full-overlay" style="background: rgba(0,0,0,0.95); z-index: 4000;">
+    <div id="view-info" class="full-overlay" style="z-index:5000; background:rgba(0,0,0,0.98);">
         <button class="btn-close" onclick="document.getElementById('view-info').style.display='none'">✕</button>
-        <h1 id="info-title" style="margin-top:40px;">TITEL</h1>
-        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;">...</p>
+        <h1 id="info-title" style="margin-top:40px;">ÜBUNG</h1>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:var(--secondary); margin-top:20px;"></p>
     </div>
 
     <div id="view-rpe" class="full-overlay" style="z-index: 4000; justify-content:center;">
@@ -341,9 +418,9 @@
         <button class="btn" onclick="finishWorkout()">ABSCHLIESSEN</button>
     </div>
 
-    <div id="view-supps" class="full-overlay" style="z-index: 4000; justify-content:center; text-align:center;">
+    <div id="view-supps" class="full-overlay" style="z-index: 5000; justify-content:center; text-align:center;">
         <h1>POST-WORKOUT</h1>
-        <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
+        <div style="text-align:left; display:inline-block; max-width: 300px;">
             <div class="check-item">🥤 Eiweiß</div>
             <div class="check-item">⚡ Kreatin</div>
             <div class="check-item">💊 Magnesium</div>
@@ -360,253 +437,443 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_final_v20'; 
+        const STORE_KEY = 'bp_master_final_v30';
         
-        // MASSIV ERWEITERTE ÜBUNGSDATENBANK MIT DETAILLIERTEN ANLEITUNGEN
+        // --- 1. DATENBANK (ERWEITERT) ---
         const DB = {
-            bauch: [ 
-                {n:"Crunches", d:"Rückenlage, Beine aufgestellt. Hebe kontrolliert nur die Schulterblätter vom Boden ab. Blick zur Decke, Hände nur leicht an die Schläfen (nicht am Kopf ziehen!). Atme beim Heben aus."},
-                {n:"Leg Raises", d:"Flach auf dem Rücken liegen, Hände unter das Gesäß zur Stabilisierung. Beine gestreckt langsam bis kurz vor den Boden senken und wieder heben. Rücken flach am Boden lassen."},
-                {n:"Plank", d:"Unterarmstütz. Ellbogen unter den Schultern, Körper bildet eine gerade Linie. Spanne Bauch und Po aktiv an. Kein Hohlkreuz! Halte die Position statisch."},
-                {n:"Russian Twist", d:"Sitzend, Beine leicht angehoben. Drehe den gesamten Oberkörper von links nach rechts und berühre jeweils den Boden neben dir. Blick folgt der Bewegung."},
-                {n:"Mountain Climbers", d:"Liegestütz-Position. Ziehe abwechselnd die Knie explosionsartig zur Brust, als würdest du einen Berg hochlaufen. Rücken bleibt gerade, Po tief."},
-                {n:"Bicycle Crunches", d:"Rückenlage. Ziehe den rechten Ellbogen zum linken Knie, während das rechte Bein gestreckt knapp über dem Boden schwebt. Dann die andere Seite. Rotation im Rumpf!"}
+            bauch: [
+                {n:"Crunches", d:"Rückenlage, Beine aufgestellt. Hände locker an die Schläfen (nicht am Kopf ziehen!). Hebe die Schulterblätter kontrolliert vom Boden ab, während du ausatmest. Halte die Spannung oben kurz und senke dich langsam wieder ab, ohne den Boden ganz zu berühren. Spüre die Kontraktion im oberen Bauch."},
+                {n:"Leg Raises", d:"Flach auf dem Rücken liegen, Hände unter den Po zur Stabilisierung. Beine gestreckt langsam bis kurz vor den Boden senken und wieder heben. Achte darauf, dass dein unterer Rücken immer fest in die Matte gedrückt bleibt. Nicht ins Hohlkreuz gehen! Trainiert den unteren Bauch extrem effektiv."},
+                {n:"Plank", d:"Unterarmstütz. Ellbogen direkt unter den Schultern. Spanne den gesamten Körper an – Po fest, Bauch fest. Dein Körper bildet eine gerade Linie vom Kopf bis zu den Fersen. Atme ruhig weiter und halte die Position stabil. Eine der besten Ganzkörper-Übungen für die Stabilität."},
+                {n:"Russian Twist", d:"Sitzposition, Oberkörper leicht zurückgelehnt, Beine angewinkelt in der Luft. Drehe den gesamten Oberkörper von links nach rechts und berühre jeweils den Boden neben dir. Blick folgt den Händen. Trainiert die schrägen Bauchmuskeln und die Rumpf-Rotation."},
+                {n:"Mountain Climbers", d:"Liegestütz-Position. Ziehe abwechselnd die Knie schnell und kraftvoll zur Brust. Halte den Po tief und die Arme gestreckt. Eine fantastische Übung, die Kraft und Herzfrequenz gleichzeitig nach oben treibt."},
+                {n:"Bicycle Crunches", d:"Rückenlage. Ziehe den rechten Ellbogen zum linken Knie, während das rechte Bein gestreckt über dem Boden schwebt. Dann flüssiger Wechsel im Rhythmus. Die Rotation im Rumpf ist hier entscheidend für den Erfolg."}
             ],
-            beine: [ 
-                {n:"Squats", d:"Schulterbreiter Stand. Gehe tief, als würdest du dich auf einen Stuhl setzen. Rücken gerade, Gewicht auf den Fersen. Knie zeigen nach außen und nicht über die Zehen."},
-                {n:"Lunges", d:"Mache einen weiten Schritt nach vorn. Senke das hintere Knie ab, bis beide Beine einen 90-Grad-Winkel bilden. Oberkörper bleibt aufrecht. Drücke dich kraftvoll zurück."},
-                {n:"Glute Bridges", d:"Rückenlage, Beine aufgestellt. Drücke die Hüfte so hoch wie möglich und spanne den Po oben fest an. Schultern bleiben am Boden. Langsam absenken ohne abzusetzen."},
-                {n:"Calf Raises", d:"Stand auf den Fußballen. Drücke dich so weit wie möglich nach oben auf die Zehenspitzen, halte kurz und senke kontrolliert wieder ab. Trainiert die Waden."},
-                {n:"Sumo Squats", d:"Breiter Stand, Zehen zeigen nach außen. Gehe tief und achte darauf, dass die Knie in Richtung der Zehen zeigen. Fokus auf Oberschenkelinnenseite und Po."},
-                {n:"Wall Sit", d:"Rücken gegen eine Wand lehnen und im 90-Grad-Winkel 'sitzen'. Halte diese Position statisch. Trainiert extrem die Oberschenkelvorderseite."}
+            beine: [
+                {n:"Squats", d:"Füße schulterbreit. Gehe tief, als würdest du dich auf einen unsichtbaren Stuhl setzen. Gewicht auf die Fersen, Rücken gerade halten. Knie sollten in Richtung der Zehen zeigen und nicht über die Fußspitzen ragen. Kraft kommt aus den Beinen und dem Po."},
+                {n:"Lunges", d:"Mache einen weiten Schritt nach vorn. Senke das hintere Knie ab, bis beide Beine einen 90-Grad-Winkel bilden. Oberkörper bleibt aufrecht. Drücke dich kraftvoll wieder zurück in den Stand. Trainiert Oberschenkel und Gleichgewicht."},
+                {n:"Glute Bridges", d:"Rückenlage, Beine aufgestellt. Drücke die Hüfte so weit wie möglich nach oben und spanne den Po oben fest an. Schultern bleiben am Boden. Halte die Spannung 2 Sekunden und senke langsam wieder ab. Perfekt für den Po und den unteren Rücken."},
+                {n:"Wall Sit", d:"Setze dich im 90-Grad-Winkel mit dem Rücken gegen eine Wand. Presse den unteren Rücken fest gegen die Wand und halte diese statische Position. Perfekt für die Kraftausdauer der Oberschenkel-Muskulatur."},
+                {n:"Calf Raises", d:"Stand auf den Fußballen. Drücke dich so weit wie möglich nach oben auf die Zehenspitzen, halte kurz die maximale Spannung und senke die Fersen kontrolliert wieder ab. Kann für mehr Intensität auch einbeinig gemacht werden."},
+                {n:"Sumo Squats", d:"Breiter Stand, Fußspitzen zeigen nach außen. Gehe tief und achte darauf, dass die Knie in Richtung der Zehen zeigen. Trainiert verstärkt die Innenseite der Oberschenkel, die Adduktoren und den Gesäßmuskel."}
             ],
-            ober: [ 
-                {n:"Push-Ups", d:"Hände etwas weiter als schulterbreit. Senke die Brust fast bis zum Boden und drücke dich explosiv wieder hoch. Körper bleibt wie ein Brett gespannt."},
-                {n:"Dips", d:"Stütze dich an einer Kante (Stuhl/Bett) ab. Senke den Po ab, indem du die Arme beugst (Ellbogen nach hinten!), und drücke dich mit dem Trizeps wieder hoch."},
-                {n:"Superman", d:"Bauchlage. Hebe gleichzeitig Arme und Beine so hoch wie möglich an. Blick zum Boden. Halte die Spannung im unteren Rücken für 2 Sekunden."},
-                {n:"Shoulder Taps", d:"Hohe Plank-Position. Berühre abwechselnd mit einer Hand die gegenüberliegende Schulter. Versuche die Hüfte dabei so ruhig wie möglich zu halten."},
-                {n:"Diamond Pushups", d:"Liegestütz, aber Hände bilden unter der Brust ein Dreieck (Diamant). Fokus liegt massiv auf dem Trizeps. Bei Bedarf auf den Knien ausführen."},
-                {n:"Pike Pushups", d:"Po weit in der Luft (umgekehrtes V). Senke den Kopf Richtung Boden zwischen die Hände und drücke dich hoch. Ultimative Übung für die Schultern."}
+            ober: [
+                {n:"Push-Ups", d:"Hände etwas weiter als schulterbreit. Körper wie ein Brett gespannt. Senke die Brust fast bis zum Boden und drücke dich explosiv wieder hoch. Blick zum Boden. Bei Bedarf Knie absetzen, um die Technik sauber zu halten."},
+                {n:"Dips", d:"Stütze dich an einer stabilen Stuhl- oder Bettkante ab. Senke den Po ab, indem du die Arme beugst (Ellbogen nach hinten zeigen lassen!), und drücke dich mit der Kraft deines Trizeps wieder hoch. Beine gestreckt ist schwerer."},
+                {n:"Superman", d:"Bauchlage, Arme nach vorn gestreckt. Hebe gleichzeitig Arme und Beine so hoch wie möglich an. Blick zum Boden. Spanne den unteren Rücken fest an und halte oben 2-3 Sekunden für maximale Wirkung auf die Rückenstrecker."},
+                {n:"Shoulder Taps", d:"Hohe Plank-Position. Berühre abwechselnd mit einer Hand die gegenüberliegende Schulter. Versuche dabei, die Hüfte so ruhig wie möglich zu halten – keine Schaukelbewegungen! Trainiert die Stabilität im gesamten Core-Bereich."},
+                {n:"Pike Pushups", d:"Po weit in die Luft (umgekehrtes V). Beuge die Arme und senke den Kopf Richtung Boden zwischen deine Hände. Drücke dich wieder hoch. Diese Übung ist eine der besten Körpergewichts-Übungen für starke Schultern."},
+                {n:"Diamond Pushups", d:"Liegestütz-Position, aber Daumen und Zeigefinger berühren sich unter der Brust (Diamant-Form). Gehe tief. Der Fokus liegt hier massiv auf dem Trizeps und der inneren Brustmuskulatur."}
             ],
-            cardio: [ 
-                {n:"Jumping Jacks", d:"Hampelmann. Springe mit den Beinen auseinander, während die Hände über dem Kopf zusammenkommen. Bleibe auf den Fußballen für maximale Spritzigkeit."},
-                {n:"Burpees", d:"Kombination aus Kniebeuge, Liegestütz und Strecksprung. Gehe tief, springe in den Stütz, Liegestütz, Füße ran und explosiv hochspringen."},
-                {n:"High Knees", d:"Laufen auf der Stelle, dabei die Knie so hoch wie möglich ziehen (Hüfthöhe). Nimm die Arme aktiv mit und erhöhe das Tempo."},
-                {n:"Butt Kicks", d:"Schnelles Laufen auf der Stelle, wobei die Fersen abwechselnd den Po berühren. Arme locker mitschwingen, Oberkörper leicht vorn."},
-                {n:"Skaters", d:"Seitliche Sprünge wie ein Eisschnellläufer. Lande stabil auf einem Bein und berühre mit der Hand diagonal den Boden vor dem Standfuß."},
-                {n:"Jumping Lunges", d:"Ausfallschritte, aber gesprungen! Wechsle die Beine in der Luft und achte auf eine weiche Landung und stabile Knie."}
+            cardio: [
+                {n:"Jumping Jacks", d:"Hampelmann. Springe mit den Beinen auseinander, während die Hände über dem Kopf zusammenkommen. Bleib auf den Fußballen und halte ein hohes, gleichmäßiges Tempo, um das Herz-Kreislauf-System zu fordern."},
+                {n:"Burpees", d:"Vom Stand in den Liegestütz, eine Wiederholung, dann Füße anziehen und explosiver Strecksprung nach oben. Die ultimative Ganzkörper-Übung für Fettverbrennung und Ausdauer."},
+                {n:"High Knees", d:"Laufen auf der Stelle, dabei die Knie so hoch wie möglich ziehen (mindestens Hüfthöhe). Nimm die Arme aktiv mit und erhöhe die Frequenz für maximale Intensität."},
+                {n:"Skaters", d:"Seitliche Sprünge wie ein Eisschnellläufer. Lande stabil auf einem Bein und berühre mit der Hand diagonal den Boden vor dem Standfuß. Trainiert Koordination, Kraft und Spritzigkeit."},
+                {n:"Butt Kicks", d:"Laufen auf der Stelle, bei dem die Fersen abwechselnd den Po berühren. Schnelle Bewegungen, Oberkörper leicht nach vorn gelehnt. Fördert die Laufkoordination und die Herzfrequenz."},
+                {n:"Jumping Lunges", d:"Ausfallschritte, aber gesprungen! Wechsle die Beine explosiv in der Luft und achte auf eine weiche Landung und stabile Knie. Eine extrem intensive Übung für Beinkraft und Ausdauer."}
             ]
         };
 
-        // --- STATE ---
+        // --- 2. STATE ---
         let app = { 
-            profile: { h: '', w: '', a: '' }, 
-            goal: '', parts: [], currentWorkout: [], history: [], logs: [],
-            settings: { supps: true, work: 40, rest: 20, weeklyGoal: 3, duration: 10 }
+            profile: { h:0, w:0, a:0 }, 
+            goal: '', 
+            parts: [], 
+            history: [], 
+            logs: [], 
+            settings: { work: 40, rest: 20, weeklyGoal: 3, duration: 10 }, 
+            currentWorkout: [] 
         };
-        let sess = { active: [], r: 1, idx: 0, t: 0, max: 0, work: false, run: false, int: null };
+        let sess = { run: false, int: null, t: 0, idx: 0, r: 1, work: false, sound: true };
         let wiz = { goal: '', parts: [] };
-        let ac; let sound = true;
+        let ac = null;
+        let sound = true;
 
         const circle = document.getElementById('progress-circle');
-        const circumference = 2 * Math.PI * 115; 
+        const circumference = 2 * Math.PI * 115;
         circle.style.strokeDasharray = `${circumference} ${circumference}`;
-        circle.style.strokeDashoffset = circumference;
-        const goalCirc = 2 * Math.PI * 24;
-        document.getElementById('week-circle').style.strokeDasharray = `${goalCirc} ${goalCirc}`;
 
+        // --- 3. INIT ---
         window.onload = () => {
             const d = localStorage.getItem(STORE_KEY);
-            if(d) {
-                app = JSON.parse(d);
-                initApp();
-            } else {
-                document.getElementById('view-onboarding').style.display = 'flex';
-                document.getElementById('wiz-1').classList.add('active');
-            }
+            if(d) { app = JSON.parse(d); initApp(); }
+            else { document.getElementById('view-onboarding').style.display = 'flex'; }
             renderLibrary();
         };
 
         function initApp() {
             document.getElementById('view-onboarding').style.display = 'none';
-            const h = new Date().getHours();
-            let greet = "GUTEN ABEND";
-            if(h < 11) greet = "GUTEN MORGEN"; else if(h < 18) greet = "GUTEN TAG";
-            document.getElementById('greeting').innerText = greet;
-
             document.getElementById('set-height').value = app.profile.h || '';
             document.getElementById('set-age').value = app.profile.a || '';
-            document.getElementById('tog-supps').checked = app.settings.supps;
-            document.getElementById('rng-work').value = app.settings.work;
-            document.getElementById('rng-rest').value = app.settings.rest;
-            document.getElementById('rng-goal').value = app.settings.weeklyGoal;
+            document.getElementById('rng-goal').value = app.settings.weeklyGoal || 3;
+            document.getElementById('rng-work').value = app.settings.work || 40;
+            document.getElementById('rng-rest').value = app.settings.rest || 20;
+
+            // Set Duration UI
+            setWorkoutDuration(app.settings.duration || 10, document.getElementById('dur-' + (app.settings.duration || 10)));
             
             updateRangeLbl(); 
-            document.getElementById('log-date').valueAsDate = new Date();
+            updateUI(); 
+            updateSettingsUI();
             
-            // Initial Duration Select
-            setWorkoutDuration(app.settings.duration || 10, document.getElementById('dur-' + (app.settings.duration || 10)));
-            updateUI();
+            // Tageszeit
+            const h = new Date().getHours();
+            let g = "HALLO";
+            if(h<10) g="GUTEN MORGEN"; else if(h<18) g="TAG"; else g="GUTEN ABEND";
+            document.getElementById('greeting').innerText = g;
         }
 
-        // NEU: BMI RECHNER
-        function updateBMI() {
-            if(app.profile.h && app.profile.w) {
-                const bmi = (app.profile.w / ((app.profile.h/100)*(app.profile.h/100))).toFixed(1);
-                document.getElementById('disp-bmi').innerText = bmi;
-            }
+        // --- 4. LOGIC: SETTINGS CHANGE ---
+        function updateAppGoal(val) { app.goal = val; save(); updateSettingsUI(); }
+        function updateAppPart(val) { 
+            if(!app.parts) app.parts = []; 
+            const i = app.parts.indexOf(val); 
+            if(i > -1) app.parts.splice(i, 1); else app.parts.push(val); 
+            save(); updateSettingsUI(); 
+        }
+        
+        function updateSettingsUI() {
+            // Reset Styles
+            document.querySelectorAll('#tab-settings .btn-outline').forEach(b => { 
+                b.style.background="transparent"; b.style.color="var(--primary)"; 
+            });
+            // Set Active Goal
+            const gBtn = document.getElementById('set-goal-' + app.goal); 
+            if(gBtn) { gBtn.style.background="var(--primary)"; gBtn.style.color="var(--bg)"; }
+            // Set Active Parts
+            app.parts.forEach(p => { 
+                const b = document.getElementById('set-part-' + p); 
+                if(b) { b.style.background="var(--accent)"; b.style.color="black"; } 
+            });
         }
 
-        // NEU: VARIABLE TRAININGSDUER
+        // --- 5. LOGIC: WORKOUT GENERATION ---
         function setWorkoutDuration(min, el) {
             app.settings.duration = min;
-            document.querySelectorAll('.input-row .btn').forEach(b => b.classList.add('btn-outline'));
-            el.classList.remove('btn-outline');
-            
-            let pool = [];
-            if(!app.parts || app.parts.length === 0) app.parts = ['bauch','beine','ober','cardio']; 
-            app.parts.forEach(p => pool = pool.concat(DB[p]));
-            pool.sort(()=>Math.random()-0.5);
-            
-            // 10 Min = 6 Übungen, 20 Min = 10 Übungen, 30 Min = 14 Übungen (bei 3 Runden)
-            let count = min === 10 ? 6 : (min === 20 ? 10 : 14);
-            app.currentWorkout = pool.slice(0, count);
+            document.querySelectorAll('#tab-home .btn-outline').forEach(b => { 
+                b.classList.add('btn-outline'); b.style.background="transparent"; b.style.color="white"; 
+            });
+            if(el) {
+                el.classList.remove('btn-outline'); 
+                el.style.background = "white"; el.style.color = "black";
+            }
+            generateWorkout(); 
             save();
         }
 
-        function updateUI() {
-            document.getElementById('disp-count').innerText = app.history.length;
-            const startOfWeek = new Date(); startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1); startOfWeek.setHours(0,0,0,0);
-            const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
-            const target = parseInt(app.settings.weeklyGoal) || 3;
-            document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
-            const pct = Math.min(thisWeek / target, 1);
-            document.getElementById('week-circle').style.strokeDashoffset = goalCirc - (goalCirc * pct);
-            document.getElementById('week-circle').setAttribute("stroke", pct>=1 ? "#32d74b" : "white");
-
-            let totalKcal = 0; app.history.forEach(h => { if(h.kcal) totalKcal += parseInt(h.kcal); });
-            document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
-
-            const now = new Date(); let mWork = 0; let mKcal = 0;
-            app.history.forEach(h => { const hd = new Date(h.date); if(hd.getMonth() === now.getMonth() && hd.getFullYear() === now.getFullYear()) { mWork++; if(h.kcal) mKcal += parseInt(h.kcal); } });
-            document.getElementById('month-workouts').innerText = mWork;
-            document.getElementById('month-kcal').innerText = mKcal.toLocaleString();
-
-            if(app.currentWorkout.length > 0) {
-                document.getElementById('next-desc').innerText = app.currentWorkout.map(e=>e.n).join(', ');
+        function generateWorkout() {
+            let pool = []; 
+            let cat = (app.parts && app.parts.length > 0) ? app.parts : ['bauch','beine','ober','cardio'];
+            cat.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
+            
+            // Fisher-Yates Shuffle
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
             }
 
-            if(app.history.length > 0) { const diff = Math.floor((new Date() - new Date(app.history[app.history.length-1].date)) / (86400000)); document.getElementById('last-workout').innerText = diff === 0 ? "Last: Heute" : `Last: Vor ${diff} Tagen`; }
+            let count = app.settings.duration === 10 ? 6 : (app.settings.duration === 20 ? 10 : 14);
+            app.currentWorkout = pool.slice(0, count);
+        }
+
+        // --- 6. LOGIC: UI UPDATES ---
+        function updateUI() {
+            // Weekly Progress
+            const startOfWeek = new Date(); 
+            startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1); 
+            startOfWeek.setHours(0,0,0,0);
+            const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
+            const target = parseInt(app.settings.weeklyGoal);
+            document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
+            const pct = Math.min(thisWeek / target, 1);
+            document.getElementById('week-circle').style.strokeDashoffset = 150 - (150 * pct);
             
-            updateBMI(); renderChart(); renderHist();
+            // Stats
+            document.getElementById('disp-count').innerText = app.history.length;
+            let totalKcal = 0; app.history.forEach(h => totalKcal += (h.kcal || 0));
+            document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
+
+            // BMI Calculation
+            if(app.profile.h && app.profile.w) { 
+                const hM = app.profile.h / 100;
+                const bmi = (app.profile.w / (hM * hM)).toFixed(1); 
+                document.getElementById('disp-bmi').innerText = bmi; 
+            } else {
+                document.getElementById('disp-bmi').innerText = "-";
+            }
+
+            // Last Workout Text
+            if(app.history.length > 0) {
+                const last = new Date(app.history[app.history.length-1].date);
+                document.getElementById('last-workout').innerText = "Letztes: " + last.toLocaleDateString();
+            } else {
+                document.getElementById('last-workout').innerText = "Neu hier?";
+            }
+
+            renderChart(); 
+            renderHist();
         }
 
         function renderLibrary() {
-            const container = document.getElementById('lib-list'); container.innerHTML = "";
+            const container = document.getElementById('lib-list'); 
+            container.innerHTML = "";
             for (let kat in DB) {
-                const header = document.createElement('h2'); header.innerText = kat === 'ober' ? 'OBERKÖRPER / RÜCKEN' : kat.toUpperCase(); header.style.marginTop = "25px"; container.appendChild(header);
+                const header = document.createElement('h2'); 
+                header.innerText = kat.toUpperCase(); 
+                header.style.marginTop = "25px"; 
+                container.appendChild(header);
+                
                 DB[kat].forEach(ex => {
-                    const item = document.createElement('div'); item.className = 'lib-item'; item.innerHTML = `<span>${ex.n}</span><span class="tag">${kat}</span>`;
-                    item.onclick = () => { document.getElementById('info-title').innerText = ex.n; document.getElementById('info-desc').innerText = ex.d; document.getElementById('view-info').style.display = 'flex'; };
+                    const item = document.createElement('div'); 
+                    item.className = 'lib-item'; 
+                    item.innerHTML = `<span>${ex.n}</span><span class="tag">${kat}</span>`;
+                    item.onclick = () => { 
+                        document.getElementById('info-title').innerText = ex.n; 
+                        document.getElementById('info-desc').innerText = ex.d; 
+                        document.getElementById('view-info').style.display = 'flex'; 
+                    };
                     container.appendChild(item);
                 });
             }
         }
 
-        function wizSet(k, v, el) { wiz[k]=v; el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected')); el.classList.add('selected'); }
-        function wizToggle(k, v, el) {
-            if(!wiz[k]) wiz[k]=[];
-            const i = wiz[k].indexOf(v);
-            if(i>-1) { wiz[k].splice(i,1); el.classList.remove('selected'); }
-            else { wiz[k].push(v); el.classList.add('selected'); }
-        }
-        function wizNext(s) { document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); document.getElementById('wiz-'+(s+1)).classList.add('active'); }
-        function wizFinish() {
-            app.profile = { h: document.getElementById('wiz-height').value, w: document.getElementById('wiz-weight').value, a: document.getElementById('wiz-age').value };
-            app.goal = wiz.goal; app.parts = wiz.parts;
-            app.logs.push({date: new Date().toISOString().split('T')[0], w: app.profile.w});
-            save(); initApp();
+        // --- 7. LOGIC: PLAYER ---
+        function openPlayer() { 
+            if(app.currentWorkout.length === 0) generateWorkout();
+            if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); 
+            sess.idx = 0; sess.r = 1; sess.t = 10; sess.work = false; 
+            document.getElementById('view-player').style.display = 'flex'; 
+            startPhase('PREP'); 
         }
 
-        function updateRangeLbl() {
-            app.settings.work = document.getElementById('rng-work').value;
-            app.settings.rest = document.getElementById('rng-rest').value;
-            app.settings.weeklyGoal = document.getElementById('rng-goal').value;
-            document.getElementById('lbl-work').innerText = app.settings.work;
-            document.getElementById('lbl-rest').innerText = app.settings.rest;
-            document.getElementById('lbl-goal').innerText = app.settings.weeklyGoal;
-            updateUI();
-        }
-
-        function saveSettings() { app.profile.h = document.getElementById('set-height').value; app.profile.a = document.getElementById('set-age').value; save(); updateUI(); }
-        function toggleSupps() { app.settings.supps = document.getElementById('tog-supps').checked; save(); }
-
-        function openPlayer() {
-            sess.active = app.currentWorkout;
-            sess.r = 1; sess.idx = 0;
-            document.getElementById('view-player').style.display = 'flex';
-            startPhase('PREP');
-            if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
-        }
-        function closePlayer() { clearInterval(sess.int); sess.run = false; document.getElementById('view-player').style.display = 'none'; }
-        
         function startPhase(type) {
             sess.work = (type === 'WORK');
-            const ph = document.getElementById('phase-disp');
-            const skip = document.getElementById('skip-btn');
-            if(type === 'PREP') { sess.t = sess.max = 10; ph.innerText = "READY"; document.getElementById('ex-name').innerText = sess.active[0].n; skip.style.display='none'; }
-            else if(type === 'WORK') { sess.t = sess.max = parseInt(app.settings.work); ph.innerText = "WORK"; ph.style.color = "#fff"; document.getElementById('ex-name').innerText = sess.active[sess.idx].n; skip.style.display='none'; beep(400, 800); }
-            else { sess.t = sess.max = parseInt(app.settings.rest); ph.innerText = "REST"; ph.style.color = "#8e8e93"; let n = (sess.idx+1 < sess.active.length) ? sess.active[sess.idx+1].n : (sess.r<3?sess.active[0].n:"ENDE"); skip.style.display='block'; beep(600, 300); }
-            drawTimer(); if(!sess.run) toggleTimer();
+            if(type === 'PREP') { 
+                sess.t = 10; 
+                document.getElementById('phase-disp').innerText = "READY"; 
+            } else if(type === 'WORK') { 
+                sess.t = parseInt(app.settings.work); 
+                document.getElementById('phase-disp').innerText = "WORK"; 
+                beep(400, 800); 
+            } else { 
+                sess.t = parseInt(app.settings.rest); 
+                document.getElementById('phase-disp').innerText = "REST"; 
+                beep(600, 300); 
+            }
+            updatePlayerUI(); 
+            if(!sess.run) toggleTimer();
         }
 
-        function tick() { if(sess.t > 0) { sess.t--; drawTimer(); if(sess.t <= 3) beep(1000, 1000, 0.05); } else { nextStep(); } }
+        function tick() { 
+            if(sess.t > 0) { 
+                sess.t--; 
+                if(sess.t <= 3) beep(1000, 1000, 0.05); 
+                updatePlayerUI(); 
+            } else { 
+                nextStep(); 
+            } 
+        }
+
         function nextStep() {
-            if(document.getElementById('phase-disp').innerText === "READY") startPhase('WORK');
-            else if(sess.work) { if(sess.idx >= sess.active.length-1 && sess.r >= 3) showRPE(); else startPhase('REST'); }
-            else { sess.idx++; if(sess.idx >= sess.active.length) { sess.idx = 0; sess.r++; } document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3"; startPhase('WORK'); }
+            if(document.getElementById('phase-disp').innerText === "READY") {
+                startPhase('WORK');
+            } else if(sess.work) { 
+                if(sess.idx >= app.currentWorkout.length-1 && sess.r >= 3) { 
+                    clearInterval(sess.int); 
+                    document.getElementById('view-rpe').style.display='flex'; 
+                } else {
+                    startPhase('REST'); 
+                }
+            } else { 
+                sess.idx++; 
+                if(sess.idx >= app.currentWorkout.length) { 
+                    sess.idx = 0; 
+                    sess.r++; 
+                } 
+                document.getElementById('round-disp').innerText = "RUNDE "+sess.r+"/3"; 
+                startPhase('WORK'); 
+            }
         }
-        function skipRest() { nextStep(); }
-        function drawTimer() { document.getElementById('time-disp').innerText = sess.t; const offset = circumference - (sess.t / sess.max) * circumference; circle.style.strokeDashoffset = offset; }
-        function toggleTimer() { const b = document.getElementById('play-btn'); if(sess.run) { clearInterval(sess.int); sess.run = false; b.innerText="WEITER"; } else { sess.int = setInterval(tick, 1000); sess.run = true; b.innerText="STOP"; } }
 
-        function showRPE() { clearInterval(sess.int); document.getElementById('view-rpe').style.display='flex'; }
-        function finishWorkout() {
-            const rpe = document.getElementById('rpe-slider').value;
-            const kcal = Math.floor((app.settings.duration * 12)); // Approx kcal based on time
-            app.history.push({date: new Date(), rpe: rpe, kcal: kcal});
-            save(); location.reload();
+        function updatePlayerUI() { 
+            document.getElementById('time-disp').innerText = sess.t; 
+            const max = sess.work ? app.settings.work : (sess.idx===0&&sess.r===1?10:app.settings.rest); 
+            circle.style.strokeDashoffset = circumference - (sess.t / max) * circumference; 
+            if(app.currentWorkout[sess.idx]) {
+                document.getElementById('ex-name').innerText = app.currentWorkout[sess.idx].n; 
+            }
         }
-        function showInfo() { if(sess.run) toggleTimer(); const e = sess.active[sess.idx]; document.getElementById('info-title').innerText = e.n; document.getElementById('info-desc').innerText = e.d; document.getElementById('view-info').style.display='flex'; }
 
-        function saveLog() {
+        function toggleTimer() { 
+            const b = document.getElementById('play-btn'); 
+            if(sess.run) { 
+                clearInterval(sess.int); sess.run = false; b.innerText="WEITER"; 
+            } else { 
+                sess.int = setInterval(tick, 1000); sess.run = true; b.innerText="STOP"; 
+            } 
+        }
+
+        function finishWorkout() { 
+            app.history.push({date: new Date(), kcal: app.settings.duration * 12}); // Approx kcal
+            save(); 
+            location.reload(); 
+        }
+
+        // --- 8. LOGIC: TRACKING ---
+        function saveLog() { 
             const d = document.getElementById('log-date').value || new Date().toISOString().split('T')[0];
             const w = document.getElementById('log-weight').value;
-            if(!w) return alert("Gewicht nötig.");
-            app.profile.w = w; // Update for BMI
-            app.logs.push({date:d, w:w, waist:document.getElementById('log-waist').value, hips:document.getElementById('log-hips').value, chest:document.getElementById('log-chest').value, thigh:document.getElementById('log-thigh').value});
-            app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date)); save(); updateUI(); alert("OK");
+            if(w) { 
+                app.profile.w = w; 
+                app.logs.push({
+                    date:d, 
+                    w:w, 
+                    waist:document.getElementById('log-waist').value, 
+                    hips:document.getElementById('log-hips').value, 
+                    chest:document.getElementById('log-chest').value, 
+                    thigh:document.getElementById('log-thigh').value
+                }); 
+            }
+            app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
+            save(); 
+            updateUI(); 
+            alert("Werte gespeichert!");
         }
 
-        function renderChart() {
-            const svg = document.getElementById('weight-chart'); svg.innerHTML = ""; if(app.logs.length < 2) return;
-            const data = app.logs.slice(-10).map(l => parseFloat(l.w)); const max = Math.max(...data) + 1; const min = Math.min(...data) - 1;
-            let points = ""; data.forEach((val, i) => { const x = i * (100 / (data.length - 1)); const y = 100 - ((val - min) / (max - min) * 100); points += `${x},${y} `; });
-            const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); pl.setAttribute("points", points); svg.appendChild(pl);
+        function renderChart() { 
+            const svg = document.getElementById('weight-chart'); 
+            svg.innerHTML = ""; 
+            if(app.logs.length < 2) return; 
+            
+            const data = app.logs.slice(-10).map(l => parseFloat(l.w)); 
+            const max = Math.max(...data) + 1; 
+            const min = Math.min(...data) - 1; 
+            
+            let p = ""; 
+            data.forEach((v, i) => { 
+                const x = i * (100 / (data.length - 1)); 
+                const y = 100 - ((v - min) / (max - min) * 100); 
+                p += `${x},${y} `; 
+            }); 
+            
+            const pl = document.createElementNS("http://www.w3.org/2000/svg", "polyline"); 
+            pl.setAttribute("points", p); 
+            svg.appendChild(pl); 
+        }
+
+        function renderHist() { 
+            const list = document.getElementById('hist-list'); 
+            list.innerHTML = ""; 
+            app.history.slice(-10).reverse().forEach(h => {
+                list.innerHTML += `<div class="card" style="font-size:12px; margin-bottom:10px; padding:15px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>Workout</span>
+                        <span style="color:var(--secondary)">${new Date(h.date).toLocaleDateString()}</span>
+                    </div>
+                </div>`; 
+            }); 
+        }
+
+        // --- 9. LOGIC: SYSTEM & HELPERS ---
+        function updateRangeLbl() { 
+            app.settings.weeklyGoal = document.getElementById('rng-goal').value; 
+            app.settings.work = document.getElementById('rng-work').value;
+            app.settings.rest = document.getElementById('rng-rest').value;
+            document.getElementById('lbl-goal').innerText = app.settings.weeklyGoal; 
+            document.getElementById('lbl-work').innerText = app.settings.work;
+            document.getElementById('lbl-rest').innerText = app.settings.rest;
+            save(); updateUI(); 
+        }
+
+        function saveSettings() { 
+            app.profile.h = document.getElementById('set-height').value; 
+            app.profile.a = document.getElementById('set-age').value; 
+            save(); updateUI(); 
+        }
+
+        function nav(id, el) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
+            el.classList.add('active'); 
+        }
+
+        // Wizard Logic
+        function wizSet(k,v,el) { 
+            wiz[k]=v; 
+            el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected')); 
+            el.classList.add('selected'); 
+        }
+        function wizToggle(k,v,el) { 
+            if(!wiz[k]) wiz[k]=[]; 
+            const i=wiz[k].indexOf(v); 
+            if(i>-1) { wiz[k].splice(i,1); el.classList.remove('selected'); } 
+            else { wiz[k].push(v); el.classList.add('selected'); } 
+        }
+        function wizNext(s) { 
+            document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); 
+            document.getElementById('wiz-'+(s+1)).classList.add('active'); 
+        }
+        function wizFinish() { 
+            app.profile = { w: document.getElementById('wiz-weight').value, a: document.getElementById('wiz-age').value, h: document.getElementById('wiz-height').value }; 
+            app.goal = wiz.goal; 
+            app.parts = wiz.parts; 
+            save(); initApp(); 
+        }
+
+        // Sound
+        function beep(f1, f2, dur=0.2) { 
+            if(!sound || !ac) return; 
+            const o = ac.createOscillator(); 
+            const g = ac.createGain(); 
+            o.connect(g); g.connect(ac.destination); 
+            o.type='sawtooth'; 
+            o.frequency.setValueAtTime(f1, ac.currentTime); 
+            o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); 
+            g.gain.setValueAtTime(0.05, ac.currentTime); 
+            g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); 
+            o.start(); o.stop(ac.currentTime+dur); 
+        }
+        function toggleMute() { 
+            sound = !sound; 
+            document.getElementById('mute-icon').innerText = sound ? "🔊" : "🔇"; 
+        }
+
+        // Persistence & Backup
+        function save() { localStorage.setItem(STORE_KEY, JSON.stringify(app)); }
+        
+        function exportData() { 
+            const a = document.createElement('a'); 
+            a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); 
+            a.download = "backup.json"; 
+            a.click(); 
         }
         
-        function renderHist() {
-            const l = document.getElementById('hist-list'); l.innerHTML="";
-            app.history.slice().reverse().slice(0,5).forEach(h => { l.innerHTML += `<div class="hist-item"><span>Workout</span><span style="color:#666">${new Date(h.date).toLocaleDateString()}</span></div>`; });
+        function importData(el) { 
+            const r = new FileReader(); 
+            r.onload = e => { 
+                app = JSON.parse(e.target.result); 
+                save(); 
+                location.reload(); 
+            }; 
+            r.readAsText(el.files[0]); 
         }
-
-        function nav(id, el) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
-        function save() { localStorage.setItem(STORE_KEY, JSON.stringify(app)); }
-        function resetApp() { if(confirm("ALLES LÖSCHEN?")) { localStorage.removeItem(STORE_KEY); location.reload(); } }
-        function toggleMute() { sound = !sound; document.getElementById('mute-icon').innerText = sound ? "🔊" : "🔇"; }
-        function beep(f1, f2, dur=0.2) { if(!sound || !ac) return; const o = ac.createOscillator(); const g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.type='sawtooth'; o.frequency.setValueAtTime(f1, ac.currentTime); o.frequency.exponentialRampToValueAtTime(f2, ac.currentTime+dur); g.gain.setValueAtTime(0.05, ac.currentTime); g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime+dur); o.start(); o.stop(ac.currentTime+dur); }
-        function exportData() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download = "backup.json"; a.click(); }
-        function importData(el) { const r = new FileReader(); r.onload=e=>{ app=JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(el.files[0]); }
+        
+        function resetApp() { 
+            if(confirm("ALLES LÖSCHEN?")) { 
+                localStorage.clear(); 
+                location.reload(); 
+            } 
+        }
+        
+        function closePlayer() { clearInterval(sess.int); location.reload(); }
+        function showInfoFromSess() { 
+            const e = app.currentWorkout[sess.idx]; 
+            document.getElementById('info-title').innerText = e.n; 
+            document.getElementById('info-desc').innerText = e.d; 
+            document.getElementById('view-info').style.display = 'flex'; 
+        }
     </script>
 </body>
 </html>
