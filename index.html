@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20 - Ultimate Fixed</title>
+    <title>Body Pulse V20 - Ultra Compact</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -56,7 +56,7 @@
            TYPOGRAPHIE
            ========================================= */
         h1 { 
-            font-size: 28px; 
+            font-size: 24px; /* Etwas kleiner für Kompaktheit */
             font-weight: 800; 
             margin: 0 0 5px; 
             letter-spacing: 0.5px; 
@@ -65,24 +65,24 @@
         h2 { 
             font-size: 11px; 
             font-weight: 700; 
-            margin: 0 0 15px; 
+            margin: 0 0 10px; 
             letter-spacing: 1.5px; 
             text-transform: uppercase; 
             color: var(--secondary); 
         }
 
         .val-big { 
-            font-size: 28px; 
+            font-size: 24px; /* Kompakter */
             font-weight: 700; 
             letter-spacing: -0.5px; 
         }
 
         .label { 
             color: var(--secondary); 
-            font-size: 11px; 
+            font-size: 10px; 
             text-transform: uppercase; 
             display: block; 
-            margin-bottom: 5px; 
+            margin-bottom: 3px; 
         }
 
         /* =========================================
@@ -92,8 +92,8 @@
             display: none; 
             flex-direction: column; 
             height: 100%; 
-            padding: 20px; 
-            padding-bottom: 110px; 
+            padding: 15px; /* Weniger Padding */
+            padding-bottom: 100px; 
             overflow-y: auto; 
             z-index: 10; 
             position: relative;
@@ -108,23 +108,36 @@
         
         .card { 
             background: var(--surface); 
-            padding: 20px; 
+            padding: 15px; /* Kompakter */
             border: 1px solid var(--border); 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; /* Weniger Abstand */
             border-radius: 14px;
+        }
+
+        /* Spezial-Klasse für Cockpit Kompaktheit */
+        .compact-card {
+            padding: 12px;
+            margin-bottom: 8px;
         }
 
         .stat-grid { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-bottom: 15px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+        }
+        
+        .stat-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .input-row { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
+            gap: 15px; 
             margin-bottom: 15px; 
         }
 
@@ -162,18 +175,18 @@
            ========================================= */
         .btn {
             width: 100%; 
-            padding: 18px; 
+            padding: 15px; /* Kompakter */
             border: none; 
             background: var(--primary); 
             color: var(--bg); 
-            font-size: 15px; 
+            font-size: 14px; 
             font-weight: 700; 
             text-transform: uppercase; 
             cursor: pointer; 
             transition: 0.1s; 
-            margin-top: 10px; 
+            margin-top: 8px; 
             letter-spacing: 0.5px; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             text-align: center;
         }
 
@@ -201,7 +214,7 @@
             background: var(--surface-light); 
             border: 1px solid var(--border);
             color: var(--primary); 
-            padding: 14px; 
+            padding: 12px; 
             font-size: 16px; 
             font-family: var(--font);
             border-radius: 10px; 
@@ -214,7 +227,7 @@
             background: var(--surface-light); 
             border: 1px solid var(--border);
             color: var(--primary); 
-            padding: 14px; 
+            padding: 12px; 
             border-radius: 10px; 
             margin-bottom: 15px; 
             appearance: none; 
@@ -228,7 +241,6 @@
             padding: 12px 0; 
         }
 
-        /* System Settings Inputs */
         input[type="checkbox"] { 
             accent-color: var(--primary); 
             width: 24px; 
@@ -359,10 +371,10 @@
         }
 
         /* =========================================
-           CHECK ITEMS (SUPPLEMENTS) - NEU & SICHTBAR
+           CHECK ITEMS (SUPPLEMENTS) - HÄKCHEN
            ========================================= */
         .check-item { 
-            padding: 18px; 
+            padding: 15px; 
             border: 1px solid var(--border); 
             background: var(--surface);
             border-radius: 10px;
@@ -372,31 +384,31 @@
             gap: 15px; 
             margin-bottom: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.1s ease;
         }
 
         .check-item:active { 
             transform: scale(0.98); 
         }
 
-        /* Das visuelle Kästchen */
+        /* Das Quadrat (Leer oder mit Haken) */
         .check-box-visual {
-            width: 26px; 
-            height: 26px;
+            width: 28px; 
+            height: 28px;
             border: 2px solid var(--secondary);
             border-radius: 6px;
             display: flex; 
             align-items: center; 
             justify-content: center;
-            font-size: 16px;
-            color: transparent; /* Haken unsichtbar im Normalzustand */
+            font-size: 18px;
+            color: transparent; /* Unsichtbar wenn nicht checked */
             background: transparent;
             transition: all 0.2s ease;
         }
 
-        /* Zustand: Ausgewählt */
+        /* Wenn ausgewählt (checked) */
         .check-item.checked {
-            background: rgba(50, 215, 75, 0.1); /* Ganz leicht grün */
+            background: rgba(50, 215, 75, 0.1); 
             border-color: var(--accent);
             color: var(--primary);
         }
@@ -404,7 +416,7 @@
         .check-item.checked .check-box-visual {
             background: var(--accent);
             border-color: var(--accent);
-            color: #000; /* Haken schwarz */
+            color: #000; /* Schwarzer Haken */
         }
 
         /* Historie Item */
@@ -424,7 +436,7 @@
             bottom: 0; 
             left: 0; 
             width: 100%; 
-            height: 85px;
+            height: 70px; /* Kompakter */
             background: rgba(0,0,0,0.95); 
             border-top: 1px solid var(--border); 
             backdrop-filter: blur(20px);
@@ -440,7 +452,7 @@
             justify-content: center; 
             align-items: center; 
             opacity: 0.4; 
-            font-size: 24px; 
+            font-size: 22px; 
             cursor: pointer; 
             transition: 0.2s; 
             color: white; 
@@ -498,8 +510,8 @@
         </div>
     </div>
 
-    <div id="tab-home" class="screen active">
-        <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:20px;">
+    <div id="tab-home" class="screen active" style="padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:end; margin-bottom:10px;">
             <div>
                 <span class="label" id="greeting">HALLO</span>
                 <h1>COCKPIT</h1>
@@ -508,41 +520,43 @@
         </div>
 
         <div class="stat-grid">
-            <div class="card" style="margin:0; text-align:center;">
+            <div class="card compact-card" style="margin:0; text-align:center;">
                 <span class="label">LIFETIME KCAL</span>
                 <span class="val-big" id="disp-total-kcal">0</span>
             </div>
-            <div class="card" style="margin:0; text-align:center;">
+            <div class="card compact-card" style="margin:0; text-align:center;">
                 <span class="label">BMI INDEX</span>
                 <span class="val-big" id="disp-bmi">0.0</span>
             </div>
         </div>
 
-        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="card compact-card" style="display:flex; justify-content:space-between; align-items:center;">
             <div>
                 <span class="label">WOCHENZIEL</span>
-                <div class="val-big" id="week-val">...</div>
+                <div class="val-big" id="week-val">0 / 3</div>
             </div>
-            <div style="position:relative; width:60px; height:60px;">
-                <svg width="60" height="60" style="transform: rotate(-90deg);">
-                    <circle stroke="#222" stroke-width="5" fill="transparent" r="24" cx="30" cy="30"/>
-                    <circle id="week-circle" stroke="white" stroke-width="5" stroke-linecap="round" fill="transparent" r="24" cx="30" cy="30" stroke-dasharray="150 150" stroke-dashoffset="150"/>
+            <div style="position:relative; width:50px; height:50px;">
+                <svg width="50" height="50" style="transform: rotate(-90deg);">
+                    <circle stroke="#222" stroke-width="4" fill="transparent" r="20" cx="25" cy="25"/>
+                    <circle id="week-circle" stroke="white" stroke-width="4" stroke-linecap="round" fill="transparent" r="20" cx="25" cy="25" stroke-dasharray="125 125" stroke-dashoffset="125"/>
                 </svg>
             </div>
         </div>
 
-        <div class="card" style="border: 1px solid var(--primary);">
+        <div class="card compact-card" style="border: 1px solid var(--primary);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h2>TRAINING STARTEN</h2>
-                <span id="last-workout" style="font-size:10px; color:#666;">...</span>
+                <h2 style="margin:0; color:white;">STARTEN</h2>
+                <span id="last-workout" style="font-size:9px; color:#666;">...</span>
             </div>
-            <p class="label">Zeit wählen:</p>
-            <div class="input-row" style="margin-top:10px;">
-                <button class="btn btn-outline" id="dur-10" onclick="setWorkoutDuration(10, this)">10 MIN</button>
-                <button class="btn btn-outline" id="dur-20" onclick="setWorkoutDuration(20, this)">20 MIN</button>
-                <button class="btn btn-outline" id="dur-30" onclick="setWorkoutDuration(30, this)">30 MIN</button>
+            
+            <p class="label" style="margin-top:8px;">Dauer wählen:</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-top:5px;">
+                <button class="btn btn-outline" style="margin:0; padding:10px; font-size:12px;" id="dur-10" onclick="setWorkoutDuration(10, this)">10 MIN</button>
+                <button class="btn btn-outline" style="margin:0; padding:10px; font-size:12px;" id="dur-20" onclick="setWorkoutDuration(20, this)">20 MIN</button>
+                <button class="btn btn-outline" style="margin:0; padding:10px; font-size:12px;" id="dur-30" onclick="setWorkoutDuration(30, this)">30 MIN</button>
             </div>
-            <button class="btn" style="margin-top:20px;" onclick="openPlayer()">WORKOUT STARTEN</button>
+            
+            <button class="btn" style="margin-top:10px; padding:12px;" onclick="openPlayer()">LOS GEHT'S</button>
         </div>
     </div>
 
@@ -556,6 +570,24 @@
     <div id="tab-stats" class="screen">
         <h1>TRACKING</h1>
         
+        <div class="card">
+            <h2>TRAININGSZEIT (MIN)</h2>
+            <div class="stat-grid-3">
+                <div style="text-align:center;">
+                    <span class="label">WOCHE</span>
+                    <div class="val-big" id="min-week">0</div>
+                </div>
+                <div style="text-align:center;">
+                    <span class="label">MONAT</span>
+                    <div class="val-big" id="min-month">0</div>
+                </div>
+                <div style="text-align:center;">
+                    <span class="label">JAHR</span>
+                    <div class="val-big" id="min-year">0</div>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <h2>GEWICHTSKURVE</h2>
             <div class="chart-container">
@@ -700,6 +732,7 @@
     
     <div id="view-supps" class="full-overlay" style="z-index: 5000; justify-content:center; text-align:center;">
         <h1 style="margin-bottom:30px;">POST-WORKOUT</h1>
+        <p class="label" style="margin-bottom:20px;">Abhaken was erledigt ist</p>
         
         <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
             <div class="check-item" onclick="toggleCheck(this)">
@@ -739,7 +772,7 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_ultimate_final_fix_v2';
+        const STORE_KEY = 'bp_final_repaired_v200_compact';
         
         // --- 1. DATENBANK (Übungen) ---
         const DB = {
@@ -888,18 +921,58 @@
 
         // --- 5. UI UPDATES ---
         function updateUI() {
-            // Wochen Fortschritt
-            const startOfWeek = new Date(); 
-            startOfWeek.setDate(startOfWeek.getDate() - (startOfWeek.getDay() || 7) + 1); 
+            // Wochen Fortschritt & Minuten Berechnung
+            const now = new Date();
+            const startOfWeek = new Date(now); 
+            startOfWeek.setDate(now.getDate() - (now.getDay() || 7) + 1); 
             startOfWeek.setHours(0,0,0,0);
-            const thisWeek = app.history.filter(h => new Date(h.date) >= startOfWeek).length;
+            
+            let thisWeekWorkouts = 0;
+            let minsWeek = 0;
+            let minsMonth = 0;
+            let minsYear = 0;
+            let totalMinsLifetime = 0;
+
+            app.history.forEach(h => {
+                const d = new Date(h.date);
+                // Dauer schätzen falls nicht gespeichert (Fallbacks)
+                const dur = h.duration || (h.kcal ? Math.round(h.kcal / 8) : 10);
+                
+                totalMinsLifetime += dur;
+
+                // Woche
+                if(d >= startOfWeek) {
+                    thisWeekWorkouts++;
+                    minsWeek += dur;
+                }
+                // Monat
+                if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                    minsMonth += dur;
+                }
+                // Jahr
+                if(d.getFullYear() === now.getFullYear()) {
+                    minsYear += dur;
+                }
+            });
+
+            // Update Minuten Stats
+            document.getElementById('min-week').innerText = minsWeek;
+            document.getElementById('min-month').innerText = minsMonth;
+            document.getElementById('min-year').innerText = minsYear;
+
+            // Level System: 1 Level pro 60 min Training
+            const userLvl = 1 + Math.floor(totalMinsLifetime / 60);
+            document.getElementById('lvl-badge').innerText = "LVL " + userLvl;
+
+            // Wochenziel UI
             const target = parseInt(app.settings.weeklyGoal);
-            document.getElementById('week-val').innerText = `${thisWeek} / ${target}`;
-            const pct = Math.min(thisWeek / target, 1);
-            document.getElementById('week-circle').style.strokeDashoffset = 150 - (150 * pct);
+            document.getElementById('week-val').innerText = `${thisWeekWorkouts} / ${target}`;
+            // Kreis Berechnung (125 ist der Umfang des kleinen Kreises)
+            const pct = Math.min(thisWeekWorkouts / target, 1);
+            document.getElementById('week-circle').style.strokeDashoffset = 125 - (125 * pct);
             
             // Totals
-            document.getElementById('disp-count').innerText = app.history.length;
+            // document.getElementById('disp-count').innerText = app.history.length; // Nicht mehr im UI benötigt
             let totalKcal = 0; app.history.forEach(h => totalKcal += (h.kcal || 0));
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
@@ -1068,8 +1141,16 @@
         }
 
         function finishWorkout() { 
-            const kcalCalc = app.settings.duration * 8; 
-            app.history.push({date: new Date(), kcal: kcalCalc}); 
+            const dur = app.settings.duration;
+            const kcalCalc = dur * 8; 
+            
+            // Speichere auch die Dauer für die Statistik!
+            app.history.push({
+                date: new Date(), 
+                kcal: kcalCalc,
+                duration: dur 
+            }); 
+            
             save(); 
             
             // Check ob Supps aktiviert sind
@@ -1093,7 +1174,8 @@
             const w = document.getElementById('log-weight').value;
             
             // Sicherheitscheck: Ist Gewicht da?
-            if(!w || w.trim() === "") {
+            // Wir prüfen ob es existiert, egal ob string oder number
+            if(!w) {
                 alert("Bitte gib zumindest dein Gewicht ein!");
                 return;
             }
@@ -1120,8 +1202,6 @@
             
             // Feedback geben
             alert("✅ Werte erfolgreich gespeichert!");
-            
-            // Felder leeren (optional, hier lassen wir sie stehen)
         }
 
         function renderChart() { 
@@ -1154,9 +1234,10 @@
             }
             app.history.slice(-10).reverse().forEach(h => {
                 const k = h.kcal ? h.kcal : 0;
+                const d = h.duration ? h.duration : Math.round(k/8); // Fallback für alte Daten
                 list.innerHTML += `<div class="card" style="font-size:12px; margin-bottom:10px; padding:15px;">
                     <div style="display:flex; justify-content:space-between;">
-                        <span>Workout</span>
+                        <span>Workout (${d} min)</span>
                         <span style="color:var(--secondary)">${new Date(h.date).toLocaleDateString()} • ${k} kcal</span>
                     </div>
                 </div>`; 
@@ -1190,6 +1271,18 @@
         function toggleSuppsSetting() {
             app.settings.supps = document.getElementById('tog-supps').checked;
             save();
+        }
+        
+        function updateSettingsUI() {
+            document.querySelectorAll('#tab-settings .btn-outline').forEach(b => { 
+                b.style.background="transparent"; b.style.color="var(--primary)"; 
+            });
+            const gBtn = document.getElementById('set-goal-' + app.goal); 
+            if(gBtn) { gBtn.style.background="var(--primary)"; gBtn.style.color="var(--bg)"; }
+            app.parts.forEach(p => { 
+                const b = document.getElementById('set-part-' + p); 
+                if(b) { b.style.background="var(--accent)"; b.style.color="black"; } 
+            });
         }
 
         // --- 9. WIZARD ---
