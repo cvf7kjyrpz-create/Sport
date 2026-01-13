@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20 - Personal Msg</title>
+    <title>Body Pulse V20 - Supps Fixed</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -232,6 +232,26 @@
             margin-bottom: 15px; 
             appearance: none; 
             font-family: var(--font);
+        }
+
+        /* Spezielles Textfeld für die Motivations-Nachricht */
+        .msg-input {
+            width: 100%;
+            background: transparent;
+            border: 1px dashed var(--secondary);
+            color: var(--accent);
+            font-size: 18px;
+            font-weight: bold;
+            font-style: italic;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            outline: none;
+        }
+        .msg-input::placeholder {
+            color: #444;
+            font-weight: normal;
         }
 
         .toggle-row { 
@@ -575,6 +595,8 @@
             
             <button class="btn" style="margin-top:10px; padding:12px;" onclick="openPlayer()">LOS GEHT'S</button>
         </div>
+
+        <button class="btn btn-outline" style="margin-top:5px; border-style:dashed; opacity:0.7;" onclick="openSuppsManually()">SUPPLEMENTE & NOTIZ</button>
     </div>
 
     <div id="tab-library" class="screen">
@@ -654,13 +676,11 @@
         </div>
 
         <div class="card">
-            <h2>POST-WORKOUT</h2>
+            <h2>OPTIONEN</h2>
             <div class="toggle-row">
-                <span style="font-size:16px;">Erinnerung anzeigen?</span>
+                <span style="font-size:16px;">Supplements Erinnerung</span>
                 <input type="checkbox" id="tog-supps" onchange="toggleSuppsSetting()">
             </div>
-            <p class="label" style="margin-top:15px;">Deine Motivation nach dem Training:</p>
-            <input type="text" id="set-supp-msg" placeholder="z.B. Gut gemacht! Trink deinen Shake!" onchange="saveSettings()">
         </div>
 
         <div class="card">
@@ -732,13 +752,15 @@
     </div>
     
     <div id="view-supps" class="full-overlay" style="z-index: 5000; justify-content:center; text-align:center;">
-        <h1 style="margin-bottom:10px;">POST-WORKOUT</h1>
+        <button class="btn-close" style="position:absolute; top:var(--safe-top); right:25px;" onclick="document.getElementById('view-supps').style.display='none'">✕</button>
+
+        <h1 style="margin-bottom:10px; margin-top:40px;">POST-WORKOUT</h1>
         
-        <div id="supp-custom-msg" style="margin-bottom:30px; font-size:20px; color:var(--accent); font-weight:bold; font-style:italic;">
-            Gut gemacht!
-        </div>
+        <p class="label" style="margin-bottom:10px;">Deine persönliche Notiz / Motivation:</p>
         
-        <p class="label" style="margin-bottom:20px;">Abhaken was erledigt ist</p>
+        <input type="text" class="msg-input" id="supp-live-msg" placeholder="Tippe hier deine Nachricht ein..." oninput="saveSuppMsg(this)">
+        
+        <p class="label" style="margin-bottom:20px; margin-top:20px;">Abhaken was erledigt ist</p>
         
         <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
             <div class="check-item" onclick="toggleCheck(this)">
@@ -767,7 +789,7 @@
             </div>
         </div>
         
-        <button class="btn" style="margin-top:50px;" onclick="location.reload()">ERLEDIGT & BEENDEN</button>
+        <button class="btn" style="margin-top:50px;" onclick="location.reload()">FERTIG</button>
     </div>
 
     <nav class="nav">
@@ -778,7 +800,7 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_v400_msg_edition';
+        const STORE_KEY = 'bp_final_v500_fixed_supps';
         
         // --- 1. DATENBANK (Übungen) ---
         const DB = {
@@ -823,7 +845,6 @@
             parts: [], 
             history: [], 
             logs: [], 
-            // Hier kommt das neue Feld: suppMsg
             settings: { work: 40, rest: 20, weeklyGoal: 3, duration: 10, supps: true, suppMsg: "" }, 
             currentWorkout: [] 
         };
@@ -870,8 +891,8 @@
             document.getElementById('rng-rest').value = app.settings.rest || 20;
             document.getElementById('tog-supps').checked = app.settings.supps !== false;
             
-            // Lade die Nachricht
-            document.getElementById('set-supp-msg').value = app.settings.suppMsg || "";
+            // Lade die Nachricht in das Overlay-Feld
+            document.getElementById('supp-live-msg').value = app.settings.suppMsg || "";
 
             // Button Highlight setzten
             setWorkoutDuration(app.settings.duration || 10, document.getElementById('dur-' + (app.settings.duration || 10)));
@@ -1179,13 +1200,21 @@
                 document.getElementById('view-rpe').style.display='none';
                 document.getElementById('view-player').style.display='none';
                 document.getElementById('view-supps').style.display='flex';
-                
-                // Custom Msg setzen
-                const msg = app.settings.suppMsg || "Gut gemacht!";
-                document.getElementById('supp-custom-msg').innerText = msg;
+                // Msg ist schon im Input, da value geladen wurde
             } else {
                 location.reload(); 
             }
+        }
+
+        // Manuelles Öffnen der Liste
+        function openSuppsManually() {
+            document.getElementById('view-supps').style.display='flex';
+        }
+
+        // Nachricht speichern (Live beim Tippen)
+        function saveSuppMsg(el) {
+            app.settings.suppMsg = el.value;
+            save();
         }
 
         // --- 7. TRACKING FUNCTIONS (REPARIERT) ---
@@ -1283,10 +1312,6 @@
         function saveSettings() { 
             app.profile.h = document.getElementById('set-height').value; 
             app.profile.a = document.getElementById('set-age').value; 
-            
-            // Nachricht speichern
-            app.settings.suppMsg = document.getElementById('set-supp-msg').value;
-
             save(); updateUI(); 
         }
 
