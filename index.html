@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20 - Ultra Compact</title>
+    <title>Body Pulse V20 - Ultra Fixed</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -56,7 +56,7 @@
            TYPOGRAPHIE
            ========================================= */
         h1 { 
-            font-size: 24px; /* Etwas kleiner für Kompaktheit */
+            font-size: 24px; 
             font-weight: 800; 
             margin: 0 0 5px; 
             letter-spacing: 0.5px; 
@@ -72,7 +72,7 @@
         }
 
         .val-big { 
-            font-size: 24px; /* Kompakter */
+            font-size: 24px; 
             font-weight: 700; 
             letter-spacing: -0.5px; 
         }
@@ -92,7 +92,7 @@
             display: none; 
             flex-direction: column; 
             height: 100%; 
-            padding: 15px; /* Weniger Padding */
+            padding: 15px; 
             padding-bottom: 100px; 
             overflow-y: auto; 
             z-index: 10; 
@@ -108,9 +108,9 @@
         
         .card { 
             background: var(--surface); 
-            padding: 15px; /* Kompakter */
+            padding: 15px; 
             border: 1px solid var(--border); 
-            margin-bottom: 10px; /* Weniger Abstand */
+            margin-bottom: 10px; 
             border-radius: 14px;
         }
 
@@ -175,7 +175,7 @@
            ========================================= */
         .btn {
             width: 100%; 
-            padding: 15px; /* Kompakter */
+            padding: 15px; 
             border: none; 
             background: var(--primary); 
             color: var(--bg); 
@@ -371,7 +371,7 @@
         }
 
         /* =========================================
-           CHECK ITEMS (SUPPLEMENTS) - HÄKCHEN
+           CHECK ITEMS (SUPPLEMENTS) - OPTIMIERTE OPTIK
            ========================================= */
         .check-item { 
             padding: 15px; 
@@ -391,7 +391,7 @@
             transform: scale(0.98); 
         }
 
-        /* Das Quadrat (Leer oder mit Haken) */
+        /* Das Quadrat (Leer = Nur Rahmen) */
         .check-box-visual {
             width: 28px; 
             height: 28px;
@@ -408,9 +408,8 @@
 
         /* Wenn ausgewählt (checked) */
         .check-item.checked {
-            background: rgba(50, 215, 75, 0.1); 
             border-color: var(--accent);
-            color: var(--primary);
+            background: rgba(50, 215, 75, 0.05);
         }
 
         .check-item.checked .check-box-visual {
@@ -530,6 +529,24 @@
             </div>
         </div>
 
+        <div class="card compact-card">
+            <h2 style="margin-bottom:8px; text-align:center;">TRAININGSZEIT (MIN)</h2>
+            <div class="stat-grid-3">
+                <div style="text-align:center;">
+                    <span class="label">WOCHE</span>
+                    <div class="val-big" id="min-week">0</div>
+                </div>
+                <div style="text-align:center;">
+                    <span class="label">MONAT</span>
+                    <div class="val-big" id="min-month">0</div>
+                </div>
+                <div style="text-align:center;">
+                    <span class="label">JAHR</span>
+                    <div class="val-big" id="min-year">0</div>
+                </div>
+            </div>
+        </div>
+
         <div class="card compact-card" style="display:flex; justify-content:space-between; align-items:center;">
             <div>
                 <span class="label">WOCHENZIEL</span>
@@ -570,24 +587,6 @@
     <div id="tab-stats" class="screen">
         <h1>TRACKING</h1>
         
-        <div class="card">
-            <h2>TRAININGSZEIT (MIN)</h2>
-            <div class="stat-grid-3">
-                <div style="text-align:center;">
-                    <span class="label">WOCHE</span>
-                    <div class="val-big" id="min-week">0</div>
-                </div>
-                <div style="text-align:center;">
-                    <span class="label">MONAT</span>
-                    <div class="val-big" id="min-month">0</div>
-                </div>
-                <div style="text-align:center;">
-                    <span class="label">JAHR</span>
-                    <div class="val-big" id="min-year">0</div>
-                </div>
-            </div>
-        </div>
-
         <div class="card">
             <h2>GEWICHTSKURVE</h2>
             <div class="chart-container">
@@ -772,7 +771,7 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_final_repaired_v200_compact';
+        const STORE_KEY = 'bp_final_repaired_v300_ultra_fixed';
         
         // --- 1. DATENBANK (Übungen) ---
         const DB = {
@@ -893,13 +892,22 @@
         // --- 4. CORE LOGIC ---
         function setWorkoutDuration(min, el) {
             app.settings.duration = min;
-            document.querySelectorAll('#tab-home .btn-outline').forEach(b => { 
-                b.classList.add('btn-outline'); b.style.background="transparent"; b.style.color="white"; 
+            
+            // FIX: Alle Buttons zuerst resetten
+            ['dur-10', 'dur-20', 'dur-30'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.className = 'btn btn-outline'; // Klasse zurücksetzen
+                btn.style.background = 'transparent'; // Style zurücksetzen
+                btn.style.color = 'var(--primary)'; // Style zurücksetzen
             });
+
+            // Dann den geklickten aktivieren
             if(el) {
-                el.classList.remove('btn-outline'); 
-                el.style.background = "white"; el.style.color = "black";
+                el.className = 'btn'; 
+                el.style.background = 'white'; 
+                el.style.color = 'black';
             }
+            
             generateWorkout(); 
             save();
         }
@@ -935,7 +943,7 @@
 
             app.history.forEach(h => {
                 const d = new Date(h.date);
-                // Dauer schätzen falls nicht gespeichert (Fallbacks)
+                // Dauer schätzen falls nicht gespeichert (Fallbacks für alte Daten)
                 const dur = h.duration || (h.kcal ? Math.round(h.kcal / 8) : 10);
                 
                 totalMinsLifetime += dur;
@@ -972,7 +980,6 @@
             document.getElementById('week-circle').style.strokeDashoffset = 125 - (125 * pct);
             
             // Totals
-            // document.getElementById('disp-count').innerText = app.history.length; // Nicht mehr im UI benötigt
             let totalKcal = 0; app.history.forEach(h => totalKcal += (h.kcal || 0));
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
@@ -1152,6 +1159,9 @@
             }); 
             
             save(); 
+            
+            // FIX: Sofort UI updaten damit Kalorien sichtbar sind bevor man die App verlässt
+            updateUI();
             
             // Check ob Supps aktiviert sind
             if (app.settings.supps !== false) {
