@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V12 - Clean Core</title>
+    <title>Body Pulse V13 - Fixed & Full</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -316,7 +316,7 @@
         /* CHARTS */
         .chart-container { 
             width: 100%; 
-            height: 120px; /* Kleiner gemacht wie gewünscht */
+            height: 120px;
             position: relative; 
             margin-top: 10px; 
             border-bottom: 1px solid var(--border); 
@@ -359,7 +359,7 @@
             align-items: center; 
             justify-content: center; 
             position: relative; 
-            min-height: 300px;
+            min-height: 250px; /* Reduced to make space */
         }
 
         .progress-ring { 
@@ -671,7 +671,7 @@
         <div class="card">
             <h2>DATEN</h2>
             <button class="btn btn-outline" onclick="exportData()">BACKUP SPEICHERN</button>
-            <input type="file" id="import-input" style="display:none" onchange="importData(this)">
+            <input type="file" id="import-input" style="display:none" onchange="importData(this)" onclick="this.value=null">
             <button class="btn btn-outline" style="margin-top:8px" onclick="document.getElementById('import-input').click()">BACKUP LADEN</button>
             <button class="btn btn-outline" style="margin-top:15px; color:#ff453a; border-color:#ff453a;" onclick="resetApp()">RESET</button>
         </div>
@@ -695,7 +695,7 @@
             </div>
         </div>
 
-        <button id="skip-btn" class="btn-small" style="position:absolute; bottom:120px; left:50%; transform:translateX(-50%); display:none; z-index:3001;" onclick="nextStep()">PAUSE ÜBERSPRINGEN ⏩</button>
+        <button id="skip-btn" class="btn-small" style="position:absolute; bottom:15%; left:50%; transform:translateX(-50%); display:none; z-index:3001; background: #222; border: 1px solid #444;" onclick="nextStep()">PAUSE ÜBERSPRINGEN ⏩</button>
 
         <div style="text-align:center; margin-bottom:30px;">
             <div id="ex-name" style="font-size:22px; font-weight:700;">Übung</div>
@@ -707,7 +707,7 @@
     <div id="view-info" class="full-overlay" style="z-index:5000; background:#000;">
         <button class="btn-close" onclick="closeInfoAndResume()">✕</button>
         <h1 id="info-title" style="margin-top:20px;">ÜBUNG</h1>
-        <p id="info-desc" style="font-size:16px; line-height:1.5; color:#ccc; margin-top:10px;"></p>
+        <p id="info-desc" style="font-size:18px; line-height:1.6; color:#ccc; margin-top:20px;"></p>
     </div>
 
     <div id="view-calc" class="full-overlay" style="z-index:4000;">
@@ -743,54 +743,54 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_clean_final_v12';
+        const STORE_KEY = 'bp_pro_v13_fixed';
         
-        // --- ÜBUNGS-DATENBANK (REINER TEXT, KEINE BILDER) ---
+        // --- ÜBUNGS-DATENBANK (AUSFÜHRLICH) ---
         const DB = {
             bauch: [
-                {n:"Crunches", d:"Rückenlage, Schulterblätter anheben."}, 
-                {n:"Leg Raises", d:"Beine gestreckt heben."}, 
-                {n:"Plank", d:"Unterarmstütz halten."}, 
-                {n:"Russian Twist", d:"Oberkörper drehen."}, 
-                {n:"Mountain Climbers", d:"Knie zur Brust."}
+                {n:"Crunches", d:"Lege dich auf den Rücken, Beine angewinkelt aufstellen. Hände leicht an den Kopf (nicht ziehen!). Hebe die Schulterblätter durch Anspannen der Bauchmuskeln vom Boden ab. Ausatmen beim Hochgehen."},
+                {n:"Leg Raises", d:"Rückenlage, Hände flach unter den Po zur Stütze. Hebe die gestreckten Beine langsam an bis sie senkrecht sind, dann kontrolliert senken ohne den Boden zu berühren. Unterer Rücken bleibt am Boden!"},
+                {n:"Plank", d:"Der Unterarmstütz. Ellbogen unter den Schultern platzieren. Beine strecken. Der Körper bildet eine gerade Linie. Spanne Po und Bauch maximal an. Atmen nicht vergessen!"},
+                {n:"Russian Twist", d:"Setz dich hin, lehne den Oberkörper leicht zurück (Rücken gerade!). Füße leicht anheben für mehr Intensität. Rotiere den Oberkörper und berühre abwechselnd links und rechts den Boden."},
+                {n:"Mountain Climbers", d:"Starte in der Liegestütz-Position. Ziehe abwechselnd die Knie schnell und dynamisch unter den Körper Richtung Brust. Der Rücken bleibt gerade, der Po tief."}
             ],
             beine: [
-                {n:"Squats", d:"Kniebeugen tief."}, 
-                {n:"Lunges", d:"Ausfallschritte."}, 
-                {n:"Glute Bridges", d:"Becken heben."}, 
-                {n:"Wall Sit", d:"Wandsitz halten."}, 
-                {n:"Calf Raises", d:"Wadenheben."}
+                {n:"Squats", d:"Stelle dich schulterbreit hin. Gehe tief in die Hocke, als würdest du dich auf einen Stuhl setzen. Gewicht auf die Fersen. Achte darauf, dass die Knie nicht nach innen knicken. Rücken gerade!"},
+                {n:"Lunges", d:"Mache einen großen Schritt nach vorn. Senke das hintere Knie bis kurz vor den Boden. Beide Beine sollten ca. 90 Grad haben. Drück dich über die vordere Ferse wieder hoch."},
+                {n:"Glute Bridges", d:"Rückenlage, Füße nah am Po aufstellen. Drücke das Becken so hoch es geht zur Decke. Oben den Po fest zusammenkneifen und kurz halten. Langsam ablassen."},
+                {n:"Wall Sit", d:"Lehne dich mit dem Rücken flach an eine Wand und rutsche runter, bis deine Beine im 90-Grad-Winkel sind. Hände hängen locker an der Seite. Halte die Spannung!"},
+                {n:"Calf Raises", d:"Stell dich aufrecht hin (evtl. an Wand festhalten für Balance). Drücke dich hoch auf die Zehenspitzen, halte kurz die Spannung in den Waden, und senke die Fersen langsam wieder ab."}
             ],
             ober: [
-                {n:"Push-Ups", d:"Liegestütz."}, 
-                {n:"Dips", d:"Trizeps an Kante."}, 
-                {n:"Shoulder Taps", d:"Plank, Schulter tippen."}, 
-                {n:"Pike Pushups", d:"V-Form Pushup."}, 
-                {n:"Diamond Pushups", d:"Enge Liegestütz."}
+                {n:"Push-Ups", d:"Klassische Liegestütze. Hände unter den Schultern. Körper fest wie ein Brett. Brust bis fast zum Boden senken. Ellbogen zeigen eher nach hinten (Pfeilform), nicht 90 Grad zur Seite."},
+                {n:"Dips", d:"Stütze dich an einer stabilen Kante (Stuhl/Bett) ab. Beine gestreckt oder gebeugt. Senke den Po ab, indem du die Arme beugst. Drück dich aus dem Trizeps wieder hoch."},
+                {n:"Shoulder Taps", d:"Ausgangsposition: Hohe Plank (Liegestütz-Position). Berühre abwechselnd mit der linken Hand die rechte Schulter und umgekehrt. Versuche dabei, die Hüfte ganz ruhig zu halten."},
+                {n:"Pike Pushups", d:"Schulter-Pushup: Po weit in die Höhe strecken (umgekehrtes V). Beine gestreckt. Beuge die Arme und senke den Kopf Richtung Boden zwischen die Hände. Drück dich raus."},
+                {n:"Diamond Pushups", d:"Schwere Variante: Hände unter der Brust so zusammenlegen, dass Daumen und Zeigefinger ein Dreieck bilden. Gehe tief. Geht extrem auf den Trizeps."}
             ],
             ruecken: [
-                {n:"Superman", d:"Bauchlage, alles heben."}, 
-                {n:"Aquaman", d:"Diagonal heben."}, 
-                {n:"Bird Dog", d:"Vierfüßler diagonal."}, 
-                {n:"Prone W-Raise", d:"Schulterblätter zusammen."}
+                {n:"Superman", d:"Lege dich auf den Bauch. Strecke Arme nach vorne und Beine nach hinten. Hebe nun Arme und Beine gleichzeitig so hoch wie möglich an. Spüre den unteren Rücken. Kurz halten."},
+                {n:"Aquaman", d:"Wie Superman, aber du hebst abwechselnd linken Arm/rechtes Bein und rechten Arm/linkes Bein. Dynamische Bewegung für die Rückenstrecker."},
+                {n:"Bird Dog", d:"Vierfüßlerstand. Strecke den rechten Arm nach vorn und das linke Bein nach hinten. Mach dich lang. Führe Ellbogen und Knie unter dem Bauch zusammen und strecke wieder."},
+                {n:"Prone W-Raise", d:"Bauchlage. Arme seitlich angewinkelt (wie ein 'W'). Hebe den Oberkörper und ziehe die Schulterblätter aktiv zusammen. Halten und senken."}
             ],
             stuhl: [
-                {n:"Chair Dips", d:"Dips am Stuhl."}, 
-                {n:"Bulgarian Split Squats", d:"Fuß hinten hoch."}, 
-                {n:"Step-Ups", d:"Aufsteigen."}, 
-                {n:"Incline Push-Ups", d:"Hände auf Stuhl."}
+                {n:"Chair Dips", d:"Setz dich auf die Stuhlkante, Hände neben den Po. Rutsch mit dem Po vor den Stuhl. Beuge die Arme, senke den Po ab und drück dich wieder hoch."},
+                {n:"Bulgarian Split Squats", d:"Ein Fuß liegt mit dem Spann hinten auf dem Stuhl/Sofa auf. Das andere Bein steht weit vorn. Beuge das vordere Bein tief. Der Oberkörper bleibt aufrecht."},
+                {n:"Step-Ups", d:"Stell dich vor den Stuhl (muss stabil sein!). Steige mit einem Bein komplett hoch, richte dich ganz auf, und steig wieder ab. Wechsel das Bein."},
+                {n:"Incline Push-Ups", d:"Hände auf die Sitzfläche des Stuhls, Füße am Boden. Körper bildet eine Linie. Senke die Brust zur Stuhlkante. Einfacher als normale Liegestütze."}
             ],
             ganz: [
-                {n:"Burpees", d:"Liegestütz-Strecksprung."}, 
-                {n:"Jumping Jacks", d:"Hampelmann."}, 
-                {n:"Squat Jumps", d:"Sprungbeuge."}, 
-                {n:"Plank Jacks", d:"Plank Beine auf/zu."}
+                {n:"Burpees", d:"Aus dem Stand in die Hocke, Hände auf den Boden, Sprung zurück in den Stütz, (optional Liegestütz), Sprung vor in die Hocke und Strecksprung nach oben."},
+                {n:"Jumping Jacks", d:"Hampelmann: Springe in den breiten Stand, Hände berühren sich über dem Kopf. Springe zurück, Hände an die Seite. Bleib auf den Fußballen."},
+                {n:"Squat Jumps", d:"Mache eine normale Kniebeuge, aber drücke dich explosiv ab und springe so hoch du kannst. Lande weich und gehe direkt in die nächste Beuge."},
+                {n:"Plank Jacks", d:"Unterarmstütz. Springe mit den Füßen auseinander (wie beim Hampelmann) und wieder zusammen. Halte die Hüfte dabei so stabil wie möglich."}
             ],
             cardio: [
-                {n:"High Knees", d:"Knie hoch laufen."}, 
-                {n:"Skaters", d:"Seitlich springen."}, 
-                {n:"Butt Kicks", d:"Fersen zum Po."}, 
-                {n:"Fast Feet", d:"Schnelles Tippeln."}
+                {n:"High Knees", d:"Lauf auf der Stelle, aber zieh die Knie dabei so hoch wie möglich (mindestens Hüfthöhe). Nimm die Arme dynamisch mit. Gib Gas!"},
+                {n:"Skaters", d:"Springe seitlich von einem Bein auf das andere. Das freie Bein kreuzt hinten. Nimm den gegenüberliegenden Arm mit zum Boden. Wie beim Eisschnelllauf."},
+                {n:"Butt Kicks", d:"Laufen am Platz, dabei die Fersen aktiv zum Po ziehen. Oberkörper leicht vorgeneigt."},
+                {n:"Fast Feet", d:"Steh schulterbreit, geh leicht in die Knie. Tippel so schnell du kannst auf der Stelle (nur Fußballen). Der Boden ist Lava!"}
             ]
         };
 
@@ -855,24 +855,26 @@
 
         function generateWorkout() {
             let pool = [];
+            // RULE: Always include Bauch & Rücken
+            if(DB.bauch) pool.push(DB.bauch[Math.floor(Math.random()*DB.bauch.length)]);
+            if(DB.ruecken) pool.push(DB.ruecken[Math.floor(Math.random()*DB.ruecken.length)]);
             
-            // Nutzerwahl respektieren (wenn nichts gewählt, Standard nehmen)
+            // Fill rest
             let cats = (app.parts && app.parts.length>0) ? app.parts : Object.keys(DB);
-            
             let fillPool = [];
-            cats.forEach(c => { 
-                if(DB[c]) DB[c].forEach(ex => fillPool.push(ex)); 
-            });
+            cats.forEach(c => { if(DB[c]) {
+                DB[c].forEach(ex => { ex.cat = c; fillPool.push(ex); }); 
+            }});
             
-            // Mischen
+            // Shuffle fill
             for(let i=fillPool.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [fillPool[i],fillPool[j]]=[fillPool[j],fillPool[i]]; }
             
             const count = app.settings.duration === 10 ? 6 : (app.settings.duration === 20 ? 10 : 14);
-            // Befüllen
+            // Add unique items until full
             for(let ex of fillPool) {
                 if(pool.length < count && !pool.includes(ex)) pool.push(ex);
             }
-            // Endmischung
+            // Reshuffle final
             for(let i=pool.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
             app.currentWorkout = pool;
         }
@@ -957,6 +959,7 @@
             for(let i=0; i<8; i++){
                 let d=document.createElement('div'); d.className='water-cup'+(i<app.water.count?' full':'');
                 d.onclick=()=>{ 
+                    // Logik: 1 Glas = 0.25L.
                     app.water.count = (i<app.water.count) ? i : i+1; 
                     save(); renderWater(); 
                     let inf = document.getElementById('water-added-msg');
@@ -964,7 +967,8 @@
                 };
                 g.appendChild(d);
             }
-            document.getElementById('water-val').innerText = (app.water.count*0.25).toFixed(1) + " / 2.0 L";
+            // Anzeige korrigiert: 0.25 * Anzahl
+            document.getElementById('water-val').innerText = (app.water.count*0.25).toFixed(2) + " / 2.0 L";
         }
 
         // --- UI & STATS ---
@@ -1028,17 +1032,23 @@
             document.getElementById('view-calc').style.display='flex';
         }
 
+        // --- BACKUP FIX ---
         function importData(el) {
             if(!el.files.length) return;
             const r = new FileReader();
             r.onload = e => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    if(!data.profile) throw new Error("Falsches Format");
-                    app = data; save(); alert("Daten geladen!"); location.reload();
-                } catch(err) { alert("Fehler beim Laden: "+err.message); }
+                    // Wir erlauben Import auch wenn manche Felder fehlen, aber Profile muss da sein
+                    if(!data.profile) throw new Error("Format?");
+                    app = data; 
+                    save(); 
+                    alert("Backup OK!"); 
+                    location.reload();
+                } catch(err) { alert("Fehler: "+err.message); }
             };
             r.readAsText(el.files[0]);
+            // WICHTIG: Input resetten damit man die gleiche Datei nochmal laden kann
             el.value = ''; 
         }
 
@@ -1064,7 +1074,6 @@
             let w=document.getElementById('log-weight').value; 
             if(!w)return; 
             
-            // Speichere alle erweiterten Werte
             app.logs.push({
                 date:d, 
                 w:w,
