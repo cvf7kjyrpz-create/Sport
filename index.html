@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V13 - Fixed & Full</title>
+    <title>Body Pulse V14 - Perfected</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -78,8 +78,9 @@
         }
         
         .val-huge {
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: -1px;
         }
 
         .label { 
@@ -182,6 +183,15 @@
             background: var(--surface-light); 
             border: 1px solid var(--border); 
             color: var(--primary);
+        }
+        
+        /* PLAYER BUTTONS SPLIT */
+        .player-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+            width: 100%;
         }
 
         input { 
@@ -359,12 +369,12 @@
             align-items: center; 
             justify-content: center; 
             position: relative; 
-            min-height: 250px; /* Reduced to make space */
+            min-height: 200px; 
         }
 
         .progress-ring { 
-            width: 260px; 
-            height: 260px; 
+            width: 240px; 
+            height: 240px; 
             transform: rotate(-90deg); 
         }
         
@@ -377,7 +387,7 @@
         }
 
         .time-huge { 
-            font-size: 80px; 
+            font-size: 70px; 
             font-weight: 700; 
             font-family: monospace; 
             letter-spacing: -3px; 
@@ -545,12 +555,12 @@
     <div id="tab-home" class="screen active" style="padding:10px;">
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <div>
-                <span class="label" id="greeting">HALLO</span>
-                <h1 style="margin:0;">COCKPIT</h1>
+            <div style="padding:5px;">
+                <span class="label">DEINE REISE</span>
+                <h1 style="margin:0; font-size:40px;">TAG <span id="day-count">1</span></h1>
             </div>
             <div style="text-align:right;">
-                <div style="font-size:12px; font-weight:bold; color:var(--fire);">🔥 <span id="streak-val">0</span> TAGE</div>
+                <div style="font-size:12px; font-weight:bold; color:var(--fire);">🔥 <span id="streak-val">0</span></div>
                 <div style="font-size:12px; margin-top:2px; color:var(--primary); opacity:0.7;" id="lvl-badge">LVL 1</div>
             </div>
         </div>
@@ -643,7 +653,7 @@
             </div>
             <div class="input-row">
                 <input type="number" id="log-thigh" placeholder="Oberschenkel (cm)">
-                <div></div>
+                <input type="number" id="log-biceps" placeholder="Bizeps (cm)">
             </div>
             <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
         </div>
@@ -685,9 +695,9 @@
         </div>
         
         <div class="timer-wrap">
-            <svg class="progress-ring" width="260" height="260">
-                <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/>
-                <circle id="progress-circle" style="transition: stroke-dashoffset 1s linear;" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130" stroke-dasharray="722 722"/>
+            <svg class="progress-ring" width="240" height="240">
+                <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="120" cy="120"/>
+                <circle id="progress-circle" style="transition: stroke-dashoffset 1s linear;" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="120" cy="120" stroke-dasharray="722 722"/>
             </svg>
             <div class="time-center">
                 <div class="time-huge" id="time-disp">00</div>
@@ -695,13 +705,15 @@
             </div>
         </div>
 
-        <button id="skip-btn" class="btn-small" style="position:absolute; bottom:15%; left:50%; transform:translateX(-50%); display:none; z-index:3001; background: #222; border: 1px solid #444;" onclick="nextStep()">PAUSE ÜBERSPRINGEN ⏩</button>
-
-        <div style="text-align:center; margin-bottom:30px;">
+        <div style="text-align:center; margin-bottom:20px;">
             <div id="ex-name" style="font-size:22px; font-weight:700;">Übung</div>
             <button class="btn-outline" style="padding:8px 15px; font-size:11px; margin-top:10px; border-radius:20px;" onclick="showInfoAndPause()">ANLEITUNG</button>
         </div>
-        <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
+
+        <div class="player-controls">
+            <button class="btn" id="play-btn" onclick="toggleTimer()">START</button>
+            <button class="btn" id="skip-btn" style="background:#333; color:white; border:1px solid #444;" onclick="nextStep()">ÜBERSPRINGEN</button>
+        </div>
     </div>
 
     <div id="view-info" class="full-overlay" style="z-index:5000; background:#000;">
@@ -732,7 +744,7 @@
             <div class="check-item" onclick="toggleCheck(this, 2)"><div class="check-box-visual">✔</div><div>💊 Magnesium</div></div>
             <div class="check-item" onclick="toggleCheck(this, 3)"><div class="check-box-visual">✔</div><div>🔩 Eisen / Vitamine</div></div>
         </div>
-        <button class="btn" style="margin-top:30px;" onclick="location.reload()">FERTIG</button>
+        <button class="btn" style="margin-top:30px;" onclick="document.getElementById('view-supps').style.display='none'">FERTIG</button>
     </div>
 
     <nav class="nav">
@@ -743,9 +755,8 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_pro_v13_fixed';
+        const STORE_KEY = 'bp_v14_final';
         
-        // --- ÜBUNGS-DATENBANK (AUSFÜHRLICH) ---
         const DB = {
             bauch: [
                 {n:"Crunches", d:"Lege dich auf den Rücken, Beine angewinkelt aufstellen. Hände leicht an den Kopf (nicht ziehen!). Hebe die Schulterblätter durch Anspannen der Bauchmuskeln vom Boden ab. Ausatmen beim Hochgehen."},
@@ -793,12 +804,23 @@
                 {n:"Fast Feet", d:"Steh schulterbreit, geh leicht in die Knie. Tippel so schnell du kannst auf der Stelle (nur Fußballen). Der Boden ist Lava!"}
             ]
         };
+        
+        const catMap = {
+            'bauch': 'Bauch & Core',
+            'beine': 'Beine & Po',
+            'ober': 'Oberkörper',
+            'ruecken': 'Rücken',
+            'stuhl': 'Stuhl/Sofa',
+            'ganz': 'Ganzkörper',
+            'cardio': 'Cardio'
+        };
 
         let app = { 
             profile: { h:0, w:0, a:0, s:'m' }, 
             parts: [], history: [], logs: [], 
             settings: { work:40, rest:20, duration:10, supps:true, suppMsg:"", suppState:[0,0,0,0], voice:false }, 
-            water: { count:0, date:"" }, streak: { count:0, last:"" }, currentWorkout: [] 
+            water: { count:0, date:"" }, streak: { count:0, last:"" }, currentWorkout: [],
+            installDate: ""
         };
         let sess = { run:false, int:null, t:0, idx:0, r:1, work:false, preview:null };
         let wiz = { parts:[], sex:'m' };
@@ -815,6 +837,7 @@
             // Init Checks
             if(!app.water) app.water = { count:0, date:new Date().toDateString() };
             if(!app.streak) app.streak = { count:0, last:"" };
+            if(!app.installDate) { app.installDate = new Date().toISOString(); save(); }
             
             // Daily Reset
             if(app.water.date !== new Date().toDateString()) { app.water.count=0; app.water.date=new Date().toDateString(); save(); }
@@ -827,6 +850,11 @@
             }
             document.getElementById('streak-val').innerText = app.streak.count;
             
+            // Day Count
+            const dayDiff = Math.abs(new Date() - new Date(app.installDate));
+            const daysSince = Math.ceil(dayDiff / (1000 * 60 * 60 * 24));
+            document.getElementById('day-count').innerText = daysSince || 1;
+            
             // Load UI
             document.getElementById('set-height').value = app.profile.h||'';
             document.getElementById('set-age').value = app.profile.a||'';
@@ -838,9 +866,6 @@
             restoreSupps();
             setWorkoutDuration(app.settings.duration||10, document.getElementById('dur-'+(app.settings.duration||10)));
             updateRangeLbl(); updateUI();
-            
-            const h = new Date().getHours();
-            document.getElementById('greeting').innerText = h<10?"GUTEN MORGEN":(h<18?"TAG":"GUTEN ABEND");
         }
 
         // --- CORE LOGIC ---
@@ -890,7 +915,7 @@
 
         function startPhase(type) {
             sess.work = (type==='WORK');
-            document.getElementById('skip-btn').style.display = sess.work ? 'none' : 'block';
+            // document.getElementById('skip-btn').style.display = sess.work ? 'none' : 'block'; // User wanted it always visible/split layout
             
             if(type==='PREP') {
                 sess.t=10; document.getElementById('phase-disp').innerText="READY";
@@ -959,7 +984,6 @@
             for(let i=0; i<8; i++){
                 let d=document.createElement('div'); d.className='water-cup'+(i<app.water.count?' full':'');
                 d.onclick=()=>{ 
-                    // Logik: 1 Glas = 0.25L.
                     app.water.count = (i<app.water.count) ? i : i+1; 
                     save(); renderWater(); 
                     let inf = document.getElementById('water-added-msg');
@@ -967,7 +991,6 @@
                 };
                 g.appendChild(d);
             }
-            // Anzeige korrigiert: 0.25 * Anzahl
             document.getElementById('water-val').innerText = (app.water.count*0.25).toFixed(2) + " / 2.0 L";
         }
 
@@ -987,7 +1010,7 @@
             document.getElementById('min-month').innerText=mMonth;
             document.getElementById('min-year').innerText=mYear;
             
-            // Level (1 Level pro 60 min)
+            // Level
             const lvl = 1 + Math.floor(total/60);
             document.getElementById('lvl-badge').innerText = "LVL " + lvl;
             document.getElementById('streak-val').innerText = app.streak.count;
@@ -1032,23 +1055,22 @@
             document.getElementById('view-calc').style.display='flex';
         }
 
-        // --- BACKUP FIX ---
+        // --- ROBUST BACKUP IMPORT ---
         function importData(el) {
             if(!el.files.length) return;
             const r = new FileReader();
             r.onload = e => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    // Wir erlauben Import auch wenn manche Felder fehlen, aber Profile muss da sein
-                    if(!data.profile) throw new Error("Format?");
-                    app = data; 
+                    // Minimal Validation, merge into current structure
+                    app = { ...app, ...data }; 
+                    if(data.profile) app.profile = data.profile; // Ensure profile is kept
                     save(); 
-                    alert("Backup OK!"); 
+                    alert("Daten erfolgreich importiert!"); 
                     location.reload();
-                } catch(err) { alert("Fehler: "+err.message); }
+                } catch(err) { alert("Fehler beim Laden: "+err.message); }
             };
             r.readAsText(el.files[0]);
-            // WICHTIG: Input resetten damit man die gleiche Datei nochmal laden kann
             el.value = ''; 
         }
 
@@ -1056,11 +1078,13 @@
         function renderLibrary(){ 
             const c=document.getElementById('lib-list');c.innerHTML=""; 
             for(let k in DB){ 
-                let h=document.createElement('h2');h.innerText=k;c.appendChild(h); 
+                let h=document.createElement('h2');
+                h.innerText=catMap[k] ? catMap[k].toUpperCase() : k.toUpperCase(); // Proper Naming
+                c.appendChild(h); 
                 DB[k].forEach(ex=>{ 
                     let i=document.createElement('div');
                     i.className='lib-item';
-                    i.innerHTML=`<div><b>${ex.n}</b><br><span style="font-size:10px;color:#888">${k}</span></div><span class="tag">INFO</span>`; 
+                    i.innerHTML=`<div><b>${ex.n}</b><br><span style="font-size:10px;color:#888">${catMap[k]||k}</span></div><span class="tag">INFO</span>`; 
                     i.onclick=()=>{sess.preview={n:ex.n,d:ex.d,cat:k}; showInfoAndPause();}; 
                     c.appendChild(i); 
                 }) 
@@ -1074,14 +1098,23 @@
             let w=document.getElementById('log-weight').value; 
             if(!w)return; 
             
+            // 1. Add Log
             app.logs.push({
                 date:d, 
                 w:w,
                 waist: document.getElementById('log-waist').value || 0,
                 hips: document.getElementById('log-hips').value || 0,
                 chest: document.getElementById('log-chest').value || 0,
-                thigh: document.getElementById('log-thigh').value || 0
+                thigh: document.getElementById('log-thigh').value || 0,
+                biceps: document.getElementById('log-biceps').value || 0
             }); 
+            
+            // 2. Sort Logs by Date
+            app.logs.sort((a,b) => new Date(a.date) - new Date(b.date));
+            
+            // 3. Update Profile Weight to latest Log
+            app.profile.w = app.logs[app.logs.length-1].w;
+
             save(); updateUI(); alert("Gespeichert"); 
         }
         
