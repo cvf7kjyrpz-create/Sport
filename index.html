@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V20 - Supps Fixed</title>
+    <title>Body Pulse V20 - Clean & Pro</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -86,7 +86,7 @@
         }
 
         /* =========================================
-           LAYOUT CONTAINER (SCREENS)
+           LAYOUT CONTAINER
            ========================================= */
         .screen { 
             display: none; 
@@ -114,7 +114,6 @@
             border-radius: 14px;
         }
 
-        /* Spezial-Klasse für Cockpit Kompaktheit */
         .compact-card {
             padding: 12px;
             margin-bottom: 8px;
@@ -142,7 +141,7 @@
         }
 
         /* =========================================
-           BIBLIOTHEK ITEMS
+           ELEMENTS
            ========================================= */
         .lib-item { 
             padding: 18px; 
@@ -155,10 +154,7 @@
             align-items: center; 
             cursor: pointer; 
         }
-
-        .lib-item:active {
-            background: var(--border);
-        }
+        .lib-item:active { background: var(--border); }
 
         .tag { 
             font-size: 9px; 
@@ -170,9 +166,6 @@
             text-transform: uppercase; 
         }
 
-        /* =========================================
-           BUTTONS & INPUTS
-           ========================================= */
         .btn {
             width: 100%; 
             padding: 15px; 
@@ -189,11 +182,7 @@
             border-radius: 10px; 
             text-align: center;
         }
-
-        .btn:active { 
-            transform: scale(0.98); 
-            opacity: 0.9; 
-        }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
 
         .btn-outline { 
             background: transparent; 
@@ -234,7 +223,6 @@
             font-family: var(--font);
         }
 
-        /* Spezielles Textfeld für die Motivations-Nachricht */
         .msg-input {
             width: 100%;
             background: transparent;
@@ -249,11 +237,11 @@
             border-radius: 10px;
             outline: none;
         }
-        .msg-input::placeholder {
-            color: #444;
-            font-weight: normal;
-        }
+        .msg-input::placeholder { color: #444; font-weight: normal; }
 
+        /* =========================================
+           NEUER SLIDER / TOGGLE SWITCH
+           ========================================= */
         .toggle-row { 
             display: flex; 
             justify-content: space-between; 
@@ -261,11 +249,49 @@
             padding: 12px 0; 
         }
 
-        input[type="checkbox"] { 
-            accent-color: var(--primary); 
-            width: 24px; 
-            height: 24px; 
-            cursor: pointer; 
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .switch input { 
+            opacity: 0; 
+            width: 0; 
+            height: 0; 
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #3a3a3c; /* Grau (Aus) */
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent); /* Grün (An) */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
         }
 
         input[type="range"] { 
@@ -287,21 +313,11 @@
             border-left: 1px solid var(--border); 
         }
 
-        svg.chart { 
-            width: 100%; 
-            height: 100%; 
-            overflow: visible; 
-        }
-
-        polyline { 
-            fill: none; 
-            stroke: var(--primary); 
-            stroke-width: 2; 
-            vector-effect: non-scaling-stroke; 
-        }
+        svg.chart { width: 100%; height: 100%; overflow: visible; }
+        polyline { fill: none; stroke: var(--primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
 
         /* =========================================
-           OVERLAYS & WIZARD
+           OVERLAYS
            ========================================= */
         .full-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg);
@@ -309,16 +325,8 @@
             overflow-y: auto;
         }
 
-        .wiz-step { 
-            display: none; 
-            flex-direction: column; 
-            height: 100%; 
-        }
-
-        .wiz-step.active { 
-            display: flex; 
-            animation: slide 0.3s ease; 
-        }
+        .wiz-step { display: none; flex-direction: column; height: 100%; }
+        .wiz-step.active { display: flex; animation: slide 0.3s ease; }
         
         .opt-item { 
             padding: 22px; 
@@ -329,15 +337,10 @@
             background: var(--surface); 
             font-weight: 500;
         }
-
-        .opt-item.selected { 
-            border-color: var(--primary); 
-            background: var(--surface-light); 
-            color: var(--primary); 
-        }
+        .opt-item.selected { border-color: var(--primary); background: var(--surface-light); color: var(--primary); }
 
         /* =========================================
-           PLAYER COMPONENTS
+           PLAYER COMPONENTS (CLEAN - NO STICKMAN)
            ========================================= */
         .timer-wrap { 
             flex-grow: 1; 
@@ -379,15 +382,9 @@
             font-size: 16px; 
             font-weight: 600; 
             letter-spacing: 4px; 
-            margin-top: 10px; 
             display: block; 
             color: var(--accent); 
-        }
-        
-        .goal-ring { 
-            width: 60px; 
-            height: 60px; 
-            transform: rotate(-90deg); 
+            margin-top: 10px;
         }
 
         /* =========================================
@@ -406,84 +403,37 @@
             cursor: pointer;
             transition: all 0.1s ease;
         }
+        .check-item:active { transform: scale(0.98); }
 
-        .check-item:active { 
-            transform: scale(0.98); 
-        }
-
-        /* Das Quadrat (Leer = Nur Rahmen) */
         .check-box-visual {
-            width: 28px; 
-            height: 28px;
-            border: 2px solid var(--secondary);
-            border-radius: 6px;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 18px;
-            color: transparent; /* Unsichtbar wenn nicht checked */
-            background: transparent;
-            transition: all 0.2s ease;
+            width: 28px; height: 28px; border: 2px solid var(--secondary); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: transparent; background: transparent; transition: all 0.2s ease;
         }
 
-        /* Wenn ausgewählt (checked) */
-        .check-item.checked {
-            border-color: var(--accent);
-            background: rgba(50, 215, 75, 0.05);
-        }
+        .check-item.checked { border-color: var(--accent); background: rgba(50, 215, 75, 0.05); }
+        .check-item.checked .check-box-visual { background: var(--accent); border-color: var(--accent); color: #000; }
 
-        .check-item.checked .check-box-visual {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #000; /* Schwarzer Haken */
-        }
-
-        /* Historie Item */
         .hist-item { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 15px 0; 
-            border-bottom: 1px solid var(--border); 
-            font-size: 13px; 
+            display: flex; justify-content: space-between; padding: 15px 0; 
+            border-bottom: 1px solid var(--border); font-size: 13px; 
         }
 
         /* =========================================
            NAVIGATION BAR
            ========================================= */
         .nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 70px; 
-            background: rgba(0,0,0,0.95); 
-            border-top: 1px solid var(--border); 
-            backdrop-filter: blur(20px);
-            display: flex; 
-            justify-content: space-around; 
-            padding-bottom: var(--safe-bottom); 
-            z-index: 1000;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; 
+            background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); 
+            backdrop-filter: blur(20px); display: flex; justify-content: space-around; 
+            padding-bottom: var(--safe-bottom); z-index: 1000;
         }
-
         .nav-btn { 
-            flex: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            opacity: 0.4; 
-            font-size: 22px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            color: white; 
+            flex: 1; display: flex; justify-content: center; align-items: center; 
+            opacity: 0.4; font-size: 22px; cursor: pointer; transition: 0.2s; color: white; 
         }
+        .nav-btn.active { opacity: 1; transform: scale(1.1); color: var(--primary); }
 
-        .nav-btn.active { 
-            opacity: 1; 
-            transform: scale(1.1); 
-            color: var(--primary); 
-        }
-
-        /* Animationen */
         @keyframes fade { from{opacity:0;} to{opacity:1;} }
         @keyframes slide { from{opacity:0; transform:translateX(20px);} to{opacity:1; transform:translateX(0);} }
     </style>
@@ -510,6 +460,9 @@
                 <div class="opt-item" onclick="wizToggle('parts', 'bauch', this)">BAUCH & CORE</div>
                 <div class="opt-item" onclick="wizToggle('parts', 'beine', this)">BEINE & PO</div>
                 <div class="opt-item" onclick="wizToggle('parts', 'ober', this)">OBERKÖRPER</div>
+                <div class="opt-item" onclick="wizToggle('parts', 'ruecken', this)">RÜCKEN (NEU)</div>
+                <div class="opt-item" onclick="wizToggle('parts', 'stuhl', this)">STUHL / SOFA</div>
+                <div class="opt-item" onclick="wizToggle('parts', 'ganz', this)">GANZKÖRPER (NEU)</div>
                 <div class="opt-item" onclick="wizToggle('parts', 'cardio', this)">CARDIO</div>
             </div>
             <button class="btn" style="margin-top:auto" onclick="wizNext(2)">WEITER</button>
@@ -642,13 +595,12 @@
                 </div>
             </div>
             
-            <div class="input-row">
+             <div class="input-row">
                 <div>
                     <span class="label">Oberschenkel (cm)</span>
                     <input type="number" id="log-thigh" placeholder="0">
                 </div>
-                <div>
-                    </div>
+                <div></div>
             </div>
             
             <button class="btn btn-outline" onclick="saveLog()">WERTE SPEICHERN</button>
@@ -679,7 +631,10 @@
             <h2>OPTIONEN</h2>
             <div class="toggle-row">
                 <span style="font-size:16px;">Supplements Erinnerung</span>
-                <input type="checkbox" id="tog-supps" onchange="toggleSuppsSetting()">
+                <label class="switch">
+                    <input type="checkbox" id="tog-supps" onchange="toggleSuppsSetting()">
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
 
@@ -696,6 +651,9 @@
                 <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-bauch" onclick="updateAppPart('bauch')">BAUCH</button>
                 <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-beine" onclick="updateAppPart('beine')">BEINE</button>
                 <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-ober" onclick="updateAppPart('ober')">OBERKÖRPER</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-ruecken" onclick="updateAppPart('ruecken')">RÜCKEN (NEU)</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-stuhl" onclick="updateAppPart('stuhl')">STUHL</button>
+                <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-ganz" onclick="updateAppPart('ganz')">GANZKÖRPER (NEU)</button>
                 <button class="btn btn-outline" style="font-size:10px; padding:10px;" id="set-part-cardio" onclick="updateAppPart('cardio')">CARDIO</button>
             </div>
         </div>
@@ -725,6 +683,7 @@
                 <circle stroke="#222" stroke-width="8" fill="transparent" r="115" cx="130" cy="130"/>
                 <circle id="progress-circle" class="progress-ring__circle" stroke="white" stroke-width="8" stroke-linecap="round" fill="transparent" r="115" cx="130" cy="130"/>
             </svg>
+            
             <div class="time-center">
                 <div class="time-huge" id="time-disp">00</div>
                 <span id="phase-disp" class="phase-lbl">READY</span>
@@ -756,34 +715,36 @@
 
         <h1 style="margin-bottom:10px; margin-top:40px;">POST-WORKOUT</h1>
         
-        <p class="label" style="margin-bottom:10px;">Deine persönliche Notiz / Motivation:</p>
+        <div id="supp-custom-msg" style="display:none; margin-bottom:20px; font-size:20px; color:var(--accent); font-weight:bold; font-style:italic;"></div>
+        
+        <p class="label" style="margin-bottom:10px;">Deine Notiz / Motivation:</p>
         
         <input type="text" class="msg-input" id="supp-live-msg" placeholder="Tippe hier deine Nachricht ein..." oninput="saveSuppMsg(this)">
         
         <p class="label" style="margin-bottom:20px; margin-top:20px;">Abhaken was erledigt ist</p>
         
-        <div style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
-            <div class="check-item" onclick="toggleCheck(this)">
+        <div id="check-list-container" style="text-align:left; display:inline-block; max-width: 300px; width:100%;">
+            <div class="check-item" onclick="toggleCheck(this, 0)">
                 <div class="check-box-visual">✔</div>
                 <div>🥤 Eiweiß Shake</div>
             </div>
             
-            <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-item" onclick="toggleCheck(this, 1)">
                 <div class="check-box-visual">✔</div>
                 <div>⚡ Kreatin</div>
             </div>
             
-            <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-item" onclick="toggleCheck(this, 2)">
                 <div class="check-box-visual">✔</div>
                 <div>💊 Magnesium</div>
             </div>
             
-            <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-item" onclick="toggleCheck(this, 3)">
                 <div class="check-box-visual">✔</div>
                 <div>🔩 Eisen / Vitamine</div>
             </div>
             
-            <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-item" onclick="toggleCheck(this, 4)">
                 <div class="check-box-visual">✔</div>
                 <div>💧 0.5L Wasser</div>
             </div>
@@ -800,41 +761,59 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_final_v500_fixed_supps';
+        const STORE_KEY = 'bp_clean_pro_v800';
         
-        // --- 1. DATENBANK (Übungen) ---
+        // --- 1. DATENBANK (INKL. RÜCKEN & GANZKÖRPER) ---
         const DB = {
             bauch: [
-                {n:"Crunches", d:"Rückenlage, Beine aufgestellt. Hände locker an die Schläfen (nicht am Kopf ziehen!). Hebe die Schulterblätter kontrolliert vom Boden ab, während du ausatmest. Halte die Spannung oben kurz und senke dich langsam wieder ab, ohne den Boden ganz zu berühren. Spüre die Kontraktion im oberen Bauch."},
-                {n:"Leg Raises", d:"Flach auf dem Rücken liegen, Hände unter den Po zur Stabilisierung. Beine gestreckt langsam bis kurz vor den Boden senken und wieder heben. Achte darauf, dass dein unterer Rücken immer fest in die Matte gedrückt bleibt. Nicht ins Hohlkreuz gehen! Trainiert den unteren Bauch extrem effektiv."},
-                {n:"Plank", d:"Unterarmstütz. Ellbogen direkt unter den Schultern. Spanne den gesamten Körper an – Po fest, Bauch fest. Dein Körper bildet eine gerade Linie vom Kopf bis zu den Fersen. Atme ruhig weiter und halte die Position stabil. Eine der besten Ganzkörper-Übungen für die Stabilität."},
-                {n:"Russian Twist", d:"Sitzposition, Oberkörper leicht zurückgelehnt, Beine angewinkelt in der Luft. Drehe den gesamten Oberkörper von links nach rechts und berühre jeweils den Boden neben dir. Blick folgt den Händen. Trainiert die schrägen Bauchmuskeln und die Rumpf-Rotation."},
-                {n:"Mountain Climbers", d:"Liegestütz-Position. Ziehe abwechselnd die Knie schnell und kraftvoll zur Brust. Halte den Po tief und die Arme gestreckt. Eine fantastische Übung, die Kraft und Herzfrequenz gleichzeitig nach oben treibt."},
-                {n:"Bicycle Crunches", d:"Rückenlage. Ziehe den rechten Ellbogen zum linken Knie, während das rechte Bein gestreckt über dem Boden schwebt. Dann flüssiger Wechsel im Rhythmus. Die Rotation im Rumpf ist hier entscheidend für den Erfolg."}
+                {n:"Crunches", d:"Klassiker: Rückenlage, Beine aufgestellt. Hebe nur die Schulterblätter vom Boden ab, indem du den Bauch fest anspannst. Blick schräg zur Decke. Nicht am Kopf ziehen! Ausatmen beim Hochgehen."},
+                {n:"Leg Raises", d:"Rückenlage, Hände zur Stütze flach unter den Po. Hebe die gestreckten Beine langsam an und senke sie kontrolliert ab. Wichtig: Der untere Rücken muss permanent Kontakt zum Boden haben!"},
+                {n:"Plank", d:"Der Unterarmstütz. Ellbogen unter den Schultern. Körper bildet ein Brett. Spanne Po und Bauch maximal an. Nicht durchhängen! Halte die Position so ruhig wie möglich."},
+                {n:"Russian Twist", d:"Setz dich hin, lehne den Oberkörper leicht zurück (Rücken gerade!). Füße leicht anheben. Rotiere den Oberkörper und berühre abwechselnd links und rechts den Boden."},
+                {n:"Bicycle Crunches", d:"Rückenlage. Hände an die Schläfen. Führe den rechten Ellbogen zum linken Knie, während das rechte Bein streckt. Dann fliegender Wechsel. Langsam und kontrolliert!"}
             ],
             beine: [
-                {n:"Squats", d:"Füße schulterbreit. Gehe tief, als würdest du dich auf einen unsichtbaren Stuhl setzen. Gewicht auf die Fersen, Rücken gerade halten. Knie sollten in Richtung der Zehen zeigen und nicht über die Fußspitzen ragen. Kraft kommt aus den Beinen und dem Po."},
-                {n:"Lunges", d:"Mache einen weiten Schritt nach vorn. Senke das hintere Knie ab, bis beide Beine einen 90-Grad-Winkel bilden. Oberkörper bleibt aufrecht. Drücke dich kraftvoll wieder zurück in den Stand. Trainiert Oberschenkel und Gleichgewicht."},
-                {n:"Glute Bridges", d:"Rückenlage, Beine aufgestellt. Drücke die Hüfte so weit wie möglich nach oben und spanne den Po oben fest an. Schultern bleiben am Boden. Halte die Spannung 2 Sekunden und senke langsam wieder ab. Perfekt für den Po und den unteren Rücken."},
-                {n:"Wall Sit", d:"Setze dich im 90-Grad-Winkel mit dem Rücken gegen eine Wand. Presse den unteren Rücken fest gegen die Wand und halte diese statische Position. Perfekt für die Kraftausdauer der Oberschenkel-Muskulatur."},
-                {n:"Calf Raises", d:"Stand auf den Fußballen. Drücke dich so weit wie möglich nach oben auf die Zehenspitzen, halte kurz die maximale Spannung und senke die Fersen kontrolliert wieder ab. Kann für mehr Intensität auch einbeinig gemacht werden."},
-                {n:"Sumo Squats", d:"Breiter Stand, Fußspitzen zeigen nach außen. Gehe tief und achte darauf, dass die Knie in Richtung der Zehen zeigen. Trainiert verstärkt die Innenseite der Oberschenkel, die Adduktoren und den Gesäßmuskel."}
+                {n:"Squats", d:"Kniebeugen: Stand etwas breiter als Hüfte. Gehe tief, als würdest du dich auf einen Stuhl setzen. Gewicht auf die Fersen. Rücken gerade lassen. Knie nicht nach innen knicken lassen."},
+                {n:"Lunges", d:"Ausfallschritte: Großer Schritt nach vorn. Senke das hintere Knie bis kurz vor den Boden. Beide Beine sollten ca. 90 Grad haben. Drück dich über die vordere Ferse wieder hoch."},
+                {n:"Glute Bridges", d:"Rückenlage, Füße nah am Po aufstellen. Drücke das Becken so hoch es geht zur Decke. Oben den Po fest zusammenkneifen und kurz halten. Langsam ablassen."},
+                {n:"Wall Sit", d:"Wandsitz: Lehne dich mit dem Rücken flach an eine Wand und rutsche runter, bis deine Beine im 90-Grad-Winkel sind. Hände nicht auf den Beinen abstützen! Halten."},
+                {n:"Calf Raises", d:"Wadenheben: Stell dich aufrecht hin (evtl. an Wand festhalten). Drücke dich hoch auf die Zehenspitzen, halte kurz, und senke die Fersen langsam wieder ab ohne abzusetzen."},
+                {n:"Sumo Squats", d:"Breiter Stand, Zehen zeigen nach außen. Gehe tief. Spüre die Innenseite der Oberschenkel."}
             ],
             ober: [
-                {n:"Push-Ups", d:"Hände etwas weiter als schulterbreit. Körper wie ein Brett gespannt. Senke die Brust fast bis zum Boden und drücke dich explosiv wieder hoch. Blick zum Boden. Bei Bedarf Knie absetzen, um die Technik sauber zu halten."},
-                {n:"Dips", d:"Stütze dich an einer stabilen Stuhl- oder Bettkante ab. Senke den Po ab, indem du die Arme beugst (Ellbogen nach hinten zeigen lassen!), und drücke dich mit der Kraft deines Trizeps wieder hoch. Beine gestreckt ist schwerer."},
-                {n:"Superman", d:"Bauchlage, Arme nach vorn gestreckt. Hebe gleichzeitig Arme und Beine so hoch wie möglich an. Blick zum Boden. Spanne den unteren Rücken fest an und halte oben 2-3 Sekunden für maximale Wirkung auf die Rückenstrecker."},
-                {n:"Shoulder Taps", d:"Hohe Plank-Position. Berühre abwechselnd mit einer Hand die gegenüberliegende Schulter. Versuche dabei, die Hüfte so ruhig wie möglich zu halten – keine Schaukelbewegungen! Trainiert die Stabilität im gesamten Core-Bereich."},
-                {n:"Pike Pushups", d:"Po weit in die Luft (umgekehrtes V). Beuge die Arme und senke den Kopf Richtung Boden zwischen deine Hände. Drücke dich wieder hoch. Diese Übung ist eine der besten Körpergewichts-Übungen für starke Schultern."},
-                {n:"Diamond Pushups", d:"Liegestütz-Position, aber Daumen und Zeigefinger berühren sich unter der Brust (Diamant-Form). Gehe tief. Der Fokus liegt hier massiv auf dem Trizeps und der inneren Brustmuskulatur."}
+                {n:"Push-Ups", d:"Liegestütz: Hände unter den Schultern. Körper fest wie ein Brett. Brust bis fast zum Boden senken. Ellbogen zeigen eher nach hinten (Pfeilform), nicht 90 Grad zur Seite (T-Form)."},
+                {n:"Dips", d:"Trizeps-Dips: Stütze dich an einer stabilen Kante (Bett/Stuhl) ab. Beine gestreckt oder gebeugt. Senke den Po ab, indem du die Arme beugst. Drück dich wieder hoch."},
+                {n:"Shoulder Taps", d:"Ausgangsposition: Hohe Plank (Liegestütz-Position). Berühre abwechselnd mit der linken Hand die rechte Schulter und umgekehrt. Versuche dabei, die Hüfte ganz ruhig zu halten."},
+                {n:"Pike Pushups", d:"Schulter-Pushup: Po weit in die Höhe strecken (umgekehrtes V). Beine gestreckt. Beuge die Arme und senke den Kopf Richtung Boden zwischen die Hände. Drück dich raus."},
+                {n:"Diamond Pushups", d:"Schwere Variante: Hände unter der Brust so zusammenlegen, dass Daumen und Zeigefinger ein Dreieck bilden. Gehe tief. Geht extrem auf den Trizeps."}
+            ],
+            ruecken: [
+                {n:"Superman", d:"Bauchlage. Strecke Arme nach vorne und Beine nach hinten. Hebe nun Arme und Beine gleichzeitig so hoch wie möglich an. Spüre den unteren Rücken. Kurz halten, dann senken."},
+                {n:"Aquaman", d:"Wie Superman, aber du hebst abwechselnd linken Arm/rechtes Bein und rechten Arm/linkes Bein. Dynamische Bewegung für die Rückenstrecker."},
+                {n:"Reverse Snow Angel", d:"Bauchlage, Arme seitlich am Körper. Hebe den Oberkörper leicht an. Führe die gestreckten Arme in einem großen Bogen über den Kopf und wieder zurück zur Hüfte."},
+                {n:"Bird Dog", d:"Vierfüßlerstand. Strecke den rechten Arm nach vorn und das linke Bein nach hinten. Mach dich lang. Führe Ellbogen und Knie unter dem Bauch zusammen und strecke wieder. Seitenwechsel."},
+                {n:"Prone W-Raise", d:"Bauchlage. Arme seitlich angewinkelt (wie ein 'W'). Hebe den Oberkörper und ziehe die Schulterblätter aktiv zusammen. Halten und senken."}
+            ],
+            stuhl: [
+                {n:"Chair Dips", d:"Setz dich auf die Stuhlkante, Hände neben den Po. Rutsch mit dem Po vor den Stuhl. Beuge die Arme, senke den Po ab und drück dich wieder hoch. Ellbogen nach hinten!"},
+                {n:"Bulgarian Split Squats", d:"Ein Fuß liegt mit dem Spann hinten auf dem Stuhl/Sofa auf. Das andere Bein steht weit vorn. Beuge das vordere Bein tief. Der Oberkörper bleibt aufrecht. Königsklasse für Beine!"},
+                {n:"Step-Ups", d:"Stell dich vor den Stuhl (muss stabil sein!). Steige mit einem Bein komplett hoch, richte dich ganz auf, und steig wieder ab. Wechsel das Bein. Blick geradeaus."},
+                {n:"Incline Push-Ups", d:"Hände auf die Sitzfläche des Stuhls, Füße am Boden. Körper bildet eine Linie. Senke die Brust zur Stuhlkante. Einfacher als normale Liegestütze, aber sehr effektiv."},
+                {n:"Seated Knee Tucks", d:"Setz dich auf die Kante, lehn dich leicht zurück, halt dich an der Sitzfläche fest. Zieh die Knie zur Brust und streck die Beine wieder aus, ohne den Boden zu berühren."}
+            ],
+            ganz: [
+                 {n:"Burpees", d:"Der Fettkiller: Aus dem Stand in die Hocke, Hände auf den Boden, Sprung zurück in den Stütz, (optional Liegestütz), Sprung vor in die Hocke und Strecksprung nach oben."},
+                 {n:"Mountain Climbers", d:"Liegestütz-Position. Ziehe abwechselnd die Knie schnell und dynamisch unter den Körper Richtung Brust. Der Rücken bleibt gerade, der Po tief."},
+                 {n:"Jumping Jacks", d:"Hampelmann: Springe in den breiten Stand, Hände berühren sich über dem Kopf. Springe zurück, Hände an die Seite. Bleib auf den Fußballen. Finde einen schnellen Rhythmus."},
+                 {n:"Squat Jumps", d:"Mache eine normale Kniebeuge, aber drücke dich explosiv ab und springe so hoch du kannst. Lande weich und gehe direkt in die nächste Beuge."},
+                 {n:"Plank Jacks", d:"Unterarmstütz. Springe mit den Füßen auseinander (wie beim Hampelmann) und wieder zusammen. Halte die Hüfte dabei so stabil wie möglich."}
             ],
             cardio: [
-                {n:"Jumping Jacks", d:"Hampelmann. Springe mit den Beinen auseinander, während die Hände über dem Kopf zusammenkommen. Bleib auf den Fußballen und halte ein hohes, gleichmäßiges Tempo, um das Herz-Kreislauf-System zu fordern."},
-                {n:"Burpees", d:"Vom Stand in den Liegestütz, eine Wiederholung, dann Füße anziehen und explosiver Strecksprung nach oben. Die ultimative Ganzkörper-Übung für Fettverbrennung und Ausdauer."},
-                {n:"High Knees", d:"Laufen auf der Stelle, dabei die Knie so hoch wie möglich ziehen (mindestens Hüfthöhe). Nimm die Arme aktiv mit und erhöhe die Frequenz für maximale Intensität."},
-                {n:"Skaters", d:"Seitliche Sprünge wie ein Eisschnellläufer. Lande stabil auf einem Bein und berühre mit der Hand diagonal den Boden vor dem Standfuß. Trainiert Koordination, Kraft und Spritzigkeit."},
-                {n:"Butt Kicks", d:"Laufen auf der Stelle, bei dem die Fersen abwechselnd den Po berühren. Schnelle Bewegungen, Oberkörper leicht nach vorn gelehnt. Fördert die Laufkoordination und die Herzfrequenz."},
-                {n:"Jumping Lunges", d:"Ausfallschritte, aber gesprungen! Wechsle die Beine explosiv in der Luft und achte auf eine weiche Landung und stabile Knie. Eine extrem intensive Übung für Beinkraft und Ausdauer."}
+                {n:"High Knees", d:"Lauf auf der Stelle, aber zieh die Knie dabei so hoch wie möglich (mindestens Hüfthöhe). Nimm die Arme dynamisch mit. Gib Gas!"},
+                {n:"Skaters", d:"Springe seitlich von einem Bein auf das andere. Das freie Bein kreuzt hinten. Nimm den gegenüberliegenden Arm mit zum Boden. Wie beim Eisschnelllauf."},
+                {n:"Butt Kicks", d:"Laufen am Platz, dabei die Fersen aktiv zum Po ziehen. Oberkörper leicht vorgeneigt."},
+                {n:"Jumping Lunges", d:"Gesprungene Ausfallschritte. Wechsle die Beine explosiv in der Luft. Nur für Fortgeschrittene!"},
+                {n:"Fast Feet", d:"Steh schulterbreit, geh leicht in die Knie. Tippel so schnell du kannst auf der Stelle (nur Fußballen). Der Boden ist Lava!"}
             ]
         };
 
@@ -845,25 +824,21 @@
             parts: [], 
             history: [], 
             logs: [], 
-            settings: { work: 40, rest: 20, weeklyGoal: 3, duration: 10, supps: true, suppMsg: "" }, 
+            settings: { 
+                work: 40, 
+                rest: 20, 
+                weeklyGoal: 3, 
+                duration: 10, 
+                supps: true, 
+                suppMsg: "",
+                suppState: [false, false, false, false, false]
+            }, 
             currentWorkout: [] 
         };
         
-        // Session State
-        let sess = { 
-            run: false, 
-            int: null, 
-            t: 0, 
-            idx: 0, 
-            r: 1, 
-            work: false, 
-            sound: true, 
-            preview: null, 
-            wasRunning: false 
-        };
-        
+        let sess = { run: false, int: null, t: 0, idx: 0, r: 1, work: false, sound: true, preview: null, wasRunning: false };
         let wiz = { goal: '', parts: [] };
-        let ac = null; // AudioContext
+        let ac = null; 
         let sound = true;
 
         const circle = document.getElementById('progress-circle');
@@ -879,7 +854,7 @@
             } else { 
                 document.getElementById('view-onboarding').style.display = 'flex'; 
             }
-            renderLibrary(); // Initial laden
+            renderLibrary();
         };
 
         function initApp() {
@@ -890,50 +865,38 @@
             document.getElementById('rng-work').value = app.settings.work || 40;
             document.getElementById('rng-rest').value = app.settings.rest || 20;
             document.getElementById('tog-supps').checked = app.settings.supps !== false;
-            
-            // Lade die Nachricht in das Overlay-Feld
             document.getElementById('supp-live-msg').value = app.settings.suppMsg || "";
 
-            // Button Highlight setzten
+            restoreSupps();
+
             setWorkoutDuration(app.settings.duration || 10, document.getElementById('dur-' + (app.settings.duration || 10)));
             
             updateRangeLbl(); 
             updateUI(); 
             updateSettingsUI();
             
-            // Tageszeit Begrüßung
             const h = new Date().getHours();
-            let g = "HALLO";
-            if(h<10) g="GUTEN MORGEN"; else if(h<18) g="TAG"; else g="GUTEN ABEND";
-            document.getElementById('greeting').innerText = g;
+            document.getElementById('greeting').innerText = h<10?"GUTEN MORGEN":(h<18?"TAG":"GUTEN ABEND");
         }
 
-        // TAB WECHSELN + BIBLIOTHEK FIX
         function nav(id, el) { 
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
             document.getElementById(id).classList.add('active'); 
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); 
             el.classList.add('active'); 
-            
-            // FIX: Wenn Bibliothek geöffnet wird, Inhalt erzwingen
-            if(id === 'tab-library') {
-                renderLibrary();
-            }
+            if(id === 'tab-library') renderLibrary();
         }
 
         // --- 4. CORE LOGIC ---
         function setWorkoutDuration(min, el) {
             app.settings.duration = min;
-            
-            // FIX: Alle Buttons zuerst resetten
             ['dur-10', 'dur-20', 'dur-30'].forEach(id => {
                 const btn = document.getElementById(id);
-                btn.className = 'btn btn-outline'; // Klasse zurücksetzen
-                btn.style.background = 'transparent'; // Style zurücksetzen
-                btn.style.color = 'var(--primary)'; // Style zurücksetzen
+                btn.className = 'btn btn-outline'; 
+                btn.style.background = 'transparent'; 
+                btn.style.color = 'var(--primary)';
             });
 
-            // Dann den geklickten aktivieren
             if(el) {
                 el.className = 'btn'; 
                 el.style.background = 'white'; 
@@ -949,7 +912,6 @@
             let cat = (app.parts && app.parts.length > 0) ? app.parts : ['bauch','beine','ober','cardio'];
             cat.forEach(p => { if(DB[p]) pool = pool.concat(DB[p]); });
             
-            // Shuffle
             for (let i = pool.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -961,7 +923,6 @@
 
         // --- 5. UI UPDATES ---
         function updateUI() {
-            // Wochen Fortschritt & Minuten Berechnung
             const now = new Date();
             const startOfWeek = new Date(now); 
             startOfWeek.setDate(now.getDate() - (now.getDay() || 7) + 1); 
@@ -975,47 +936,34 @@
 
             app.history.forEach(h => {
                 const d = new Date(h.date);
-                // Dauer schätzen falls nicht gespeichert (Fallbacks für alte Daten)
                 const dur = h.duration || (h.kcal ? Math.round(h.kcal / 8) : 10);
-                
                 totalMinsLifetime += dur;
 
-                // Woche
                 if(d >= startOfWeek) {
                     thisWeekWorkouts++;
                     minsWeek += dur;
                 }
-                // Monat
                 if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
                     minsMonth += dur;
                 }
-                // Jahr
                 if(d.getFullYear() === now.getFullYear()) {
                     minsYear += dur;
                 }
             });
 
-            // Update Minuten Stats
             document.getElementById('min-week').innerText = minsWeek;
             document.getElementById('min-month').innerText = minsMonth;
             document.getElementById('min-year').innerText = minsYear;
+            document.getElementById('lvl-badge').innerText = "LVL " + (1 + Math.floor(totalMinsLifetime / 60));
 
-            // Level System: 1 Level pro 60 min Training
-            const userLvl = 1 + Math.floor(totalMinsLifetime / 60);
-            document.getElementById('lvl-badge').innerText = "LVL " + userLvl;
-
-            // Wochenziel UI
             const target = parseInt(app.settings.weeklyGoal);
             document.getElementById('week-val').innerText = `${thisWeekWorkouts} / ${target}`;
-            // Kreis Berechnung (125 ist der Umfang des kleinen Kreises)
             const pct = Math.min(thisWeekWorkouts / target, 1);
             document.getElementById('week-circle').style.strokeDashoffset = 125 - (125 * pct);
             
-            // Totals
             let totalKcal = 0; app.history.forEach(h => totalKcal += (h.kcal || 0));
             document.getElementById('disp-total-kcal').innerText = totalKcal.toLocaleString();
 
-            // BMI
             if(app.profile.h && app.profile.w) { 
                 const hM = app.profile.h / 100;
                 const bmi = (app.profile.w / (hM * hM)).toFixed(1); 
@@ -1024,7 +972,6 @@
                 document.getElementById('disp-bmi').innerText = "-";
             }
 
-            // Letztes Workout
             if(app.history.length > 0) {
                 const last = new Date(app.history[app.history.length-1].date);
                 document.getElementById('last-workout').innerText = "Letztes: " + last.toLocaleDateString();
@@ -1038,7 +985,7 @@
 
         function renderLibrary() {
             const container = document.getElementById('lib-list'); 
-            container.innerHTML = ""; // Reset
+            container.innerHTML = "";
             
             for (let kat in DB) {
                 const header = document.createElement('h2'); 
@@ -1077,21 +1024,17 @@
                 document.getElementById('phase-disp').innerText = "READY"; 
                 sess.preview = app.currentWorkout[0]; 
                 document.getElementById('ex-name').innerText = "Start: " + sess.preview.n;
-
             } else if(type === 'WORK') { 
                 sess.t = parseInt(app.settings.work); 
                 document.getElementById('phase-disp').innerText = "WORK"; 
                 sess.preview = app.currentWorkout[sess.idx];
                 document.getElementById('ex-name').innerText = sess.preview.n; 
                 beep(400, 800); 
-
             } else { 
-                // PAUSE
                 sess.t = parseInt(app.settings.rest); 
                 document.getElementById('phase-disp').innerText = "PAUSE"; 
                 beep(600, 300); 
                 
-                // Vorschau Logik
                 let nextIdx = sess.idx + 1;
                 if (nextIdx >= app.currentWorkout.length) nextIdx = 0;
                 
@@ -1107,14 +1050,11 @@
             if(!sess.run) toggleTimer();
         }
 
-        // ANLEITUNG ÖFFNEN + PAUSE
         function showInfoAndPause() {
             if (sess.preview) {
                 document.getElementById('info-title').innerText = sess.preview.n; 
                 document.getElementById('info-desc').innerText = sess.preview.d; 
                 document.getElementById('view-info').style.display = 'flex'; 
-                
-                // Timer stoppen, wenn er läuft
                 if(sess.run) {
                     toggleTimer(); 
                     sess.wasRunning = true; 
@@ -1124,10 +1064,8 @@
             }
         }
 
-        // ANLEITUNG SCHLIESSEN + WEITER
         function closeInfoAndResume() {
             document.getElementById('view-info').style.display = 'none';
-            // Timer wieder starten, wenn er vorher lief
             if(sess.wasRunning && !sess.run) {
                 toggleTimer(); 
             }
@@ -1183,7 +1121,6 @@
             const dur = app.settings.duration;
             const kcalCalc = dur * 8; 
             
-            // Speichere auch die Dauer für die Statistik!
             app.history.push({
                 date: new Date(), 
                 kcal: kcalCalc,
@@ -1191,53 +1128,60 @@
             }); 
             
             save(); 
-            
-            // FIX: Sofort UI updaten damit Kalorien sichtbar sind bevor man die App verlässt
             updateUI();
             
-            // Check ob Supps aktiviert sind
             if (app.settings.supps !== false) {
                 document.getElementById('view-rpe').style.display='none';
                 document.getElementById('view-player').style.display='none';
-                document.getElementById('view-supps').style.display='flex';
-                // Msg ist schon im Input, da value geladen wurde
+                openSuppsManually();
+                
+                if(app.settings.suppMsg) {
+                    const el = document.getElementById('supp-custom-msg');
+                    el.innerText = app.settings.suppMsg;
+                    el.style.display = 'block';
+                }
             } else {
                 location.reload(); 
             }
         }
 
-        // Manuelles Öffnen der Liste
         function openSuppsManually() {
             document.getElementById('view-supps').style.display='flex';
+            restoreSupps(); 
         }
 
-        // Nachricht speichern (Live beim Tippen)
         function saveSuppMsg(el) {
             app.settings.suppMsg = el.value;
             save();
         }
 
-        // --- 7. TRACKING FUNCTIONS (REPARIERT) ---
+        function toggleCheck(el, index) { 
+            el.classList.toggle('checked');
+            if(!app.settings.suppState) app.settings.suppState = [false, false, false, false, false];
+            app.settings.suppState[index] = el.classList.contains('checked');
+            save();
+        }
+        
+        function restoreSupps() {
+            if(!app.settings.suppState) return;
+            const items = document.querySelectorAll('#check-list-container .check-item');
+            app.settings.suppState.forEach((state, i) => {
+                if(items[i]) {
+                    if(state) items[i].classList.add('checked');
+                    else items[i].classList.remove('checked');
+                }
+            });
+        }
+
         function saveLog() { 
-            // Datum holen oder heute setzen
             let dVal = document.getElementById('log-date').value;
-            if(!dVal) {
-                dVal = new Date().toISOString().split('T')[0];
-            }
+            if(!dVal) dVal = new Date().toISOString().split('T')[0];
 
             const w = document.getElementById('log-weight').value;
-            
-            // Sicherheitscheck: Ist Gewicht da?
-            // Wir prüfen ob es existiert, egal ob string oder number
-            if(!w) {
-                alert("Bitte gib zumindest dein Gewicht ein!");
-                return;
-            }
+            if(!w) { alert("Bitte gib zumindest dein Gewicht ein!"); return; }
 
-            // Profil aktualisieren
             app.profile.w = w; 
             
-            // Eintrag erstellen
             app.logs.push({
                 date: dVal, 
                 w: w, 
@@ -1247,14 +1191,9 @@
                 thigh: document.getElementById('log-thigh').value || 0
             }); 
             
-            // Sortieren und speichern
             app.logs.sort((a,b)=>new Date(a.date)-new Date(b.date));
             save(); 
-            
-            // UI aktualisieren
             updateUI(); 
-            
-            // Feedback geben
             alert("✅ Werte erfolgreich gespeichert!");
         }
 
@@ -1288,7 +1227,7 @@
             }
             app.history.slice(-10).reverse().forEach(h => {
                 const k = h.kcal ? h.kcal : 0;
-                const d = h.duration ? h.duration : Math.round(k/8); // Fallback für alte Daten
+                const d = h.duration ? h.duration : Math.round(k/8); 
                 list.innerHTML += `<div class="card" style="font-size:12px; margin-bottom:10px; padding:15px;">
                     <div style="display:flex; justify-content:space-between;">
                         <span>Workout (${d} min)</span>
@@ -1298,7 +1237,6 @@
             }); 
         }
 
-        // --- 8. SETTINGS & HELPERS ---
         function updateRangeLbl() { 
             app.settings.weeklyGoal = document.getElementById('rng-goal').value; 
             app.settings.work = document.getElementById('rng-work').value;
@@ -1312,16 +1250,19 @@
         function saveSettings() { 
             app.profile.h = document.getElementById('set-height').value; 
             app.profile.a = document.getElementById('set-age').value; 
+            app.settings.suppMsg = document.getElementById('set-supp-msg').value;
             save(); updateUI(); 
         }
 
         function updateAppGoal(val) { app.goal = val; save(); updateSettingsUI(); }
+        
         function updateAppPart(val) { 
             if(!app.parts) app.parts = []; 
             const i = app.parts.indexOf(val); 
             if(i > -1) app.parts.splice(i, 1); else app.parts.push(val); 
             save(); updateSettingsUI(); 
         }
+        
         function toggleSuppsSetting() {
             app.settings.supps = document.getElementById('tog-supps').checked;
             save();
@@ -1339,7 +1280,6 @@
             });
         }
 
-        // --- 9. WIZARD ---
         function wizSet(k,v,el) { 
             wiz[k]=v; 
             el.parentElement.querySelectorAll('div').forEach(d=>d.classList.remove('selected')); 
@@ -1360,11 +1300,6 @@
             app.goal = wiz.goal; 
             app.parts = wiz.parts; 
             save(); initApp(); 
-        }
-
-        // --- 10. SYSTEM UTILS ---
-        function toggleCheck(el) {
-            el.classList.toggle('checked');
         }
 
         function beep(f1, f2, dur=0.2) { 
