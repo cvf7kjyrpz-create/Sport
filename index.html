@@ -3,35 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V17.0 - UNGEKÜRZT</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <title>Body Pulse V18.1 - FINAL UNCUT</title>
 
     <style>
         /* ======================================================================
-           1. BASIS DESIGN & VARIABLEN
+           1. CSS RESET & VARIABLEN
            ====================================================================== */
         :root {
-            --bg-color: #000000;
-            --card-bg: #121212;
-            --card-light: #1c1c1e;
-            --border-color: #333333;
-            --text-main: #ffffff;
-            --text-muted: #8e8e93;
-            --accent-color: #32d74b;  /* Grün */
-            --water-color: #0a84ff;   /* Blau */
-            --fire-color: #ff9f0a;    /* Orange */
-            --danger-color: #ff453a;  /* Rot */
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Roboto", sans-serif;
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
+            --color-bg: #000000;
+            --color-surface: #121212;
+            --color-surface-bright: #1c1c1e;
+            --color-border: #333333;
+            --color-text: #ffffff;
+            --color-text-muted: #8e8e93;
+            
+            --color-accent: #32d74b;  /* Neon Grün */
+            --color-blue: #0a84ff;    /* Wasser Blau */
+            --color-orange: #ff9f0a;  /* Streak Orange */
+            --color-red: #ff453a;     /* Danger / Stop */
+            
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+            
+            --shadow-card: 0 4px 20px rgba(0,0,0,0.4);
         }
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
             user-select: none;
+            -webkit-user-select: none;
         }
 
         html, body {
@@ -40,9 +47,9 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-stack);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-family);
             overflow: hidden;
             touch-action: none;
         }
@@ -50,1131 +57,958 @@
         body {
             display: flex;
             flex-direction: column;
-            padding-top: var(--safe-top);
+            padding-top: var(--safe-area-top);
         }
 
         /* ======================================================================
-           2. NAVIGATION & SCREEN LAYOUT
+           2. LAYOUT CONTAINER & ANIMATIONEN
            ====================================================================== */
-        .screen-container {
+        .app-screen {
             flex: 1;
-            display: none; /* Wird per JS aktiviert */
+            display: none; /* JS Toggle */
             flex-direction: column;
+            width: 100%;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 100px; /* Platz für Nav */
+            padding-bottom: 120px; /* Platz für Navleiste */
             -webkit-overflow-scrolling: touch;
         }
 
-        .screen-container.active {
+        .app-screen.active {
             display: flex;
-            animation: fadeInPage 0.3s ease-out;
+            animation: fadeEffect 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        @keyframes fadeInPage {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeEffect {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 85px;
-            background: rgba(10, 10, 10, 0.96);
-            border-top: 1px solid var(--border-color);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: var(--safe-bottom);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--text-main);
-            transform: translateY(-2px);
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
+        /* Scrollbar Verstecken */
+        ::-webkit-scrollbar { display: none; }
 
         /* ======================================================================
-           3. UI KOMPONENTEN (KARTEN, BUTTONS, INPUTS)
+           3. KARTEN & UI ELEMENTE
            ====================================================================== */
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 18px;
             padding: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-card);
             position: relative;
         }
 
-        /* SPEZIAL-DESIGN: Notizen mit weißem Rahmen (WICHTIG) */
-        .card-highlight-border {
-            background-color: var(--card-light);
-            border: 2px solid #ffffff !important; /* Weißer Rahmen erzwingen */
-            border-radius: 16px;
+        /* NOTIZEN SPECIAL RAHMEN */
+        .card-white-border {
+            background-color: var(--color-surface-bright);
+            border: 2px solid #ffffff !important;
+            border-radius: 18px;
             padding: 20px;
-            margin-bottom: 40px; /* Extra Abstand nach unten */
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
         }
 
-        h1 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        h2 { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 0 0 10px 0; letter-spacing: 1px; }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
 
-        .stat-grid {
+        h2 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--color-text-muted);
+            margin: 0 0 12px 0;
+        }
+
+        .label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #666;
+            margin-bottom: 4px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        /* GRID SYSTEM */
+        .grid-3 {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        
-        .stat-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        /* STAT BOXES */
+        .kpi-box {
+            background: var(--color-surface-bright);
             border-radius: 12px;
             padding: 12px;
             text-align: center;
+            border: 1px solid var(--color-border);
         }
-        
-        .stat-val { font-size: 20px; font-weight: 800; display: block; }
-        .stat-lbl { font-size: 9px; text-transform: uppercase; color: #777; font-weight: 700; }
+        .kpi-val { font-size: 19px; font-weight: 800; display: block; margin-top: 2px; }
+        .kpi-lbl { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; }
 
+        /* BUTTONS */
         .btn {
-            background-color: var(--text-main);
-            color: #000;
+            background-color: var(--color-text);
+            color: #000000;
             border: none;
             width: 100%;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 14px;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
-            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn:active { transform: scale(0.97); opacity: 0.9; }
 
         .btn-outline {
             background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
         }
+        .btn-outline:active { background: rgba(255,255,255,0.1); }
 
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-
-        input, textarea, select {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--border-color);
-            color: white;
+        .btn-pill {
             padding: 12px;
             border-radius: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
+            border: 1px solid var(--color-border);
+            background: transparent;
+            color: var(--color-text-muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .btn-pill.active {
+            background: var(--color-text);
+            color: #000;
+            border-color: var(--color-text);
         }
 
-        /* Wasser Tracker Spezifisch */
-        .water-controls {
+        /* INPUTS */
+        input, select, textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--color-border);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 10px;
+            -webkit-appearance: none;
+        }
+        input:focus, textarea:focus { border-color: var(--color-blue); }
+
+        /* ======================================================================
+           4. FEATURE: WASSER TRACKER (SLIM)
+           ====================================================================== */
+        .water-module-slim {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-top: 8px;
+            gap: 12px;
+            margin-top: 5px;
         }
-        .btn-water {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--card-light);
+        .water-btn-small {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: var(--color-surface-bright);
+            border: 1px solid var(--color-border);
             color: white;
-            font-size: 20px;
             display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
         }
-        .water-bar-bg {
+        .water-track-bg {
             flex: 1;
-            height: 12px;
+            height: 10px; /* Schmaler */
             background: #222;
-            border-radius: 6px;
+            border-radius: 5px;
             overflow: hidden;
         }
-        .water-bar-fill {
+        .water-fill-bar {
             height: 100%;
             width: 0%;
-            background: var(--water-color);
-            transition: width 0.5s ease;
+            background: var(--color-blue);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Checklisten */
-        .check-item {
+        /* ======================================================================
+           5. FEATURE: MANUAL LOG STACK
+           ====================================================================== */
+        .log-stack-item {
+            background: var(--color-surface-bright);
+            border-left: 4px solid var(--color-accent);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from{opacity:0; transform:translateX(-10px);} to{opacity:1; transform:translateX(0);} }
+
+        .log-set-row {
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #222;
+            justify-content: space-between;
+            background: #000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .log-set-input {
+            width: 80px;
+            border: none;
+            background: transparent;
+            text-align: right;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 0; margin: 0;
+        }
+
+        /* ======================================================================
+           6. FEATURE: CHECKLIST POPUP
+           ====================================================================== */
+        .check-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #333;
             cursor: pointer;
         }
-        .check-circle {
-            width: 24px; height: 24px;
+        .check-viz {
+            width: 26px; height: 26px;
             border: 2px solid #555;
-            border-radius: 50%;
-            margin-right: 15px;
-            position: relative;
-        }
-        .check-item.checked .check-circle {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-        .check-item.checked span {
-            text-decoration: line-through;
-            color: #555;
-        }
-
-        /* ======================================================================
-           4. MANUAL LOGGING STYLES (Das komplexe System)
-           ====================================================================== */
-        .manual-ex-block {
-            background: var(--card-light);
-            border-left: 4px solid var(--accent-color);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            animation: slideInRight 0.3s ease;
-        }
-        @keyframes slideInRight { from{opacity:0; transform:translateX(-20px);} to{opacity:1;transform:translateX(0);} }
-
-        .set-row {
-            display: flex;
-            align-items: center;
-            margin-top: 8px;
-            background: #000;
-            padding: 8px;
             border-radius: 8px;
+            margin-right: 15px;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.2s;
         }
-        .set-label {
-            font-size: 12px; 
-            font-weight: bold; 
-            color: #666; 
-            width: 60px;
+        .check-row.checked .check-viz {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: #000;
         }
-        .set-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            margin: 0; padding: 0;
-        }
-        .set-unit {
-            font-size: 10px;
-            color: #666;
-            width: 40px;
-            text-align: right;
+        .check-row.checked .check-viz::after {
+            content: '✓'; font-weight: 900;
         }
 
         /* ======================================================================
-           5. OVERLAYS (PLAYER & MANUAL LOG)
+           7. OVERLAYS (VOLLBILD MODALE)
            ====================================================================== */
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
+        .overlay-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000;
             z-index: 5000;
-            display: none; /* JS Toggle */
+            display: none;
             flex-direction: column;
-            padding: var(--safe-top) 20px 20px 20px;
+            padding: var(--safe-area-top) 20px 20px 20px;
         }
 
         .overlay-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
         }
 
-        .scroll-content {
+        .overlay-scroll {
             flex: 1;
             overflow-y: auto;
             padding-bottom: 20px;
         }
 
-        /* Player Specifics */
-        .player-timer {
-            font-size: 120px;
+        /* PLAYER ELEMENTS */
+        .player-circle-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .player-svg {
+            position: absolute; top:0; left:0;
+            width: 100%; height: 100%;
+            transform: rotate(-90deg);
+        }
+        .player-time-text {
+            font-size: 90px;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
-            line-height: 1;
-            margin: 20px 0;
+            z-index: 10;
         }
-        .player-phase {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--accent-color);
-            letter-spacing: 4px;
+
+        /* ======================================================================
+           8. NAVIGATION BAR
+           ====================================================================== */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 85px;
+            background: rgba(10,10,10,0.96);
+            border-top: 1px solid var(--color-border);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: var(--safe-area-bottom);
+            z-index: 1000;
         }
+
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.4;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-btn.active {
+            opacity: 1;
+            transform: translateY(-3px);
+            color: var(--color-text);
+        }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+        .nav-text { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; }
 
     </style>
 </head>
 <body>
 
-    <div id="view-onboarding" class="overlay" style="z-index:9000; justify-content:center;">
-        <h1 style="text-align:center; font-size:32px; margin-bottom:10px;">WILLKOMMEN</h1>
-        <p style="text-align:center; color:#666; margin-bottom:40px;">Richte dein Profil ein, um zu starten.</p>
-        
+    <div id="ov-setup" class="overlay-container" style="z-index:9000; justify-content:center;">
+        <h1 style="text-align:center;">WILLKOMMEN</h1>
+        <p style="text-align:center; color:#888; margin-bottom:30px;">Profil einrichten</p>
         <div class="card">
-            <h2>KÖRPERDATEN</h2>
-            <input type="number" id="setup-height" placeholder="Größe in cm (z.B. 180)">
-            <input type="number" id="setup-weight" placeholder="Gewicht in kg (z.B. 80)">
-            <input type="number" id="setup-age" placeholder="Alter">
+            <span class="label">KÖRPERGRÖSSE (CM)</span>
+            <input type="number" id="inp-setup-h" placeholder="180">
+            <span class="label">GEWICHT (KG)</span>
+            <input type="number" id="inp-setup-w" placeholder="80">
+            <span class="label">ALTER</span>
+            <input type="number" id="inp-setup-a" placeholder="30">
         </div>
-
-        <button class="btn" onclick="completeOnboarding()">SETUP ABSCHLIESSEN</button>
+        <button class="btn" onclick="app.finishSetup()">PROFIL SPEICHERN</button>
     </div>
 
-    <div id="tab-home" class="screen-container active">
+    <div id="ov-daily" class="overlay-container">
+        <div class="overlay-header">
+            <h1>DAILY CHECK</h1>
+            <div onclick="ui.closeDaily()" style="font-size:20px; padding:10px;">✕</div>
+        </div>
+        <div class="overlay-scroll">
+            <div class="card">
+                <div id="daily-list-container">
+                    </div>
+            </div>
+            <div class="card">
+                <h2>NOTIZEN</h2>
+                <textarea id="daily-note-text" style="height:120px; background:transparent; border:none; border-bottom:1px solid #555;" placeholder="Wie war dein Tag?..." oninput="app.saveNote(this.value)"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="ov-manual" class="overlay-container">
+        <div class="overlay-header">
+            <h1>LOGBUCH</h1>
+            <div onclick="ui.closeManual()" style="font-size:20px; padding:10px;">✕</div>
+        </div>
+        <div class="overlay-scroll">
+            <div class="card" style="background:var(--color-surface-bright);">
+                <span class="label">1. ÜBUNG</span>
+                <select id="man-ex-select" style="margin-bottom:10px;"></select>
+                
+                <span class="label">2. ANZAHL RUNDEN</span>
+                <input type="number" id="man-rounds-count" value="3" min="1" max="10">
+                
+                <button class="btn" style="margin-top:15px;" onclick="logSys.addToStack()">+ HINZUFÜGEN</button>
+            </div>
+
+            <div id="manual-stack-list" style="margin-top:20px;"></div>
+        </div>
+        <div style="padding-top:10px;">
+            <button class="btn" style="background:var(--color-accent); color:#000;" onclick="logSys.saveStack()">GESAMTES TRAINING SPEICHERN</button>
+        </div>
+    </div>
+
+    <div id="ov-player" class="overlay-container">
+        <div class="overlay-header">
+            <div onclick="player.exit()" style="font-size:14px; font-weight:bold; color:#888;">BEENDEN</div>
+            <span id="p-info" style="font-weight:800; color:#fff;">RUNDE 1</span>
+            <div id="p-mute" onclick="player.toggleMute()" style="font-size:20px;">🔊</div>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div id="p-phase" style="font-size:20px; font-weight:900; color:var(--color-accent); letter-spacing:4px; margin-bottom:10px;">READY</div>
+            
+            <div class="player-circle-container">
+                <svg class="player-svg">
+                    <circle cx="130" cy="130" r="120" stroke="#222" stroke-width="12" fill="none"/>
+                    <circle id="p-ring" cx="130" cy="130" r="120" stroke="white" stroke-width="12" fill="none"
+                            stroke-dasharray="754" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"/>
+                </svg>
+                <div id="p-time" class="player-time-text">10</div>
+            </div>
+
+            <div id="p-ex-name" style="font-size:28px; font-weight:900; text-align:center; margin-top:20px;">ÜBUNG</div>
+        </div>
+
+        <div class="grid-2">
+            <button class="btn" id="p-btn-main" onclick="player.toggle()">START</button>
+            <button class="btn btn-outline" id="p-btn-skip" onclick="player.skip()">PAUSE SKIP</button>
+        </div>
+    </div>
+
+    <div id="view-home" class="app-screen active">
         <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px;">
             <div>
                 <h1 id="home-day">TAG 1</h1>
-                <span id="home-date" style="font-size:12px; font-weight:700; color:var(--accent-color);">LADEN...</span>
+                <span id="home-date" style="font-size:12px; font-weight:700; color:var(--color-accent);">LADEN...</span>
             </div>
             <div style="text-align:right;">
-                <span style="font-size:10px; font-weight:700; color:#666; display:block;">STREAK</span>
-                <span style="font-size:24px; font-weight:900; color:var(--fire-color);">🔥 <span id="home-streak">0</span></span>
+                <span class="label">STREAK</span>
+                <span style="font-size:24px; font-weight:900; color:var(--color-orange);">🔥 <span id="home-streak">0</span></span>
             </div>
         </div>
 
-        <div class="stat-grid">
-            <div class="stat-box">
-                <span class="stat-lbl">BMI</span>
-                <span class="stat-val" id="stat-bmi">-</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-lbl">KCAL</span>
-                <span class="stat-val" id="stat-kcal">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-lbl">LVL</span>
-                <span class="stat-val" id="stat-lvl">1</span>
-            </div>
+        <div class="grid-3">
+            <div class="kpi-box"><span class="kpi-lbl">BMI</span><span class="kpi-val" id="kpi-bmi">-</span></div>
+            <div class="kpi-box"><span class="kpi-lbl">KCAL</span><span class="kpi-val" id="kpi-kcal">0</span></div>
+            <div class="kpi-box"><span class="kpi-lbl">LEVEL</span><span class="kpi-val" id="kpi-lvl">1</span></div>
         </div>
 
-        <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <h2>WASSER BILANZ</h2>
-                <span id="water-text" style="color:var(--water-color); font-weight:800; font-size:14px;">0.0 / 2.5 L</span>
+        <div class="card" style="padding:12px 16px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <h2 style="margin:0; font-size:10px;">WASSER</h2>
+                <span id="water-val" style="font-size:12px; font-weight:bold; color:var(--color-blue);">0.0L</span>
             </div>
-            <div class="water-controls">
-                <div class="btn-water" onclick="updateWater(-1)">-</div>
-                <div class="water-bar-bg">
-                    <div id="water-fill" class="water-bar-fill"></div>
-                </div>
-                <div class="btn-water" style="border-color:var(--water-color); color:var(--water-color);" onclick="updateWater(1)">+</div>
+            <div class="water-module-slim">
+                <button class="water-btn-small" onclick="app.modWater(-1)">-</button>
+                <div class="water-track-bg"><div id="water-bar" class="water-fill-bar"></div></div>
+                <button class="water-btn-small" style="background:var(--color-blue); border:none;" onclick="app.modWater(1)">+</button>
             </div>
         </div>
 
         <div class="card">
-            <h2>WORKOUT STARTEN</h2>
-            <div class="stat-grid" style="margin-bottom:10px;">
-                <button id="dur-10" class="btn-outline" style="padding:10px; font-size:12px;" onclick="setDuration(10)">10 MIN</button>
-                <button id="dur-20" class="btn-outline" style="padding:10px; font-size:12px;" onclick="setDuration(20)">20 MIN</button>
-                <button id="dur-30" class="btn-outline" style="padding:10px; font-size:12px;" onclick="setDuration(30)">30 MIN</button>
+            <h2 style="color:white;">WORKOUT</h2>
+            <div class="grid-3" style="margin-bottom:8px;">
+                <button id="pre-10" class="btn-pill" onclick="app.setDur(10)">10 MIN</button>
+                <button id="pre-20" class="btn-pill" onclick="app.setDur(20)">20 MIN</button>
+                <button id="pre-30" class="btn-pill" onclick="app.setDur(30)">30 MIN</button>
             </div>
-            <div class="btn-row">
-                <button class="btn" onclick="startLivePlayer()">START</button>
-                <button class="btn btn-outline" onclick="openManualLogger()">LOGBUCH</button>
+            <div style="margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+                <input type="number" id="custom-min" placeholder="Minuten..." style="margin:0; text-align:center;" oninput="app.setCustomDur(this.value)">
             </div>
-        </div>
-
-        <div class="card card-highlight-border">
-            <h2 style="color:#000;">DAILY CHECK & NOTIZEN</h2>
-            <div id="daily-checks">
-                </div>
             
-            <div style="margin-top:20px; border-top:1px solid #ccc; padding-top:10px;">
-                <h2 style="color:#555;">DEINE NOTIZ</h2>
-                <textarea id="daily-note-input" placeholder="Schreibe etwas..." style="background:transparent; color:#000; border:1px solid #999; height:80px;" oninput="saveDailyNote(this.value)"></textarea>
+            <div class="grid-2">
+                <button class="btn" onclick="player.init()">START</button>
+                <button class="btn btn-outline" onclick="logSys.open()">LOGBUCH</button>
             </div>
+        </div>
+
+        <button class="btn btn-outline" style="border-color:#fff; color:#fff; margin-bottom:20px;" onclick="ui.openDaily()">
+            DAILY CHECK & NOTIZEN
+        </button>
+
+        <div class="card card-white-border">
+            <h2 style="color:#000;">DEINE HEUTIGE NOTIZ</h2>
+            <div id="home-note-preview" style="color:#333; font-style:italic; min-height:20px;">Keine Notiz...</div>
         </div>
     </div>
 
-    <div id="tab-stats" class="screen-container">
+    <div id="view-stats" class="app-screen">
         <h1>STATISTIK</h1>
+
         <div class="card" style="margin-top:20px;">
+            <h2>TRAININGS FREQUENZ</h2>
+            <div class="grid-3">
+                <div class="kpi-box"><span class="kpi-lbl">WOCHE</span><span class="kpi-val" id="stat-week">0</span></div>
+                <div class="kpi-box"><span class="kpi-lbl">MONAT</span><span class="kpi-val" id="stat-month">0</span></div>
+                <div class="kpi-box"><span class="kpi-lbl">JAHR</span><span class="kpi-val" id="stat-year">0</span></div>
+            </div>
+        </div>
+
+        <div class="card">
             <h2>GEWICHTSVERLAUF</h2>
-            <div style="height:150px; width:100%; position:relative;">
+            <div style="height:160px; width:100%; position:relative;">
                 <svg id="chart-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
             </div>
         </div>
 
         <div class="card">
-            <h2>MESSDATEN EINTRAGEN</h2>
-            <div class="btn-row">
-                <div>
-                    <span style="font-size:10px; font-weight:bold; color:#666;">GEWICHT (KG)</span>
-                    <input type="number" id="log-weight-input">
-                </div>
-                <div>
-                    <span style="font-size:10px; font-weight:bold; color:#666;">BAUCH (CM)</span>
-                    <input type="number" id="log-waist-input">
-                </div>
+            <h2>MESSDATEN</h2>
+            <div class="grid-2">
+                <div><span class="label">GEWICHT</span><input type="number" id="m-weight"></div>
+                <div><span class="label">BAUCH</span><input type="number" id="m-waist"></div>
             </div>
-            <button class="btn btn-outline" style="margin-top:10px;" onclick="saveBodyMeasurement()">SPEICHERN</button>
+            <div class="grid-2">
+                <div><span class="label">BRUST</span><input type="number" id="m-chest"></div>
+                <div><span class="label">PO</span><input type="number" id="m-glute"></div>
+            </div>
+            <div class="grid-2">
+                <div><span class="label">ARM</span><input type="number" id="m-arm"></div>
+                <div><span class="label">BEIN</span><input type="number" id="m-leg"></div>
+            </div>
+            <button class="btn btn-outline" onclick="app.logBody()">SPEICHERN</button>
         </div>
 
-        <div id="history-list">
-            </div>
+        <div id="history-list"></div>
     </div>
 
-    <div id="tab-settings" class="screen-container">
+    <div id="view-settings" class="app-screen">
         <h1>SYSTEM</h1>
         
         <div class="card" style="margin-top:20px;">
-            <h2>TIMER KONFIGURATION</h2>
-            <div style="display:flex; justify-content:space-between;">
-                <span>Belastungszeit</span>
-                <b id="disp-work">40s</b>
-            </div>
-            <input type="range" id="rng-work" min="20" max="90" step="5" oninput="updateSettingsUI()" onchange="saveAppData()">
+            <h2>TIMER</h2>
+            <div style="display:flex; justify-content:space-between;"><span>Belastung</span><b id="lbl-work">40s</b></div>
+            <input type="range" id="rng-work" min="20" max="120" step="5" oninput="app.updSettings()">
             
-            <div style="display:flex; justify-content:space-between; margin-top:15px;">
-                <span>Pausenzeit</span>
-                <b id="disp-rest">20s</b>
-            </div>
-            <input type="range" id="rng-rest" min="10" max="60" step="5" oninput="updateSettingsUI()" onchange="saveAppData()">
+            <div style="display:flex; justify-content:space-between; margin-top:10px;"><span>Pause</span><b id="lbl-rest">20s</b></div>
+            <input type="range" id="rng-rest" min="10" max="90" step="5" oninput="app.updSettings()">
         </div>
 
         <div class="card">
-            <h2>AUDIO & COACH</h2>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span>Sprachausgabe aktivieren</span>
-                <input type="checkbox" id="chk-voice" style="width:25px; height:25px;" onchange="saveAppData()">
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>DATENVERWALTUNG</h2>
-            <button class="btn btn-outline" style="margin-bottom:10px;" onclick="exportBackup()">BACKUP EXPORTIEREN</button>
-            <button class="btn btn-outline" style="border-color:var(--danger-color); color:var(--danger-color);" onclick="resetAllData()">WERKSEINSTELLUNGEN</button>
-        </div>
-    </div>
-
-    <div id="overlay-manual" class="overlay">
-        <div class="overlay-header">
-            <h1>LOGBUCH</h1>
-            <div class="btn-water" onclick="closeManualLogger()" style="font-size:16px;">✕</div>
-        </div>
-        
-        <div class="scroll-content">
-            <div class="card" style="background:var(--card-light);">
-                <h2>ÜBUNG HINZUFÜGEN</h2>
-                <select id="manual-ex-select" style="margin-bottom:10px;">
-                    </select>
-                <div class="btn-row">
-                    <div>
-                        <span style="font-size:10px; font-weight:bold; color:#666;">ANZAHL SÄTZE</span>
-                        <input type="number" id="manual-sets-count" value="3" min="1" max="10">
-                    </div>
-                    <button class="btn" style="margin-top:20px;" onclick="addManualExerciseBlock()">+ HINZUFÜGEN</button>
-                </div>
-            </div>
-
-            <div id="manual-stack-container">
-                </div>
-        </div>
-
-        <div style="padding-top:10px;">
-            <button class="btn" style="background:var(--accent-color); color:#000;" onclick="saveManualWorkoutToHistory()">TRAINING SPEICHERN</button>
-        </div>
-    </div>
-
-    <div id="overlay-player" class="overlay">
-        <div class="overlay-header">
-            <div class="btn-water" onclick="location.reload()" style="font-size:16px;">✕</div>
-            <span id="p-round-display" style="font-weight:bold; color:#666;">RUNDE 1</span>
-            <div class="btn-water" id="mute-btn" onclick="toggleMute()" style="font-size:16px;">🔊</div>
-        </div>
-
-        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div id="p-phase-display" class="player-phase">READY</div>
-            <div id="p-timer-display" class="player-timer">10</div>
+            <h2>BACKUP & DATEN</h2>
+            <button class="btn btn-outline" style="margin-bottom:10px;" onclick="backup.export()">BACKUP EXPORTIEREN</button>
             
-            <div style="position:relative; width:220px; height:220px; margin-bottom:20px;">
-                <svg width="220" height="220" style="transform: rotate(-90deg);">
-                    <circle cx="110" cy="110" r="100" stroke="#222" stroke-width="10" fill="none"/>
-                    <circle id="p-progress-ring" cx="110" cy="110" r="100" stroke="white" stroke-width="10" fill="none"
-                            stroke-dasharray="628" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"/>
-                </svg>
-            </div>
-
-            <div id="p-ex-name" style="font-size:28px; font-weight:900; text-align:center;">ÜBUNG</div>
-            <div id="p-next-name" style="font-size:14px; color:#666; font-weight:bold; margin-top:10px;"></div>
-        </div>
-
-        <div class="btn-row">
-            <button class="btn" id="p-play-btn" onclick="togglePlayerState()">START</button>
-            <button class="btn btn-outline" onclick="skipPlayerPhase()">ÜBERSPRINGEN</button>
+            <input type="file" id="bk-import" style="display:none" onchange="backup.import(this)">
+            <button class="btn btn-outline" style="margin-bottom:20px;" onclick="document.getElementById('bk-import').click()">BACKUP LADEN</button>
+            
+            <button class="btn btn-outline" style="border-color:var(--danger-color); color:var(--danger-color);" onclick="app.reset()">ALLES LÖSCHEN</button>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('tab-home', this)">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">Home</div>
+    <div class="navbar">
+        <div class="nav-btn active" onclick="ui.nav('view-home', this)">
+            <div class="nav-icon">🏠</div><div class="nav-text">HOME</div>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-stats', this)">
-            <div class="nav-icon">📊</div>
-            <div class="nav-label">Stats</div>
+        <div class="nav-btn" onclick="ui.nav('view-stats', this)">
+            <div class="nav-icon">📊</div><div class="nav-text">STATS</div>
         </div>
-        <div class="nav-item" onclick="switchTab('tab-settings', this)">
-            <div class="nav-icon">⚙️</div>
-            <div class="nav-label">System</div>
+        <div class="nav-btn" onclick="ui.nav('view-settings', this)">
+            <div class="nav-icon">⚙️</div><div class="nav-text">SYSTEM</div>
         </div>
     </div>
 
     <script>
-        // ======================================================================
-        // 1. DATEN STRUKTUR & KONSTANTEN
-        // ======================================================================
-        const STORAGE_KEY = "BODY_PULSE_V17_FULL";
-        
-        // Vollständige Datenbank der Übungen
-        const EXERCISES_DB = [
-            { id: "plank", name: "Planks", unit: "Sek" },
-            { id: "pushup", name: "Liegestütze", unit: "Wdh" },
-            { id: "squat", name: "Kniebeugen", unit: "Wdh" },
-            { id: "crunch", name: "Crunches", unit: "Wdh" },
-            { id: "lunge", name: "Ausfallschritte", unit: "Wdh" },
-            { id: "dip", name: "Dips", unit: "Wdh" },
-            { id: "burpee", name: "Burpees", unit: "Wdh" },
-            { id: "wallsit", name: "Wandsitzen", unit: "Sek" },
-            { id: "mountain", name: "Mountain Climber", unit: "Sek" },
-            { id: "bridge", name: "Glute Bridge", unit: "Wdh" },
-            { id: "hollow", name: "Hollow Body Hold", unit: "Sek" },
-            { id: "legraise", name: "Beinheben", unit: "Wdh" }
+        // --- KONFIGURATION & DATEN ---
+        const DB_KEY = "BP_V18_FINAL";
+        const EXERCISES = [
+            {n:"Planks", u:"Sek"}, {n:"Liegestütze", u:"Wdh"}, {n:"Kniebeugen", u:"Wdh"},
+            {n:"Crunches", u:"Wdh"}, {n:"Ausfallschritte", u:"Wdh"}, {n:"Dips", u:"Wdh"},
+            {n:"Burpees", u:"Wdh"}, {n:"Mountain Climber", u:"Sek"}, {n:"Wandsitzen", u:"Sek"},
+            {n:"Hampelmann", u:"Sek"}, {n:"Beinheben", u:"Wdh"}, {n:"Glute Bridge", u:"Wdh"}
         ];
 
-        let appData = {
-            profile: { height: 0, weight: 0, age: 0 },
-            settings: { workTime: 40, restTime: 20, durationPreference: 10, voiceEnabled: true, dailyNote: "" },
-            status: { waterLevel: 0, waterDate: "", checklist: [false, false, false], streak: 0, lastWorkoutDate: 0 },
-            history: [], // Gespeicherte Workouts
-            bodyLogs: [], // Gewichtsprotokolle
-            meta: { installDate: Date.now() }
+        let db = {
+            profile: { h:0, w:0, a:0 },
+            config: { work:40, rest:20, dur:10, note:"" },
+            state: { water:0, waterDate:"", checks:[false,false,false,false], streak:0, lastWorkout:0 },
+            history: [],
+            bodyLogs: [],
+            meta: { installed: Date.now() }
         };
 
-        // Temporäre Status-Variablen für die laufende Session
-        let manualWorkoutStack = []; // Liste der Übungen im Manual Log Overlay
-        let playerTimer = null;
-        let playerIsRunning = false;
-        let playerState = { 
-            timeLeft: 10, 
-            phase: 'PREP', 
-            roundCurrent: 1, 
-            exerciseIndex: 0, 
-            plan: [], 
-            totalRounds: 1 
-        };
-        
-        // Audio Engine
-        let audioContext = null;
-        let isMuted = false;
-
-        // ======================================================================
-        // 2. INITIALISIERUNG & STARTUP
-        // ======================================================================
-        window.onload = function() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                try {
-                    appData = JSON.parse(stored);
-                    runStartupChecks(); // Prüft Datum für Reset etc.
-                } catch(e) {
-                    console.error("Datenfehler", e);
-                    document.getElementById('view-onboarding').style.display = 'flex';
-                }
-            } else {
-                document.getElementById('view-onboarding').style.display = 'flex';
-            }
-        };
-
-        function runStartupChecks() {
-            // Check: Neuer Tag?
-            const todayStr = new Date().toDateString();
-            if (appData.status.waterDate !== todayStr) {
-                // Reset Daily Values
-                appData.status.waterLevel = 0;
-                appData.status.waterDate = todayStr;
-                appData.status.checklist = [false, false, false];
-                // Note wird nicht gelöscht, User möchte sie vielleicht sehen. 
-                // Wenn doch gewünscht: appData.settings.dailyNote = "";
-                saveData();
-            }
-
-            document.getElementById('view-onboarding').style.display = 'none';
-            updateAllUI();
-        }
-
-        function saveData() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-        }
-
-        function completeOnboarding() {
-            const h = document.getElementById('setup-height').value;
-            const w = document.getElementById('setup-weight').value;
-            const a = document.getElementById('setup-age').value;
-            
-            if(h && w) {
-                appData.profile.height = parseFloat(h);
-                appData.profile.weight = parseFloat(w);
-                appData.profile.age = parseFloat(a);
-                appData.meta.installDate = Date.now();
-                appData.status.waterDate = new Date().toDateString();
-                saveData();
-                runStartupChecks();
-            } else {
-                alert("Bitte Größe und Gewicht eingeben.");
-            }
-        }
-
-        // ======================================================================
-        // 3. UI RENDERING & UPDATES
-        // ======================================================================
-        function updateAllUI() {
-            // --- HEADER ---
-            const daysSinceStart = Math.ceil((Date.now() - appData.meta.installDate) / (1000 * 60 * 60 * 24));
-            document.getElementById('home-day').innerText = "TAG " + (daysSinceStart || 1);
-            
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('home-date').innerText = new Date().toLocaleDateString('de-DE', options).toUpperCase();
-            
-            document.getElementById('home-streak').innerText = appData.status.streak;
-
-            // --- KPIS ---
-            if(appData.profile.height > 0) {
-                const hM = appData.profile.height / 100;
-                const bmi = (appData.profile.weight / (hM * hM)).toFixed(1);
-                document.getElementById('stat-bmi').innerText = bmi;
-            }
-            
-            const totalKcal = appData.history.reduce((sum, entry) => sum + (entry.kcal || 0), 0);
-            document.getElementById('stat-kcal').innerText = totalKcal.toLocaleString();
-            document.getElementById('stat-lvl').innerText = 1 + Math.floor(totalKcal / 1000);
-
-            // --- WASSER ---
-            const lit = (appData.status.waterLevel * 0.25).toFixed(2);
-            document.getElementById('water-text').innerText = lit + " / 2.5 L";
-            // Max 10 Einheiten (2.5L)
-            const pct = Math.min((appData.status.waterLevel / 10) * 100, 100);
-            document.getElementById('water-fill').style.width = pct + "%";
-
-            // --- CHECKLISTE ---
-            renderChecklist();
-
-            // --- NOTIZEN ---
-            document.getElementById('daily-note-input').value = appData.settings.dailyNote || "";
-
-            // --- SETTINGS VALUES ---
-            document.getElementById('rng-work').value = appData.settings.workTime;
-            document.getElementById('rng-rest').value = appData.settings.restTime;
-            document.getElementById('disp-work').innerText = appData.settings.workTime + "s";
-            document.getElementById('disp-rest').innerText = appData.settings.restTime + "s";
-            document.getElementById('chk-voice').checked = appData.settings.voiceEnabled;
-
-            // --- DURATION PILLS ---
-            // Reset colors
-            document.getElementById('dur-10').style.background = 'transparent'; document.getElementById('dur-10').style.color = 'var(--text-main)';
-            document.getElementById('dur-20').style.background = 'transparent'; document.getElementById('dur-20').style.color = 'var(--text-main)';
-            document.getElementById('dur-30').style.background = 'transparent'; document.getElementById('dur-30').style.color = 'var(--text-main)';
-            
-            // Highlight selected
-            const activeBtn = document.getElementById('dur-' + appData.settings.durationPreference);
-            if(activeBtn) {
-                activeBtn.style.background = 'var(--text-main)';
-                activeBtn.style.color = '#000';
-            }
-
-            // --- STATS TAB ---
-            renderHistoryList();
-            renderChart();
-        }
-
-        // ======================================================================
-        // 4. FEATURE: WASSER & CHECKLISTE & NOTIZEN
-        // ======================================================================
-        function updateWater(change) {
-            appData.status.waterLevel = Math.max(0, appData.status.waterLevel + change);
-            saveData();
-            updateAllUI();
-        }
-
-        function renderChecklist() {
-            const container = document.getElementById('daily-checks');
-            container.innerHTML = "";
-            const labels = ["Protein-Shake", "5g Kreatin", "Vitamine / Omega 3", "7h Schlaf"];
-            
-            // Falls das Array in status.checklist kürzer ist, auffüllen
-            while(appData.status.checklist.length < labels.length) {
-                appData.status.checklist.push(false);
-            }
-
-            labels.forEach((label, index) => {
-                const item = document.createElement('div');
-                const isChecked = appData.status.checklist[index];
-                item.className = "check-item" + (isChecked ? " checked" : "");
-                
-                item.innerHTML = `
-                    <div class="check-circle"></div>
-                    <span style="font-size:14px; color:${isChecked ? '#555' : '#fff'}">${label}</span>
-                `;
-                
-                item.onclick = function() {
-                    appData.status.checklist[index] = !appData.status.checklist[index];
-                    saveData();
-                    updateAllUI();
-                };
-                
-                container.appendChild(item);
-            });
-        }
-
-        function saveDailyNote(val) {
-            appData.settings.dailyNote = val;
-            saveData();
-        }
-
-        function setDuration(min) {
-            appData.settings.durationPreference = min;
-            saveData();
-            updateAllUI();
-        }
-
-        // ======================================================================
-        // 5. MANUAL LOGGING SYSTEM (Der komplexe Teil)
-        // ======================================================================
-        function openManualLogger() {
-            manualWorkoutStack = []; // Reset temporäre Liste
-            renderManualStack();
-            
-            // Populate Select
-            const sel = document.getElementById('manual-ex-select');
-            sel.innerHTML = "";
-            EXERCISES_DB.forEach(ex => {
-                const opt = document.createElement('option');
-                opt.value = ex.name;
-                opt.text = ex.name;
-                sel.appendChild(opt);
-            });
-
-            document.getElementById('overlay-manual').style.display = 'flex';
-        }
-
-        function closeManualLogger() {
-            document.getElementById('overlay-manual').style.display = 'none';
-        }
-
-        function addManualExerciseBlock() {
-            const exName = document.getElementById('manual-ex-select').value;
-            const roundCount = parseInt(document.getElementById('manual-sets-count').value);
-            
-            const exerciseObj = {
-                id: Date.now() + Math.random(),
-                name: exName,
-                rounds: []
-            };
-
-            // Erstelle für jede Runde einen Eintrag
-            for(let i=0; i < roundCount; i++) {
-                exerciseObj.rounds.push({ value: 0 }); // 0 als Standard
-            }
-
-            manualWorkoutStack.push(exerciseObj);
-            renderManualStack();
-        }
-
-        function renderManualStack() {
-            const container = document.getElementById('manual-stack-container');
-            container.innerHTML = "";
-
-            manualWorkoutStack.forEach((exItem, exIndex) => {
-                const block = document.createElement('div');
-                block.className = "manual-ex-block";
-                
-                let html = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px;">
-                        <span style="font-weight:900; color:#fff;">${exItem.name}</span>
-                        <span style="color:#ff453a; font-size:12px; font-weight:bold; cursor:pointer;" onclick="removeManualBlock(${exIndex})">ENTFERNEN</span>
-                    </div>
-                `;
-
-                // Render Inputs für jede Runde
-                exItem.rounds.forEach((round, rIndex) => {
-                    html += `
-                        <div class="set-row">
-                            <span class="set-label">SATZ ${rIndex+1}</span>
-                            <input type="number" class="set-input" placeholder="0" 
-                                   value="${round.value > 0 ? round.value : ''}" 
-                                   oninput="updateManualValue(${exIndex}, ${rIndex}, this.value)">
-                            <span class="set-unit">Wdh/Sek</span>
-                        </div>
-                    `;
-                });
-
-                block.innerHTML = html;
-                container.appendChild(block);
-            });
-        }
-
-        function updateManualValue(exIndex, rIndex, val) {
-            manualWorkoutStack[exIndex].rounds[rIndex].value = parseFloat(val);
-        }
-
-        function removeManualBlock(index) {
-            manualWorkoutStack.splice(index, 1);
-            renderManualStack();
-        }
-
-        function saveManualWorkoutToHistory() {
-            if(manualWorkoutStack.length === 0) {
-                alert("Keine Übungen eingetragen.");
-                return;
-            }
-
-            const totalExercises = manualWorkoutStack.length;
-            // Schätzung: 40 kcal pro Übungs-Block
-            const kcalEstimate = totalExercises * 40; 
-
-            const record = {
-                id: Date.now(),
-                date: new Date().toISOString(),
-                type: 'Manual Log',
-                kcal: kcalEstimate,
-                details: manualWorkoutStack
-            };
-
-            appData.history.push(record);
-            
-            // Streak Check
-            checkStreakUpdate();
-            
-            saveData();
-            closeManualLogger();
-            updateAllUI();
-            alert("Training erfolgreich gespeichert!");
-        }
-
-        // ======================================================================
-        // 6. PLAYER SYSTEM (AUDIO & TIMER)
-        // ======================================================================
-        function startLivePlayer() {
-            // Audio Context aktivieren (muss durch User-Geste passieren)
-            if(!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-
-            // Plan erstellen (zufällig)
-            const duration = appData.settings.durationPreference;
-            playerState.totalRounds = (duration === 10) ? 1 : (duration === 20 ? 2 : 3);
-            
-            // Wir nehmen 6 zufällige Übungen
-            playerState.plan = [...EXERCISES_DB].sort(() => 0.5 - Math.random()).slice(0, 6);
-            
-            playerState.roundCurrent = 1;
-            playerState.exerciseIndex = 0;
-            playerState.phase = 'PREP';
-            playerState.timeLeft = 10;
-            playerIsRunning = false;
-
-            document.getElementById('overlay-player').style.display = 'flex';
-            updatePlayerDisplay();
-        }
-
-        function togglePlayerState() {
-            const btn = document.getElementById('p-play-btn');
-            if(playerIsRunning) {
-                clearInterval(playerTimer);
-                playerIsRunning = false;
-                btn.innerText = "WEITER";
-            } else {
-                playerTimer = setInterval(playerTick, 1000);
-                playerIsRunning = true;
-                btn.innerText = "PAUSE";
-            }
-        }
-
-        function playerTick() {
-            if(playerState.timeLeft > 0) {
-                playerState.timeLeft--;
-                // Beep bei 3, 2, 1
-                if(playerState.timeLeft <= 3 && playerState.timeLeft > 0) playTone(600, 0.1);
-                if(playerState.timeLeft === 0) playTone(900, 0.4);
-                updatePlayerDisplay();
-            } else {
-                advancePlayerPhase();
-            }
-        }
-
-        function advancePlayerPhase() {
-            if(playerState.phase === 'PREP') {
-                playerState.phase = 'WORK';
-                playerState.timeLeft = appData.settings.workTime;
-                speakText(playerState.plan[playerState.exerciseIndex].name);
-            } else if(playerState.phase === 'WORK') {
-                playerState.phase = 'REST';
-                playerState.timeLeft = appData.settings.restTime;
-                speakText("Pause");
-            } else if(playerState.phase === 'REST') {
-                playerState.exerciseIndex++;
-                
-                // Runde fertig?
-                if(playerState.exerciseIndex >= 6) {
-                    playerState.exerciseIndex = 0;
-                    playerState.roundCurrent++;
-                    
-                    if(playerState.roundCurrent > playerState.totalRounds) {
-                        finishLiveWorkout();
-                        return;
-                    }
-                }
-                
-                playerState.phase = 'WORK';
-                playerState.timeLeft = appData.settings.workTime;
-                speakText(playerState.plan[playerState.exerciseIndex].name);
-            }
-            updatePlayerDisplay();
-        }
-
-        function updatePlayerDisplay() {
-            document.getElementById('p-timer-display').innerText = playerState.timeLeft;
-            document.getElementById('p-phase-display').innerText = playerState.phase;
-            document.getElementById('p-ex-name').innerText = playerState.plan[playerState.exerciseIndex].name.toUpperCase();
-            document.getElementById('p-round-display').innerText = `RUNDE ${playerState.roundCurrent} / ${playerState.totalRounds}`;
-            
-            // Progress Ring Berechnung
-            const maxTime = (playerState.phase === 'WORK') ? appData.settings.workTime : 
-                            (playerState.phase === 'REST') ? appData.settings.restTime : 10;
-            
-            const radius = 100;
-            const circumference = 2 * Math.PI * radius; // ca 628
-            const offset = circumference - (playerState.timeLeft / maxTime) * circumference;
-            
-            document.getElementById('p-progress-ring').style.strokeDashoffset = offset;
-            
-            // Preview Next
-            if(playerState.phase === 'REST') {
-                let nextExName = "";
-                if(playerState.exerciseIndex + 1 < 6) {
-                    nextExName = playerState.plan[playerState.exerciseIndex+1].name;
+        // --- APP CONTROLLER ---
+        const app = {
+            init: () => {
+                let s = localStorage.getItem(DB_KEY);
+                if(s) { 
+                    try { db = JSON.parse(s); } catch(e){ console.log(e); }
+                    app.checkDate();
+                    ui.refresh();
                 } else {
-                    nextExName = "Nächste Runde / Ende";
+                    document.getElementById('ov-setup').style.display = 'flex';
                 }
-                document.getElementById('p-next-name').innerText = "NEXT: " + nextExName;
-            } else {
-                document.getElementById('p-next-name').innerText = "";
-            }
-        }
+            },
 
-        function skipPlayerPhase() {
-            playerState.timeLeft = 0;
-            advancePlayerPhase();
-        }
+            save: () => { localStorage.setItem(DB_KEY, JSON.stringify(db)); },
 
-        function finishLiveWorkout() {
-            clearInterval(playerTimer);
-            const kcalBurned = appData.settings.durationPreference * 8; // Grobe Formel
-            
-            appData.history.push({
-                id: Date.now(),
-                date: new Date().toISOString(),
-                type: 'Live Workout',
-                kcal: kcalBurned
-            });
-            
-            checkStreakUpdate();
-            saveData();
-            alert("Training beendet! " + kcalBurned + " kcal verbrannt.");
-            location.reload();
-        }
+            finishSetup: () => {
+                db.profile.h = parseFloat(document.getElementById('inp-setup-h').value) || 175;
+                db.profile.w = parseFloat(document.getElementById('inp-setup-w').value) || 75;
+                db.profile.a = parseFloat(document.getElementById('inp-setup-a').value) || 30;
+                db.meta.installed = Date.now();
+                db.state.waterDate = new Date().toDateString();
+                app.save();
+                document.getElementById('ov-setup').style.display='none';
+                ui.refresh();
+            },
 
-        // ======================================================================
-        // 7. STATS & CHART LOGIC
-        // ======================================================================
-        function saveBodyMeasurement() {
-            const w = document.getElementById('log-weight-input').value;
-            const wa = document.getElementById('log-waist-input').value;
-            
-            if(w) {
-                appData.profile.weight = parseFloat(w);
-                appData.bodyLogs.push({
+            checkDate: () => {
+                let today = new Date().toDateString();
+                if(db.state.waterDate !== today) {
+                    db.state.water = 0;
+                    db.state.waterDate = today;
+                    db.state.checks = [false, false, false, false];
+                    app.save();
+                }
+            },
+
+            modWater: (val) => {
+                db.state.water = Math.max(0, db.state.water + val);
+                app.save(); ui.refresh();
+            },
+
+            setDur: (min) => {
+                db.config.dur = min;
+                document.getElementById('custom-dur').value = ""; // Clear custom
+                app.save(); ui.refresh();
+            },
+
+            setCustomDur: (val) => {
+                if(val > 0) {
+                    db.config.dur = parseInt(val);
+                    app.save(); ui.refresh();
+                }
+            },
+
+            saveNote: (val) => {
+                db.config.note = val;
+                app.save();
+                document.getElementById('home-note-preview').innerText = val || "Keine Notiz...";
+            },
+
+            updSettings: () => {
+                db.config.work = parseInt(document.getElementById('rng-work').value);
+                db.config.rest = parseInt(document.getElementById('rng-rest').value);
+                app.save(); ui.refresh();
+            },
+
+            logBody: () => {
+                let log = {
                     date: new Date().toISOString(),
-                    weight: parseFloat(w),
-                    waist: wa
+                    w: document.getElementById('m-weight').value,
+                    waist: document.getElementById('m-waist').value,
+                    chest: document.getElementById('m-chest').value,
+                    arm: document.getElementById('m-arm').value,
+                    leg: document.getElementById('m-leg').value,
+                    glute: document.getElementById('m-glute').value
+                };
+                if(log.w) {
+                    db.profile.w = parseFloat(log.w);
+                    db.bodyLogs.push(log);
+                    app.save(); ui.refresh(); alert("Gespeichert");
+                }
+            },
+
+            reset: () => {
+                if(confirm("ALLES LÖSCHEN?")) { localStorage.clear(); location.reload(); }
+            }
+        };
+
+        // --- UI RENDERER ---
+        const ui = {
+            refresh: () => {
+                // Header
+                let days = Math.ceil((Date.now() - db.meta.installed)/86400000);
+                document.getElementById('lbl-day').innerText = "TAG " + days;
+                document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('de-DE', {weekday:'long', day:'numeric', month:'long'}).toUpperCase();
+                document.getElementById('home-streak').innerText = db.state.streak;
+
+                // KPIs
+                if(db.profile.h) {
+                    let h = db.profile.h/100;
+                    document.getElementById('kpi-bmi').innerText = (db.profile.w / (h*h)).toFixed(1);
+                }
+                let sum = db.history.reduce((a,b)=>a+(b.kcal||0),0);
+                document.getElementById('kpi-kcal').innerText = sum.toLocaleString();
+                document.getElementById('kpi-lvl').innerText = 1 + Math.floor(sum/1500);
+
+                // Water
+                document.getElementById('water-val').innerText = (db.state.water * 0.25).toFixed(1) + " / 2.5 L";
+                document.getElementById('water-bar').style.width = Math.min((db.state.water/10)*100, 100) + "%";
+
+                // Pills
+                document.querySelectorAll('.btn-pill').forEach(b => b.classList.remove('active'));
+                let pBtn = document.getElementById('d-'+db.config.dur);
+                if(pBtn) pBtn.classList.add('active');
+
+                // Settings
+                document.getElementById('rng-work').value = db.config.work;
+                document.getElementById('rng-rest').value = db.config.rest;
+                document.getElementById('lbl-work').innerText = db.config.work+"s";
+                document.getElementById('lbl-rest').innerText = db.config.rest+"s";
+
+                // Note
+                document.getElementById('daily-note-text').value = db.config.note;
+                document.getElementById('home-note-preview').innerText = db.config.note || "Keine Notiz...";
+
+                // Frequenz Stats
+                stats.calcFreq();
+                stats.renderChart();
+                stats.renderList();
+            },
+
+            nav: (id, el) => {
+                document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                el.classList.add('active');
+            },
+
+            openDaily: () => {
+                let c = document.getElementById('daily-list-container'); c.innerHTML="";
+                let labs = ["Protein Shake", "Kreatin", "Vitamine", "7h Schlaf"];
+                labs.forEach((l,i)=>{
+                    let d = document.createElement('div');
+                    d.className = "check-row" + (db.state.check[i]?" done":"");
+                    d.innerHTML = `<div class="check-viz"></div><span>${l}</span>`;
+                    d.onclick = () => { db.state.check[i] = !db.state.check[i]; app.save(); ui.openDaily(); };
+                    c.appendChild(d);
                 });
-                saveData();
-                updateAllUI();
-                alert("Daten gespeichert.");
-            }
-        }
+                document.getElementById('ov-daily').style.display='flex';
+            },
+            closeDaily: () => { document.getElementById('ov-daily').style.display='none'; },
 
-        function renderHistoryList() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = "<h2>LETZTE AKTIVITÄTEN</h2>";
-            
-            // Kopie umdrehen für neueste zuerst
-            const reversed = [...appData.history].reverse().slice(0, 10);
-            
-            reversed.forEach(item => {
-                const row = document.createElement('div');
-                row.className = "card";
-                row.style.padding = "12px";
+            openManual: () => {
+                logSys.stack = [];
+                logSys.render();
+                let sel = document.getElementById('man-ex-select'); sel.innerHTML="";
+                EXERCISES.forEach(e=>{
+                    let opt = document.createElement('option');
+                    opt.value = e.n;
+                    opt.innerText = e.n;
+                    sel.appendChild(opt);
+                });
+                document.getElementById('ov-manual').style.display='flex';
+            },
+            closeManual: () => { document.getElementById('ov-manual').style.display='none'; }
+        };
+
+        // --- MANUAL LOG SYSTEM (PRO) ---
+        const logSys = {
+            stack: [],
+            addToStack: () => {
+                let name = document.getElementById('man-ex-select').value;
+                let rounds = parseInt(document.getElementById('man-rounds-count').value);
+                let entry = { name: name, rounds: [] };
+                for(let i=0; i<rounds; i++) entry.rounds.push({val: 0});
+                logSys.stack.push(entry);
+                logSys.render();
+            },
+            render: () => {
+                let c = document.getElementById('manual-stack-list'); c.innerHTML="";
+                logSys.stack.forEach((item, idx) => {
+                    let div = document.createElement('div');
+                    div.className = "log-stack-item";
+                    let html = `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <b>${item.name}</b> <span onclick="logSys.rem(${idx})" style="color:red;">✕</span>
+                    </div>`;
+                    item.rounds.forEach((r, ri) => {
+                        html += `<div class="log-set-row">
+                            <span style="font-size:12px; color:#888;">SATZ ${ri+1}</span>
+                            <input type="number" class="log-set-input" placeholder="0" oninput="logSys.stack[${idx}].rounds[${ri}].val=this.value">
+                        </div>`;
+                    });
+                    div.innerHTML = html;
+                    c.appendChild(div);
+                });
+            },
+            rem: (i) => { logSys.stack.splice(i,1); logSys.render(); },
+            saveStack: () => {
+                if(logSys.stack.length===0) return;
+                let cnt = logSys.stack.length;
+                let sets = logSys.stack.reduce((a,b)=>a+b.rounds.length,0);
+                db.history.push({
+                    date: new Date().toISOString(),
+                    type: "Manual Log",
+                    kcal: sets * 15,
+                    desc: `${cnt} Übungen, ${sets} Sätze`
+                });
+                stats.checkStreak();
+                app.save(); ui.refresh(); ui.closeManual();
+            }
+        };
+
+        // --- PLAYER ENGINE (TIME IN CIRCLE) ---
+        const player = {
+            timer: null,
+            time: 0,
+            phase: 'PREP',
+            round: 1,
+            exIdx: 0,
+            plan: [],
+            completed: false,
+            audioCtx: null,
+            muted: false,
+
+            init: () => {
+                if(!player.audioCtx) player.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+                player.plan = [...EXERCISES].sort(()=>0.5-Math.random()).slice(0,6);
+                player.round = 1; 
+                player.exIdx = 0; 
+                player.phase = 'PREP'; 
+                player.time = 10;
+                player.completed = false;
+                document.getElementById('ov-player').style.display='flex';
+                player.updateUI();
+            },
+
+            toggle: () => {
+                let btn = document.getElementById('p-btn-main');
+                if(player.timer) { clearInterval(player.timer); player.timer=null; btn.innerText="WEITER"; }
+                else { player.timer = setInterval(player.tick, 1000); btn.innerText="PAUSE"; }
+            },
+
+            tick: () => {
+                if(player.time > 0) {
+                    player.time--;
+                    if(player.time<=3 && player.time>0) player.beep(600);
+                    player.updateUI();
+                } else {
+                    player.beep(900);
+                    player.next();
+                }
+            },
+
+            next: () => {
+                if(player.phase === 'PREP') {
+                    player.phase = 'WORK'; player.time = db.config.work;
+                } else if(player.phase === 'WORK') {
+                    player.phase = 'REST'; player.time = db.config.rest;
+                } else {
+                    // End of Rest
+                    player.exIdx++;
+                    if(player.exIdx >= 6) {
+                        player.exIdx = 0; player.round++;
+                        let maxR = db.config.dur===10?1:(db.config.dur===20?2:3);
+                        if(player.round > maxR) { player.finish(); return; }
+                    }
+                    player.phase = 'WORK'; player.time = db.config.work;
+                }
+                player.updateUI();
+            },
+
+            skip: () => {
+                if(player.phase === 'WORK') { alert("Training läuft! Nicht überspringen!"); return; }
+                player.time = 0; player.next();
+            },
+
+            updateUI: () => {
+                document.getElementById('p-info').innerText = `RUNDE ${player.round} • ÜBUNG ${player.exIdx+1}/6`;
+                document.getElementById('p-time').innerText = player.time;
+                document.getElementById('p-phase').innerText = player.phase;
+                document.getElementById('p-ex-name').innerText = player.plan[player.exIdx].n.toUpperCase();
                 
-                const d = new Date(item.date);
-                const dateStr = d.toLocaleDateString() + " " + d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
+                let max = player.phase==='WORK'?db.config.work:(player.phase==='REST'?db.config.rest:10);
+                let off = 754 - (player.time/max)*754;
+                document.getElementById('p-ring').style.strokeDashoffset = off;
+
+                let skp = document.getElementById('p-btn-skip');
+                if(player.phase==='WORK') { skp.style.opacity='0.3'; skp.innerText="LOCKED"; }
+                else { skp.style.opacity='1'; skp.innerText="SKIP PAUSE"; }
+            },
+
+            finish: () => {
+                clearInterval(player.timer);
+                let k = db.config.dur * 8;
+                db.history.push({ date: new Date().toISOString(), type: "Live Workout", kcal: k, desc: db.config.dur+" Min Zirkel" });
+                stats.checkStreak();
+                app.save(); ui.refresh();
+                document.getElementById('ov-player').style.display='none';
+                alert("TRAINING BEENDET! "+k+" kcal");
+            },
+
+            exit: () => {
+                clearInterval(player.timer); player.timer=null;
+                if(confirm("Abbrechen? (Training zählt nicht)")) document.getElementById('ov-player').style.display='none';
+            },
+
+            beep: (f) => {
+                if(player.muted || !player.audioCtx) return;
+                let o = player.audioCtx.createOscillator();
+                let g = player.audioCtx.createGain();
+                o.connect(g); g.connect(player.audioCtx.destination);
+                o.frequency.value = f;
+                g.gain.value = 0.1; o.start(); o.stop(player.audioCtx.currentTime+0.1);
+            },
+            toggleMute: () => { player.muted = !player.muted; document.getElementById('p-mute').innerText = player.muted?"🔇":"🔊"; }
+        };
+
+        // --- STATS ENGINE ---
+        const stats = {
+            checkStreak: () => {
+                let last = new Date(db.state.lastWorkout).toDateString();
+                let today = new Date().toDateString();
+                if(last !== today) { db.state.streak++; db.state.lastWorkout = Date.now(); }
+            },
+            calcFreq: () => {
+                let now = new Date();
+                let w=0, m=0, y=0;
+                let startW = new Date(now); startW.setDate(now.getDate()-now.getDay()+1); startW.setHours(0,0,0,0);
+                let startM = new Date(now.getFullYear(), now.getMonth(), 1);
+                let startY = new Date(now.getFullYear(), 0, 1);
                 
-                row.innerHTML = `
-                    <div style="display:flex; justify-content:space-between;">
-                        <b style="color:var(--accent-color);">${item.type}</b>
-                        <span style="font-size:12px; color:#666;">${dateStr}</span>
+                db.history.forEach(h => {
+                    let d = new Date(h.date);
+                    if(d >= startW) w++;
+                    if(d >= startM) m++;
+                    if(d >= startY) y++;
+                });
+                document.getElementById('cnt-week').innerText = w;
+                document.getElementById('cnt-month').innerText = m;
+                document.getElementById('cnt-year').innerText = y;
+            },
+            renderChart: () => {
+                let svg = document.getElementById('chart-svg'); svg.innerHTML="";
+                if(db.bodyLogs.length < 2) return;
+                let ws = db.bodyLogs.map(l=>parseFloat(l.w));
+                let min = Math.min(...ws)-2, max = Math.max(...ws)+2;
+                let pts = ws.map((w,i) => `${(i/(ws.length-1))*100},${100 - ((w-min)/(max-min)*100)}`).join(' ');
+                svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#32d74b" stroke-width="3" />`;
+            },
+            renderList: () => {
+                let c = document.getElementById('hist-list'); c.innerHTML="";
+                [...db.history].reverse().slice(0,10).forEach(h => {
+                    let div = document.createElement('div');
+                    div.className="card"; div.style.padding="12px";
+                    div.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:13px;">
+                        <b style="color:var(--color-accent);">${h.type}</b>
+                        <span>${new Date(h.date).toLocaleDateString()}</span>
                     </div>
-                    <div style="font-size:12px; margin-top:4px;">
-                        ${item.kcal} kcal
-                    </div>
-                `;
-                list.appendChild(row);
-            });
-        }
-
-        function renderChart() {
-            const svg = document.getElementById('chart-svg');
-            svg.innerHTML = ""; // Clear
-            
-            if(appData.bodyLogs.length < 2) {
-                svg.innerHTML = `<text x="50%" y="50%" fill="#666" text-anchor="middle">Zu wenig Daten</text>`;
-                return;
+                    <div style="font-size:12px; color:#888;">${h.kcal} kcal • ${h.desc||''}</div>`;
+                    c.appendChild(div);
+                });
             }
+        };
 
-            const weights = appData.bodyLogs.map(l => l.weight);
-            const minW = Math.min(...weights) - 2;
-            const maxW = Math.max(...weights) + 2;
-            const range = maxW - minW;
-
-            // Polylinie bauen
-            let points = "";
-            const width = 100; // Prozent
-            const height = 100; 
-
-            appData.bodyLogs.forEach((log, index) => {
-                const x = (index / (appData.bodyLogs.length - 1)) * 100;
-                // Y muss invertiert sein (0 oben, 100 unten)
-                const y = 100 - ((log.weight - minW) / range * 100);
-                points += `${x},${y} `;
-            });
-
-            const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-            polyline.setAttribute("points", points);
-            polyline.setAttribute("fill", "none");
-            polyline.setAttribute("stroke", "#32d74b");
-            polyline.setAttribute("stroke-width", "3");
-            
-            svg.appendChild(polyline);
-        }
-
-        // ======================================================================
-        // 8. HELPERS & AUDIO
-        // ======================================================================
-        function switchTab(tabId, btnElement) {
-            // Tabs umschalten
-            document.querySelectorAll('.screen-container').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            
-            // Buttons umschalten
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            btnElement.classList.add('active');
-        }
-
-        function updateSettingsUI() {
-            appData.settings.workTime = parseInt(document.getElementById('rng-work').value);
-            appData.settings.restTime = parseInt(document.getElementById('rng-rest').value);
-            saveData();
-            updateAllUI();
-        }
-        
-        function saveAppData() {
-            appData.settings.voiceEnabled = document.getElementById('chk-voice').checked;
-            saveData();
-        }
-
-        function checkStreakUpdate() {
-            const today = new Date().toDateString();
-            const lastWorkout = new Date(appData.status.lastWorkoutDate).toDateString();
-            
-            if(lastWorkout !== today) {
-                appData.status.streak++;
-                appData.status.lastWorkoutDate = Date.now();
+        // --- BACKUP ---
+        const backup = {
+            export: () => {
+                let b = new Blob([JSON.stringify(db)], {type:'application/json'});
+                let a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download='bodypulse.json'; a.click();
+            },
+            import: (el) => {
+                let r = new FileReader();
+                r.onload = e => { db = JSON.parse(e.target.result); app.save(); location.reload(); };
+                r.readAsText(el.files[0]);
             }
-        }
+        };
 
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
-        }
-
-        function playTone(freq, duration) {
-            if(isMuted || !audioContext) return;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
-            osc.frequency.value = freq;
-            gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-            osc.start();
-            osc.stop(audioContext.currentTime + duration);
-        }
-
-        function speakText(text) {
-            if(!appData.settings.voiceEnabled || isMuted) return;
-            if('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'de-DE';
-                speechSynthesis.speak(utterance);
-            }
-        }
-
-        function exportBackup() {
-            const str = JSON.stringify(appData);
-            const blob = new Blob([str], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "bodypulse_backup.json";
-            a.click();
-        }
-
-        function resetAllData() {
-            if(confirm("ACHTUNG: Alle Daten werden gelöscht. Fortfahren?")) {
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
-            }
-        }
+        app.init();
     </script>
 </body>
 </html>
