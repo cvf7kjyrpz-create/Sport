@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Body Pulse V15 - Logic Fix</title>
+    <title>Body Pulse V16 - FULL VERSION</title>
     
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' style='background:%23000000'%3E%3Cpath fill='%23ffffff' d='M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zm-32.1 289.8l-8.8 45.3c-2.1 10.7-16.5 13.6-22.7 4.6l-37.5-54.6c-5.8-8.4-5.4-19.6 1-27.6l74.9-93.6c7.9-9.9 23.4-4.8 24.3 7.9l3.3 46.1 45.1-66.2c6.1-8.9 19.3-8.6 25 0l42.6 62.4c5.8 8.5 5.2 19.7-1.3 27.6l-81.5 98.7c-8.4 10.2-24.6 4.8-25.3-8.3l-2.6-47.5-36.5 5.2z'/%3E%3C/svg%3E">
 
@@ -194,7 +194,7 @@
             width: 100%;
         }
 
-        input { 
+        input, select { 
             width: 100%; 
             background: var(--surface-light); 
             border: 1px solid var(--border); 
@@ -326,11 +326,21 @@
         /* CHARTS */
         .chart-container { 
             width: 100%; 
-            height: 120px;
+            height: 140px;
             position: relative; 
-            margin-top: 10px; 
+            margin-top: 15px; 
             border-bottom: 1px solid var(--border); 
             border-left: 1px solid var(--border); 
+            padding-left: 5px;
+        }
+
+        .chart-axis-label {
+            position: absolute;
+            left: -35px;
+            font-size: 9px;
+            color: var(--secondary);
+            width: 30px;
+            text-align: right;
         }
 
         svg.chart { 
@@ -608,7 +618,7 @@
             <div class="water-grid" id="water-grid"></div>
         </div>
 
-        <div class="card compact-card" style="border: 1px solid var(--primary); margin-top:5px;">
+        <div class="card compact-card" style="border: 2px solid var(--primary); margin-top:5px;">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2 style="margin:0; color:white;">TRAINING STARTEN</h2>
             </div>
@@ -621,7 +631,13 @@
             <button class="btn" style="margin-top:8px; padding:12px;" onclick="openPlayer()">LOS GEHT'S</button>
         </div>
         
-        <button class="btn btn-outline" style="margin-top:5px; padding:10px; font-size:12px; border-style:dashed; opacity:0.8;" onclick="openSuppsManually()">SUPPLEMENTE & NOTIZ</button>
+        <div class="card compact-card" style="border: 1px solid var(--primary); margin-top:5px;">
+             <h2 style="margin-bottom:10px;">SUPPLEMENTE & NOTIZEN</h2>
+             <button class="btn btn-outline" style="padding:10px; font-size:12px; margin-bottom:10px;" onclick="openSuppsManually()">LISTE ÖFFNEN</button>
+             <div id="home-supp-preview" style="font-size:11px; color:#888; margin-bottom:5px;"></div>
+             <input type="text" id="home-note-input" placeholder="Schnelle Notiz..." oninput="saveNote(this)" style="margin-bottom:0; font-size:12px; padding:8px;">
+        </div>
+
     </div>
 
     <div id="tab-library" class="screen">
@@ -635,7 +651,9 @@
         
         <div class="card">
             <h2>GEWICHTSKURVE</h2>
-            <div class="chart-container">
+            <div class="chart-container" style="margin-left:25px;">
+                <div id="chart-lbl-max" class="chart-axis-label" style="top:-5px;">100</div>
+                <div id="chart-lbl-min" class="chart-axis-label" style="bottom:-5px;">50</div>
                 <svg class="chart" id="weight-chart" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
             </div>
         </div>
@@ -659,8 +677,27 @@
         </div>
         
         <div class="card">
-            <h2>HISTORIE</h2>
+            <h2>TRAINING NACHTRAGEN</h2>
+            <div class="input-row">
+                <input type="number" id="man-dur" placeholder="Dauer (Min)">
+                <select id="man-type">
+                    <option value="Kraft">Krafttraining</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Yoga">Yoga/Stretch</option>
+                    <option value="Sport">Anderer Sport</option>
+                </select>
+            </div>
+            <button class="btn btn-outline" onclick="addManualWorkout()">HINZUFÜGEN</button>
+        </div>
+        
+        <div class="card">
+            <h2>HISTORIE TRAINING</h2>
             <div id="hist-list"></div>
+        </div>
+
+        <div class="card">
+            <h2>HISTORIE KÖRPERMASSE</h2>
+            <div id="measure-list" style="font-size:12px; color:#aaa;"></div>
         </div>
     </div>
 
@@ -690,7 +727,7 @@
     <div id="view-player" class="full-overlay" style="background:#000; z-index:3000;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-close" onclick="closePlayer()">✕</button>
-            <span id="round-disp">1 / 6</span>
+            <span id="round-disp" style="font-size:14px; font-weight:bold; color:#fff;">Runde 1 / 3 — Übung 1 / 6</span>
             <button class="btn-close" onclick="toggleMute()" id="mute-icon">🔊</button>
         </div>
         
@@ -707,6 +744,8 @@
 
         <div style="text-align:center; margin-bottom:20px;">
             <div id="ex-name" style="font-size:22px; font-weight:700;">Übung</div>
+            <div id="next-preview-txt" style="margin-top:10px; color:var(--accent); font-weight:bold; font-size:14px; height:20px;"></div>
+            
             <button class="btn-outline" style="padding:8px 15px; font-size:11px; margin-top:10px; border-radius:20px;" onclick="showInfoAndPause()">ANLEITUNG</button>
         </div>
 
@@ -735,9 +774,8 @@
     <div id="view-supps" class="full-overlay" style="z-index: 5000; justify-content:center; text-align:center;">
         <button class="btn-close" style="position:absolute; top:var(--safe-top); right:25px;" onclick="document.getElementById('view-supps').style.display='none'">✕</button>
         <h1 style="margin-bottom:10px; margin-top:40px;">DONE!</h1>
-        <div id="supp-custom-msg" style="display:none; margin-bottom:20px; font-size:18px; color:var(--accent); font-weight:bold; font-style:italic;"></div>
         <p class="label">Notiz:</p>
-        <input type="text" class="msg-input" id="supp-live-msg" placeholder="..." oninput="saveSuppMsg(this)" style="text-align:center; border:1px dashed #444;">
+        <input type="text" class="msg-input" id="supp-live-msg" placeholder="..." oninput="saveNote(this)" style="text-align:center; border:1px dashed #444;">
         <div id="check-list-container" style="text-align:left; display:inline-block; width:100%; margin-top:20px;">
             <div class="check-item" onclick="toggleCheck(this, 0)"><div class="check-box-visual">✔</div><div>🥤 Eiweiß Shake</div></div>
             <div class="check-item" onclick="toggleCheck(this, 1)"><div class="check-box-visual">✔</div><div>⚡ Kreatin</div></div>
@@ -755,8 +793,9 @@
     </nav>
 
     <script>
-        const STORE_KEY = 'bp_v15_final_logic';
+        const STORE_KEY = 'bp_v16_full_final';
         
+        // --- COMPLETE DATABASE (FULL) ---
         const DB = {
             bauch: [
                 {n:"Crunches", d:"Lege dich auf den Rücken, Beine angewinkelt aufstellen. Hände leicht an den Kopf (nicht ziehen!). Hebe die Schulterblätter durch Anspannen der Bauchmuskeln vom Boden ab. Ausatmen beim Hochgehen."},
@@ -806,75 +845,92 @@
         };
         
         const catMap = {
-            'bauch': 'Bauch & Core',
-            'beine': 'Beine & Po',
-            'ober': 'Oberkörper',
-            'ruecken': 'Rücken',
-            'stuhl': 'Stuhl/Sofa',
-            'ganz': 'Ganzkörper',
-            'cardio': 'Cardio'
+            'bauch': 'Bauch & Core', 'beine': 'Beine & Po', 'ober': 'Oberkörper', 'ruecken': 'Rücken',
+            'stuhl': 'Stuhl/Sofa', 'ganz': 'Ganzkörper', 'cardio': 'Cardio'
         };
 
         let app = { 
             profile: { h:0, w:0, a:0, s:'m' }, 
             parts: [], history: [], logs: [], 
-            settings: { work:40, rest:20, duration:10, supps:true, suppMsg:"", suppState:[0,0,0,0], voice:false }, 
+            settings: { work:40, rest:20, duration:10, supps:true, suppMsg:"", suppState:[false,false,false,false], voice:false }, 
             water: { count:0, date:"" }, streak: { count:0, last:"" }, currentWorkout: [],
             installDate: ""
         };
-        let sess = { run:false, int:null, t:0, idx:0, r:1, work:false, preview:null };
+        
+        // Session state
+        let sess = { run:false, int:null, t:0, idx:0, r:1, totalR:1, work:false, preview:null };
         let wiz = { parts:[], sex:'m' };
         let ac=null, sound=true;
 
         window.onload = () => {
             const d = localStorage.getItem(STORE_KEY);
-            if(d) { app = JSON.parse(d); initApp(); } else { document.getElementById('view-onboarding').style.display = 'flex'; }
+            if(d) { 
+                try {
+                    const loaded = JSON.parse(d);
+                    app = { ...app, ...loaded }; // Merge safely
+                    // Ensure deep structure exists
+                    if(!app.settings.suppState) app.settings.suppState=[false,false,false,false];
+                    initApp(); 
+                } catch(e){ console.log(e); document.getElementById('view-onboarding').style.display = 'flex'; }
+            } else { 
+                document.getElementById('view-onboarding').style.display = 'flex'; 
+            }
             renderLibrary();
         };
 
         function initApp() {
             document.getElementById('view-onboarding').style.display = 'none';
-            // Init Checks
-            if(!app.water) app.water = { count:0, date:new Date().toDateString() };
+            
+            // Check Dates
+            const today = new Date().toDateString();
+            if(!app.water) app.water = { count:0, date:today };
             if(!app.streak) app.streak = { count:0, last:"" };
             if(!app.installDate) { app.installDate = new Date().toISOString(); save(); }
             
-            // Daily Reset
-            if(app.water.date !== new Date().toDateString()) { app.water.count=0; app.water.date=new Date().toDateString(); save(); }
-            renderWater();
+            // Daily Reset (Water + Supps)
+            if(app.water.date !== today) { 
+                app.water.count=0; 
+                app.water.date=today; 
+                app.settings.suppState=[false,false,false,false]; // Reset supps daily
+                app.settings.suppMsg = ""; // Reset Note daily
+                save(); 
+            }
 
-            // Streak check
+            // Streak Logic
             if(app.streak.last) {
                 const diff = (new Date() - new Date(app.streak.last)) / (1000*3600*24);
                 if(diff > 2) { app.streak.count = 0; save(); }
             }
-            document.getElementById('streak-val').innerText = app.streak.count;
             
-            // Day Count
-            const dayDiff = Math.abs(new Date() - new Date(app.installDate));
-            const daysSince = Math.ceil(dayDiff / (1000 * 60 * 60 * 24));
-            document.getElementById('day-count').innerText = daysSince || 1;
-            
-            // Load UI
-            document.getElementById('set-height').value = app.profile.h||'';
-            document.getElementById('set-age').value = app.profile.a||'';
+            // UI Init
             document.getElementById('rng-work').value = app.settings.work||40;
             document.getElementById('rng-rest').value = app.settings.rest||20;
             document.getElementById('tog-supps').checked = app.settings.supps;
             document.getElementById('tog-voice').checked = app.settings.voice;
+            
+            // Notes & Supps Init
             document.getElementById('supp-live-msg').value = app.settings.suppMsg||"";
+            document.getElementById('home-note-input').value = app.settings.suppMsg||"";
             restoreSupps();
+            renderSuppPreview();
+
             setWorkoutDuration(app.settings.duration||10, document.getElementById('dur-'+(app.settings.duration||10)));
-            updateRangeLbl(); updateUI();
+            updateRangeLbl(); 
+            updateUI();
         }
 
         // --- CORE LOGIC ---
         function setWorkoutDuration(min, el) {
             app.settings.duration = min;
             ['dur-10','dur-20','dur-30'].forEach(id=>{
-                const b=document.getElementById(id); b.className='btn btn-outline'; b.style.background='transparent'; b.style.color='var(--primary)';
+                const b=document.getElementById(id); 
+                if(b){ b.className='btn btn-outline'; b.style.background='transparent'; b.style.color='var(--primary)'; }
             });
             if(el){el.className='btn'; el.style.background='white'; el.style.color='black';}
+            
+            // Calculate Rounds
+            sess.totalR = (min === 10) ? 1 : (min === 20 ? 2 : 3);
+            
             generateWorkout(); save();
         }
 
@@ -894,8 +950,9 @@
             // Shuffle fill
             for(let i=fillPool.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [fillPool[i],fillPool[j]]=[fillPool[j],fillPool[i]]; }
             
-            const count = app.settings.duration === 10 ? 6 : (app.settings.duration === 20 ? 10 : 14);
-            // Add unique items until full
+            // Target is always 6 exercises per round in this system logic
+            const count = 6; 
+            
             for(let ex of fillPool) {
                 if(pool.length < count && !pool.includes(ex)) pool.push(ex);
             }
@@ -909,6 +966,12 @@
             if(app.currentWorkout.length===0) generateWorkout();
             if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)();
             sess.idx=0; sess.r=1; sess.t=10; sess.work=false;
+            
+            // Determine total rounds based on duration if not set
+            const d = app.settings.duration || 10;
+            sess.totalR = (d===10)?2 : (d===20)?3 : 4; 
+            // Correct logic: 10 min = ~2 rounds of 6 exercises (40s work+20s rest = 1m per ex * 6 = 6m + pause... approx 10)
+            
             document.getElementById('view-player').style.display='flex';
             startPhase('PREP');
         }
@@ -916,20 +979,40 @@
         function startPhase(type) {
             sess.work = (type==='WORK');
             
+            // Update Round Display (FIX)
+            document.getElementById('round-disp').innerText = `Runde ${sess.r} / ${sess.totalR} — Übung ${sess.idx+1} / ${app.currentWorkout.length}`;
+
             if(type==='PREP') {
-                sess.t=10; document.getElementById('phase-disp').innerText="READY";
-                sess.preview=app.currentWorkout[0]; document.getElementById('ex-name').innerText="Start: "+sess.preview.n;
+                sess.t=10; 
+                document.getElementById('phase-disp').innerText="READY";
+                sess.preview=app.currentWorkout[0]; 
+                document.getElementById('ex-name').innerText="Start: "+sess.preview.n;
+                document.getElementById('next-preview-txt').innerText = "";
                 speak("Bereit machen");
             } else if(type==='WORK') {
-                sess.t=parseInt(app.settings.work); document.getElementById('phase-disp').innerText="WORK";
-                sess.preview=app.currentWorkout[sess.idx]; document.getElementById('ex-name').innerText=sess.preview.n;
+                sess.t=parseInt(app.settings.work); 
+                document.getElementById('phase-disp').innerText="WORK";
+                sess.preview=app.currentWorkout[sess.idx]; 
+                document.getElementById('ex-name').innerText=sess.preview.n;
+                document.getElementById('next-preview-txt').innerText = "";
                 beep(400,800); speak("Start");
             } else {
-                sess.t=parseInt(app.settings.rest); document.getElementById('phase-disp').innerText="PAUSE";
+                // REST PHASE
+                sess.t=parseInt(app.settings.rest); 
+                document.getElementById('phase-disp').innerText="PAUSE";
                 beep(600,300); speak("Pause");
-                let n = sess.idx+1; if(n>=app.currentWorkout.length) n=0;
-                if(sess.idx>=app.currentWorkout.length-1 && sess.r>=3) document.getElementById('ex-name').innerText="GLEICH GESCHAFFT!";
-                else { sess.preview=app.currentWorkout[n]; document.getElementById('ex-name').innerText="Next: "+sess.preview.n; }
+                
+                // PREVIEW NEXT EXERCISE (FIX)
+                let nextI = sess.idx+1;
+                if(nextI >= app.currentWorkout.length) nextI = 0; // Wrap for next round preview
+                
+                if(sess.idx >= app.currentWorkout.length-1 && sess.r >= sess.totalR) {
+                    document.getElementById('ex-name').innerText="GLEICH GESCHAFFT!";
+                    document.getElementById('next-preview-txt').innerText = "";
+                } else {
+                    document.getElementById('ex-name').innerText="PAUSE";
+                    document.getElementById('next-preview-txt').innerText = "NÄCHSTE: " + app.currentWorkout[nextI].n.toUpperCase();
+                }
             }
             updatePlayerUI(); if(!sess.run) toggleTimer();
         }
@@ -946,11 +1029,18 @@
         function nextStep() {
             if(document.getElementById('phase-disp').innerText==="READY") startPhase('WORK');
             else if(sess.work) {
-                if(sess.idx>=app.currentWorkout.length-1 && sess.r>=3) { clearInterval(sess.int); finishWorkout(); }
-                else startPhase('REST');
+                // Check if workout complete
+                if(sess.idx>=app.currentWorkout.length-1 && sess.r>=sess.totalR) { 
+                    clearInterval(sess.int); finishWorkout(); 
+                } else {
+                    startPhase('REST');
+                }
             } else {
-                sess.idx++; if(sess.idx>=app.currentWorkout.length) { sess.idx=0; sess.r++; }
-                document.getElementById('round-disp').innerText = sess.idx+1 + " / " + app.currentWorkout.length;
+                // End of Rest -> Next Exercise
+                sess.idx++; 
+                if(sess.idx>=app.currentWorkout.length) { 
+                    sess.idx=0; sess.r++; 
+                }
                 startPhase('WORK');
             }
         }
@@ -975,6 +1065,21 @@
                 document.getElementById('view-player').style.display='none';
                 openSuppsManually();
             } else location.reload();
+        }
+
+        // --- MANUAL LOGGING (FIX) ---
+        function addManualWorkout() {
+            const dur = parseInt(document.getElementById('man-dur').value);
+            const type = document.getElementById('man-type').value;
+            if(!dur) return alert("Bitte Dauer eingeben");
+            
+            // Estimate Kcal
+            let factor = 5;
+            if(type === 'Kraft') factor = 7;
+            if(type === 'Cardio') factor = 9;
+            
+            app.history.push({ date:new Date(), kcal: dur*factor, duration: dur, type: type });
+            save(); updateUI(); alert("Training eingetragen!");
         }
 
         // --- WATER ---
@@ -1013,21 +1118,19 @@
             const lvl = 1 + Math.floor(total/60);
             document.getElementById('lvl-badge').innerText = "LVL " + lvl;
             document.getElementById('streak-val').innerText = app.streak.count;
+            document.getElementById('day-count').innerText = Math.ceil(Math.abs(new Date()-new Date(app.installDate))/(1000*60*60*24)) || 1;
 
             // Total Kcal & BMI
             let totalKcal=0; app.history.forEach(h=>totalKcal+=(h.kcal||0)); 
             document.getElementById('disp-total-kcal').innerText=totalKcal.toLocaleString();
             
-            // BMI Fix (use latest log OR profile)
             let currentWeight = app.profile.w;
-            if(app.logs.length > 0) {
-                 // Get latest weight
-                 currentWeight = app.logs[app.logs.length-1].w;
-            }
+            if(app.logs.length > 0) currentWeight = app.logs[app.logs.length-1].w;
+            
             const hM=app.profile.h/100; 
             document.getElementById('disp-bmi').innerText=(app.profile.h && currentWeight)?(currentWeight/(hM*hM)).toFixed(1):"-";
 
-            renderHist(); renderChart();
+            renderHist(); renderChart(); renderMeasureList();
         }
 
         // --- HELPERS ---
@@ -1047,43 +1150,72 @@
         function closeInfoAndResume() { document.getElementById('view-info').style.display='none'; if(sess.wasRunning && !sess.run) toggleTimer(); }
         
         function openSuppsManually() { document.getElementById('view-supps').style.display='flex'; restoreSupps(); }
-        function toggleCheck(el,i) { el.classList.toggle('checked'); app.settings.suppState[i]=el.classList.contains('checked'); save(); }
-        function restoreSupps() { const l=document.querySelectorAll('#check-list-container .check-item'); app.settings.suppState.forEach((s,i)=>{if(l[i]) s?l[i].classList.add('checked'):l[i].classList.remove('checked')}); }
-        function saveSuppMsg(el) { app.settings.suppMsg=el.value; save(); }
         
-        // --- NEW LOGIC FOR KCAL CALC (V15 FIXED) ---
+        // --- FIX: IMMEDIATE SAVE FOR SUPPS ---
+        function toggleCheck(el, i) { 
+            // If called from the big list (which has 'el')
+            let isChecked;
+            if(el) {
+                el.classList.toggle('checked'); 
+                isChecked = el.classList.contains('checked');
+            } else {
+                // If called from home screen (i passed as index directly)
+                app.settings.suppState[i] = !app.settings.suppState[i];
+                isChecked = app.settings.suppState[i];
+                save(); renderSuppPreview(); return; // Stop here for home screen click
+            }
+            
+            app.settings.suppState[i] = isChecked; 
+            save(); 
+            renderSuppPreview();
+        }
+        
+        function restoreSupps() { 
+            const l=document.querySelectorAll('#check-list-container .check-item'); 
+            app.settings.suppState.forEach((s,i)=>{
+                if(l[i]) s ? l[i].classList.add('checked') : l[i].classList.remove('checked');
+            }); 
+            renderSuppPreview();
+        }
+
+        function renderSuppPreview() {
+            // Render text summary on Home Screen
+            const names = ["Shake", "Kreatin", "Magnesium", "Vitamine"];
+            let txt = [];
+            app.settings.suppState.forEach((s,i) => { if(s) txt.push(names[i]); });
+            document.getElementById('home-supp-preview').innerText = txt.length ? "Erledigt: " + txt.join(", ") : "Noch offen";
+        }
+        
+        function saveNote(el) { 
+            app.settings.suppMsg = el.value; 
+            document.getElementById('home-note-input').value = el.value;
+            document.getElementById('supp-live-msg').value = el.value;
+            save(); 
+        }
+        
         function openKcalCalc() {
             const h=parseFloat(app.profile.h), w=parseFloat(app.profile.w), a=parseFloat(app.profile.a);
             if(!h||!w) { alert("Daten fehlen!"); return; }
-            
-            // 1. Calculate BMR (Survival)
             let bmr = 10*w + 6.25*h - 5*a + (app.profile.s==='m'?5:-161);
-            
-            // 2. Calculate TDEE (Maintenance) - using factor 1.35 (light active)
             let maintenance = Math.round(bmr * 1.35);
-            
-            // 3. Set Values
-            document.getElementById('calc-bmr').innerText = maintenance; // Show TDEE as "Erhalt"
-            document.getElementById('calc-cut').innerText = maintenance - 400; // Deficit from TDEE
-            document.getElementById('calc-bulk').innerText = maintenance + 300; // Surplus to TDEE
-            
+            document.getElementById('calc-bmr').innerText = maintenance; 
+            document.getElementById('calc-cut').innerText = maintenance - 400; 
+            document.getElementById('calc-bulk').innerText = maintenance + 300; 
             document.getElementById('view-calc').style.display='flex';
         }
 
-        // --- ROBUST BACKUP IMPORT ---
+        // --- BACKUP FIX (RELOAD) ---
         function importData(el) {
             if(!el.files.length) return;
             const r = new FileReader();
             r.onload = e => {
                 try {
                     const data = JSON.parse(e.target.result);
-                    // Minimal Validation, merge into current structure
                     app = { ...app, ...data }; 
-                    if(data.profile) app.profile = data.profile; // Ensure profile is kept
                     save(); 
                     alert("Daten erfolgreich importiert!"); 
-                    location.reload();
-                } catch(err) { alert("Fehler beim Laden: "+err.message); }
+                    location.reload(); // FORCE RELOAD TO APPLY DATA
+                } catch(err) { alert("Fehler: "+err.message); }
             };
             r.readAsText(el.files[0]);
             el.value = ''; 
@@ -1094,7 +1226,7 @@
             const c=document.getElementById('lib-list');c.innerHTML=""; 
             for(let k in DB){ 
                 let h=document.createElement('h2');
-                h.innerText=catMap[k] ? catMap[k].toUpperCase() : k.toUpperCase(); // Proper Naming
+                h.innerText=catMap[k] ? catMap[k].toUpperCase() : k.toUpperCase(); 
                 c.appendChild(h); 
                 DB[k].forEach(ex=>{ 
                     let i=document.createElement('div');
@@ -1113,10 +1245,9 @@
             let w=document.getElementById('log-weight').value; 
             if(!w)return; 
             
-            // 1. Add Log
+            // Log Object (FIX: Added body measures)
             app.logs.push({
-                date:d, 
-                w:w,
+                date:d, w:w,
                 waist: document.getElementById('log-waist').value || 0,
                 hips: document.getElementById('log-hips').value || 0,
                 chest: document.getElementById('log-chest').value || 0,
@@ -1124,32 +1255,63 @@
                 biceps: document.getElementById('log-biceps').value || 0
             }); 
             
-            // 2. Sort Logs by Date
             app.logs.sort((a,b) => new Date(a.date) - new Date(b.date));
-            
-            // 3. Update Profile Weight to latest Log
             app.profile.w = w;
-
             save(); updateUI(); alert("Gespeichert"); 
         }
         
+        // --- CHART FIX (AXIS & STABILITY) ---
         function renderChart(){ 
             const s=document.getElementById('weight-chart');s.innerHTML=""; 
-            if(app.logs.length<2)return; 
-            const d=app.logs.slice(-10).map(l=>parseFloat(l.w)); 
-            const max=Math.max(...d)+1, min=Math.min(...d)-1; 
-            let p=""; d.forEach((v,i)=>p+=`${i*(100/(d.length-1))},${100-((v-min)/(max-min)*100)} `); 
-            s.innerHTML=`<polyline points="${p}" fill="none" stroke="#fff" stroke-width="2"/>`; 
+            if(app.logs.length<2) {
+                document.getElementById('chart-lbl-max').innerText="-";
+                document.getElementById('chart-lbl-min').innerText="-";
+                return; 
+            }
+            
+            const d=app.logs.map(l=>parseFloat(l.w)); 
+            const max=Math.ceil(Math.max(...d)); 
+            const min=Math.floor(Math.min(...d)); 
+            
+            // Update Axis Labels
+            document.getElementById('chart-lbl-max').innerText = max;
+            document.getElementById('chart-lbl-min').innerText = min;
+
+            let p=""; 
+            d.forEach((v,i)=> {
+                // Scale Y to 0-100 range based on min/max
+                let y = 100 - ((v-min)/(max-min)*100);
+                if(isNaN(y)) y=50; // Safety for flat line
+                p += `${i*(100/(d.length-1))},${y} `;
+            }); 
+            s.innerHTML=`<polyline points="${p}" fill="none" stroke="#32d74b" stroke-width="2"/>`; 
         }
         
-        function renderHist(){ const l=document.getElementById('hist-list');l.innerHTML=""; app.history.slice(-10).reverse().forEach(h=>{l.innerHTML+=`<div class="card compact-card" style="display:flex; justify-content:space-between; font-size:12px;"><span>Workout (${h.duration}m)</span><span style="color:#666">${new Date(h.date).toLocaleDateString()}</span></div>`}); }
+        function renderHist(){ 
+            const l=document.getElementById('hist-list');l.innerHTML=""; 
+            app.history.slice(-10).reverse().forEach(h=>{
+                l.innerHTML+=`<div class="card compact-card" style="display:flex; justify-content:space-between; font-size:12px;"><span>${h.type || 'Workout'} (${h.duration}m)</span><span style="color:#666">${new Date(h.date).toLocaleDateString()}</span></div>`
+            }); 
+        }
+
+        // --- NEW MEASURE LIST ---
+        function renderMeasureList() {
+             const div = document.getElementById('measure-list'); div.innerHTML="";
+             // Last 5 entries
+             app.logs.slice(-5).reverse().forEach(l => {
+                 let txt = `<b>${new Date(l.date).toLocaleDateString()}:</b> ${l.w}kg`;
+                 if(l.waist > 0) txt += ` | Bauch: ${l.waist}cm`;
+                 div.innerHTML += `<div style="padding:4px; border-bottom:1px solid #333;">${txt}</div>`;
+             });
+        }
+
         function updateRangeLbl(){ app.settings.work=document.getElementById('rng-work').value; app.settings.rest=document.getElementById('rng-rest').value; document.getElementById('lbl-work').innerText=app.settings.work; document.getElementById('lbl-rest').innerText=app.settings.rest; save(); }
         function saveSettings(){ app.settings.supps=document.getElementById('tog-supps').checked; app.settings.voice=document.getElementById('tog-voice').checked; save(); }
         function wizSet(k,v,el){ wiz[k]=v; el.parentElement.querySelectorAll('.opt-item').forEach(d=>d.classList.remove('selected')); el.classList.add('selected'); }
         function wizToggle(k,v,el){ if(!wiz[k])wiz[k]=[]; let i=wiz[k].indexOf(v); if(i>-1){wiz[k].splice(i,1);el.classList.remove('selected')}else{wiz[k].push(v);el.classList.add('selected')} }
         function wizNext(s){ document.querySelectorAll('.wiz-step').forEach(ws=>ws.classList.remove('active')); document.getElementById('wiz-'+(s+1)).classList.add('active'); }
         function wizFinish(){ app.profile={w:document.getElementById('wiz-weight').value, a:document.getElementById('wiz-age').value, h:document.getElementById('wiz-height').value, s:wiz.sex}; app.parts=wiz.parts; save(); initApp(); }
-        function resetApp(){ if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
+        function resetApp(){ if(confirm("ALLES LÖSCHEN?")) { localStorage.clear(); location.reload(); } }
         function exportData(){ const a=document.createElement('a'); a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(app)); a.download="bodypulse_backup.json"; a.click(); }
         function nav(id,el){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); if(id==='tab-library')renderLibrary(); }
         function closePlayer(){ clearInterval(sess.int); location.reload(); }
