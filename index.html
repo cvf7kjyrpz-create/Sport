@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V20.0 - ULTIMATE EXTENDED</title>
+    <title>Body Pulse V21.1 - ULTIMATE ROBUST</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,36 +11,31 @@
 
     <style>
         /* ======================================================================
-           1. CSS VARIABLEN & GRUNDLAGEN
+           1. BASIS DESIGN & VARIABLEN
            ====================================================================== */
         :root {
-            /* Farbpalette */
             --color-background: #000000;
-            --color-card-bg: #121212;
-            --color-card-highlight: #1c1c1e;
+            --color-surface: #111111;
+            --color-surface-light: #1c1c1e;
             --color-border: #333333;
             --color-text-primary: #ffffff;
             --color-text-secondary: #8e8e93;
             
-            /* Akzentfarben */
-            --color-green: #32d74b;
+            --color-accent: #32d74b;
             --color-blue: #0a84ff;
             --color-orange: #ff9f0a;
             --color-red: #ff453a;
             
-            /* Layout & Spacing */
+            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
             --safe-area-top: env(safe-area-inset-top);
             --safe-area-bottom: env(safe-area-inset-bottom);
-            --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
         }
 
-        /* Reset */
         * {
             box-sizing: border-box;
             outline: none;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            -webkit-user-select: none;
         }
 
         html, body {
@@ -53,7 +48,7 @@
             color: var(--color-text-primary);
             font-family: var(--font-stack);
             overflow: hidden;
-            touch-action: pan-y; /* Erlaubt Scrollen, blockiert Zoom */
+            touch-action: none;
         }
 
         body {
@@ -63,191 +58,116 @@
         }
 
         /* ======================================================================
-           2. NAVIGATION & SCREEN MANAGEMENT
+           2. SCREEN & LAYOUT MANAGEMENT
            ====================================================================== */
         .app-screen {
             flex: 1;
-            display: none; /* Standardmäßig ausgeblendet */
+            display: none;
             flex-direction: column;
             width: 100%;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 120px; /* Platz für die untere Navigation */
-            -webkit-overflow-scrolling: touch; /* Smooth Scrolling auf iOS */
+            padding: 15px;
+            padding-bottom: 90px; /* Platz für Navbar */
         }
 
         .app-screen.active-screen {
             display: flex;
-            animation: fadeInEffect 0.4s ease-out;
+            animation: fadeInEffect 0.3s ease-out;
         }
 
         @keyframes fadeInEffect {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* Bottom Navigation Bar */
-        .bottom-navigation {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 90px;
-            background-color: rgba(10, 10, 10, 0.96);
-            border-top: 1px solid var(--color-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            padding-top: 10px;
-            padding-bottom: var(--safe-area-bottom);
-            z-index: 1000;
+        /* SPEZIAL: HOME SCREEN (NICHT SCROLLBAR) */
+        #screen-home {
+            overflow: hidden;
+            justify-content: space-between; /* Verteilt Elemente oben/mitte/unten */
         }
 
-        .nav-button {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            color: var(--color-text-primary);
-        }
-
-        .nav-button.active-nav {
-            opacity: 1;
-            transform: translateY(-2px);
-            color: var(--color-text-primary);
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .nav-label {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+        /* ANDERE SCREENS (SCROLLBAR) */
+        #screen-stats, #screen-settings {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* ======================================================================
-           3. UI KARTEN & LAYOUTS
+           3. UI KOMPONENTEN
            ====================================================================== */
         .content-card {
-            background-color: var(--color-card-bg);
+            background-color: var(--color-surface);
             border: 1px solid var(--color-border);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
 
-        /* Spezieller weißer Rahmen für Notizen */
-        .card-highlight-border {
-            background-color: var(--color-card-highlight);
-            border: 2px solid #ffffff !important;
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 30px;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        /* Typographie */
-        h1.page-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin: 0;
-            margin-bottom: 5px;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-
-        h2.section-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--color-text-secondary);
-            margin: 0 0 12px 0;
-        }
-
-        .data-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: #666666;
-            margin-bottom: 5px;
-            display: block;
-            text-transform: uppercase;
-        }
-
-        /* Grid Systeme */
-        .grid-columns-3 {
+        .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
 
-        .grid-columns-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        /* KPI Boxen (Level, BMI etc.) */
-        .kpi-container {
-            background: var(--color-card-highlight);
-            border-radius: 12px;
-            padding: 12px;
+        .stat-display-box {
+            background-color: var(--color-surface-light);
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 8px;
             text-align: center;
-            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .kpi-value {
-            font-size: 20px;
+
+        .stat-value-text {
+            font-size: 16px;
             font-weight: 800;
-            display: block;
-            margin-top: 4px;
+            color: #fff;
         }
-        .kpi-label {
+
+        .stat-label-text {
             font-size: 9px;
-            color: #888888;
+            color: #666;
             font-weight: 700;
             text-transform: uppercase;
+            margin-top: 3px;
         }
 
-        /* ======================================================================
-           4. INTERAKTIVE ELEMENTE (BUTTONS & INPUTS)
-           ====================================================================== */
+        h1.main-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        h2.sub-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666;
+            margin: 0 0 8px 0;
+            letter-spacing: 1px;
+        }
+
+        /* BUTTONS */
         .action-button {
             background-color: var(--color-text-primary);
-            color: #000000;
+            color: #000;
             border: none;
             width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 14px;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 5px;
-            transition: transform 0.1s ease;
         }
-        .action-button:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
+        .action-button:active { opacity: 0.8; transform: scale(0.98); }
 
         .button-outline {
             background: transparent;
@@ -255,463 +175,517 @@
             color: var(--color-text-primary);
         }
 
-        .pill-button {
-            padding: 12px;
-            border-radius: 10px;
+        .button-small {
+            padding: 8px;
+            font-size: 11px;
+            border-radius: 8px;
             border: 1px solid var(--color-border);
             background: transparent;
-            color: var(--color-text-secondary);
-            font-size: 11px;
-            font-weight: 700;
-            text-align: center;
+            color: #888;
             cursor: pointer;
         }
-        .pill-button.active-pill {
-            background: var(--color-text-primary);
-            color: #000000;
-            border-color: var(--color-text-primary);
+        .button-small.active-preset {
+            background-color: #fff;
+            color: #000;
+            border-color: #fff;
         }
 
-        /* Formular Felder */
-        input.input-field, select.input-field, textarea.input-field {
-            width: 100%;
-            background: #000000;
-            border: 1px solid var(--color-border);
-            color: white;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: inherit;
-            margin-bottom: 10px;
-            -webkit-appearance: none; /* iOS Reset */
+        .button-disabled {
+            opacity: 0.3;
+            pointer-events: none;
+            background-color: #222;
+            border-color: #333;
+            color: #666;
         }
-        
-        input[type="range"] {
+
+        /* INPUTS */
+        input, select, textarea {
             width: 100%;
-            margin: 10px 0;
-            accent-color: var(--color-text-primary);
+            background-color: #111;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-family: inherit;
+            -webkit-appearance: none;
         }
 
         /* ======================================================================
-           5. FEATURE MODULE (WASSER, CHECKLISTE, MANUAL LOG)
+           4. FEATURE: WASSER TRACKER (KOMPAKT)
            ====================================================================== */
-        
-        /* Wasser Tracker (Slim Design) */
-        .water-module-container {
+        .water-compact-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 5px;
+            gap: 8px;
+            height: 32px;
         }
-        .water-control-btn {
-            width: 32px; height: 32px;
+        .water-action-btn {
+            width: 32px; height: 100%;
+            background-color: #222;
+            border: 1px solid #333;
+            color: #fff;
             border-radius: 8px;
-            background: var(--color-card-highlight);
-            border: 1px solid var(--color-border);
-            color: white;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px;
             font-weight: bold;
-            cursor: pointer;
         }
-        .water-progress-track {
+        .water-bar-track {
             flex: 1;
-            height: 10px; /* Schlankes Design */
+            height: 8px;
             background: #222;
-            border-radius: 5px;
+            border-radius: 4px;
             overflow: hidden;
-            position: relative;
         }
-        .water-progress-bar {
+        .water-bar-fill {
             height: 100%;
             width: 0%;
             background-color: var(--color-blue);
             transition: width 0.5s ease;
         }
 
-        /* Checklisten Items (Daily Check) */
-        .checklist-item {
+        /* ======================================================================
+           5. FEATURE: MANUAL LOG STACK (SMART)
+           ====================================================================== */
+        .log-stack-entry {
+            background-color: var(--color-surface-light);
+            border-left: 3px solid var(--color-accent);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .log-set-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid #222;
+        }
+
+        /* ======================================================================
+           6. FEATURE: CHECKLIST
+           ====================================================================== */
+        .checklist-row {
             display: flex;
             align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid #333;
+            padding: 14px 0;
+            border-bottom: 1px solid #222;
             cursor: pointer;
         }
-        .checkbox-visual {
-            width: 24px; height: 24px;
-            border: 2px solid #555;
+        .checklist-box {
+            width: 22px; height: 22px;
+            border: 2px solid #444;
             border-radius: 6px;
-            margin-right: 15px;
+            margin-right: 12px;
             display: flex; align-items: center; justify-content: center;
         }
-        .checklist-item.checked .checkbox-visual {
+        .checklist-row.is-checked .checklist-box {
             background-color: var(--color-accent);
             border-color: var(--color-accent);
             color: #000;
         }
-        .checklist-item.checked .checkbox-visual::after {
+        .checklist-row.is-checked .checklist-box::after {
             content: '✓';
             font-weight: 900;
+            font-size: 14px;
         }
-        .checklist-item.checked span {
-            text-decoration: line-through;
-            color: #666;
-        }
-
-        /* Manual Log "Stack" Items */
-        .manual-stack-entry {
-            background-color: var(--color-card-highlight);
-            border-left: 4px solid var(--color-accent);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        .manual-set-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #000;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-top: 8px;
-        }
-        .manual-set-input {
-            width: 80px;
-            border: none;
-            background: transparent;
-            text-align: right;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            padding: 0;
-        }
-
+        
         /* ======================================================================
-           6. VOLLBILD OVERLAYS (POPUP FENSTER)
+           7. OVERLAYS (VOLLBILD)
            ====================================================================== */
-        .overlay-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
+        .full-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
             z-index: 5000;
-            display: none; /* Wird per JS auf 'flex' gesetzt */
+            display: none;
             flex-direction: column;
-            padding: var(--safe-area-top) 20px 20px 20px;
+            padding: var(--safe-area-top) 15px 15px 15px;
         }
 
-        .overlay-header-bar {
+        .overlay-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #222;
         }
 
-        .overlay-scroll-area {
+        .overlay-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 20px;
+            padding-bottom: 80px; /* Platz für den fixen Button */
+        }
+        
+        .overlay-sticky-footer {
+            /* Fixierter Footer für den Speicher-Button */
+            margin-top: auto;
+            padding-top: 10px;
+            background: #000;
         }
 
-        /* Player Spezifisch */
-        .player-timer-wrapper {
+        /* PLAYER SPEZIFISCH */
+        .player-visual-container {
             position: relative;
-            width: 260px;
-            height: 260px;
-            margin: 20px auto;
+            width: 220px;
+            height: 220px;
+            margin: 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .player-svg-ring {
-            position: absolute;
-            top: 0; left: 0;
+            position: absolute; top:0; left:0;
             width: 100%; height: 100%;
             transform: rotate(-90deg);
         }
         .player-timer-number {
-            font-size: 90px;
+            font-size: 75px;
             font-weight: 900;
-            z-index: 10;
             font-variant-numeric: tabular-nums;
+            z-index: 2;
+        }
+        .player-next-box {
+            background-color: #222;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            width: 100%;
+            border: 1px solid #333;
+        }
+        .player-instruction-text {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 8px;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.4;
         }
 
-        .button-disabled {
-            opacity: 0.3;
-            pointer-events: none;
-            background-color: #333;
-            border-color: #333;
-            color: #888;
+        /* ======================================================================
+           8. NAVIGATION LEISTE
+           ====================================================================== */
+        .navigation-bar {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 80px;
+            background-color: rgba(10,10,10,0.96);
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: var(--safe-area-bottom);
+            z-index: 1000;
         }
+        .nav-button {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.5;
+            color: white;
+            transition: all 0.2s;
+        }
+        .nav-button.active-nav {
+            opacity: 1;
+            color: var(--color-text-primary);
+            transform: translateY(-2px);
+        }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+        .nav-label { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
 
     </style>
 </head>
 <body>
 
-    <div id="overlay-setup" class="overlay-fullscreen" style="z-index:9000; justify-content:center;">
-        <h1 class="page-title" style="text-align:center;">WILLKOMMEN</h1>
-        <p style="text-align:center; color:#888; margin-bottom:40px;">Richte dein Profil ein.</p>
-        
-        <div class="content-card">
-            <span class="data-label">KÖRPERGRÖSSE (CM)</span>
-            <input type="number" id="setup-height" class="input-field" placeholder="z.B. 180">
-            
-            <span class="data-label">GEWICHT (KG)</span>
-            <input type="number" id="setup-weight" class="input-field" placeholder="z.B. 80">
-            
-            <span class="data-label">ALTER</span>
-            <input type="number" id="setup-age" class="input-field" placeholder="z.B. 30">
+    <div id="overlay-setup" class="full-overlay" style="z-index:9000; justify-content:center;">
+        <h1 style="text-align:center;">WILLKOMMEN</h1>
+        <p style="text-align:center; color:#666;">Bitte richte dein Profil ein.</p>
+        <div class="content-card" style="margin-top:20px;">
+            <h2 class="sub-title">DEINE DATEN</h2>
+            <input type="number" id="input-setup-height" placeholder="Größe (cm)">
+            <input type="number" id="input-setup-weight" placeholder="Gewicht (kg)">
+            <input type="number" id="input-setup-age" placeholder="Alter">
         </div>
-        
-        <button class="action-button" onclick="AppController.finishSetup()">PROFIL SPEICHERN & STARTEN</button>
+        <button class="action-button" onclick="AppCore.finishSetup()">PROFIL SPEICHERN</button>
     </div>
 
-    <div id="overlay-daily" class="overlay-fullscreen">
-        <div class="overlay-header-bar">
-            <h1 class="page-title">DAILY CHECK</h1>
-            <button class="pill-button" onclick="UIController.closeOverlay('overlay-daily')">SCHLIESSEN</button>
+    <div id="overlay-daily" class="full-overlay">
+        <div class="overlay-header">
+            <h1>DAILY CHECK</h1>
+            <button class="button-small" onclick="UserInterface.closeOverlay('overlay-daily')">SCHLIESSEN</button>
         </div>
-        <div class="overlay-scroll-area">
+        <div class="overlay-content">
             <div class="content-card">
-                <h2 class="section-title">CHECKLISTE HEUTE</h2>
-                <div id="daily-checklist-container">
+                <div id="checklist-container">
                     </div>
             </div>
             <div class="content-card">
-                <h2 class="section-title">TAGEBUCH / NOTIZEN</h2>
-                <textarea id="daily-note-input" class="input-field" style="height:150px; resize:none;" placeholder="Wie fühlst du dich heute? Was hast du gegessen?" oninput="AppController.saveNote(this.value)"></textarea>
+                <h2 class="sub-title">NOTIZEN / TAGEBUCH</h2>
+                <textarea id="daily-note-text" style="height:120px; background:transparent; border:none; border-bottom:1px solid #333;" placeholder="Wie fühlst du dich heute?..." oninput="AppCore.saveNote(this.value)"></textarea>
             </div>
         </div>
     </div>
 
-    <div id="overlay-manual" class="overlay-fullscreen">
-        <div class="overlay-header-bar">
-            <h1 class="page-title">LOGBUCH</h1>
-            <button class="pill-button" onclick="UIController.closeOverlay('overlay-manual')">ABBRECHEN</button>
+    <div id="overlay-manual" class="full-overlay">
+        <div class="overlay-header">
+            <h1>LOGBUCH</h1>
+            <button class="button-small" onclick="UserInterface.closeOverlay('overlay-manual')">ABBRECHEN</button>
         </div>
-        <div class="overlay-scroll-area">
-            <div class="content-card" style="background:var(--color-card-highlight);">
-                <span class="data-label">1. ÜBUNG AUSWÄHLEN</span>
-                <select id="manual-exercise-select" class="input-field"></select>
+        <div class="overlay-content">
+            <div class="content-card" style="background:var(--color-surface-light);">
+                <span style="font-size:10px; font-weight:bold; color:#888;">1. ÜBUNG WÄHLEN</span>
+                <select id="manual-exercise-select" style="margin-bottom:12px;"></select>
                 
-                <span class="data-label">2. ANZAHL DER RUNDEN</span>
-                <input type="number" id="manual-rounds-count" class="input-field" value="3" min="1" max="10">
-                
-                <button class="action-button" style="margin-top:10px;" onclick="LogSystem.addToStack()">+ ZUR LISTE HINZUFÜGEN</button>
-            </div>
-
-            <div id="manual-stack-list" style="margin-top:20px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <span style="font-size:10px; font-weight:bold; color:#888;">2. RUNDEN</span>
+                        <input type="number" id="manual-rounds-input" value="3">
+                    </div>
+                    <div>
+                        <span style="font-size:10px; font-weight:bold; color:#888;">3. WERT (Standard)</span>
+                        <input type="number" id="manual-value-standard" placeholder="z.B. 40">
+                    </div>
                 </div>
+                
+                <button class="action-button" style="margin-top:10px;" onclick="LogSystem.addExerciseToStack()">+ HINZUFÜGEN</button>
+            </div>
+
+            <div id="manual-stack-list"></div>
         </div>
-        <div style="padding-top:10px;">
-            <button class="action-button" style="background-color:var(--color-accent); color:#000;" onclick="LogSystem.saveWorkout()">GESAMTES TRAINING SPEICHERN</button>
+        <div class="overlay-sticky-footer">
+            <button class="action-button" style="background-color:var(--color-accent); color:#000;" onclick="LogSystem.saveWorkout()">WORKOUT SPEICHERN</button>
         </div>
     </div>
 
-    <div id="overlay-player" class="overlay-fullscreen">
-        <div class="overlay-header-bar">
-            <button class="pill-button" onclick="PlayerSystem.exit()">BEENDEN</button>
+    <div id="overlay-player" class="full-overlay">
+        <div class="overlay-header">
+            <button class="button-small" onclick="PlayerSystem.exit()">EXIT</button>
             <span id="player-round-info" style="font-weight:bold; color:#888;">RUNDE 1</span>
-            <div id="player-mute-btn" onclick="PlayerSystem.toggleMute()" style="font-size:24px; cursor:pointer;">🔊</div>
+            <div id="player-mute-btn" onclick="PlayerSystem.toggleMute()" style="cursor:pointer; font-size:20px;">🔊</div>
         </div>
-
+        
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div id="player-phase-text" style="font-size:24px; font-weight:900; color:var(--color-accent); letter-spacing:4px; margin-bottom:10px;">READY</div>
+            <div id="player-phase-display" style="font-size:24px; font-weight:900; color:var(--color-accent); letter-spacing:4px;">READY</div>
             
-            <div class="player-timer-wrapper">
+            <div class="player-visual-container">
                 <svg class="player-svg-ring">
-                    <circle cx="130" cy="130" r="120" stroke="#222" stroke-width="12" fill="none" />
-                    <circle id="player-progress-ring" cx="130" cy="130" r="120" stroke="white" stroke-width="12" fill="none"
-                            stroke-dasharray="754" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;" />
+                    <circle cx="110" cy="110" r="100" stroke="#222" stroke-width="10" fill="none"/>
+                    <circle id="player-progress-ring" cx="110" cy="110" r="100" stroke="white" stroke-width="10" fill="none" stroke-dasharray="628" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"/>
                 </svg>
                 <div id="player-time-display" class="player-timer-number">10</div>
             </div>
 
-            <div id="player-exercise-name" style="font-size:28px; font-weight:900; text-align:center; margin-top:20px;">ÜBUNG</div>
-        </div>
-
-        <div class="grid-columns-2">
-            <button id="player-btn-action" class="action-button" onclick="PlayerSystem.togglePlay()">START</button>
-            <button id="player-btn-skip" class="action-button button-outline" onclick="PlayerSystem.skipPhase()">PAUSE SKIP</button>
-        </div>
-    </div>
-
-    <div id="tab-home" class="app-screen active-screen">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px;">
-            <div>
-                <h1 id="home-day-counter" class="page-title">TAG 1</h1>
-                <span id="home-date-display" style="font-size:12px; font-weight:bold; color:var(--color-accent);">LADEN...</span>
-            </div>
-            <div style="text-align:right;">
-                <span class="data-label">STREAK</span>
-                <span style="font-size:24px; font-weight:900; color:var(--color-orange);">🔥 <span id="home-streak-value">0</span></span>
-            </div>
-        </div>
-
-        <div class="grid-columns-3">
-            <div class="kpi-container">
-                <span class="kpi-label">BMI</span>
-                <span class="kpi-value" id="kpi-bmi-value">-</span>
-            </div>
-            <div class="kpi-container">
-                <span class="kpi-label">KCAL</span>
-                <span class="kpi-value" id="kpi-kcal-value">0</span>
-            </div>
-            <div class="kpi-container">
-                <span class="kpi-label">LEVEL</span>
-                <span class="kpi-value" id="kpi-level-value" style="color:var(--color-orange);">1</span>
-            </div>
-        </div>
-
-        <div class="content-card" style="padding:12px 16px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                <h2 style="margin:0; font-size:10px; color:#aaa;">WASSER BILANZ</h2>
-                <span id="water-display-text" style="font-size:12px; font-weight:bold; color:var(--color-blue);">0.0 / 2.5 L</span>
-            </div>
-            <div class="water-module-container">
-                <button class="water-control-btn" onclick="AppController.modifyWater(-1)">-</button>
-                <div class="water-progress-track">
-                    <div id="water-progress-bar" class="water-progress-bar"></div>
-                </div>
-                <button class="water-control-btn" style="background-color:var(--color-blue); border:none;" onclick="AppController.modifyWater(1)">+</button>
-            </div>
-        </div>
-
-        <div class="content-card">
-            <h2 class="section-title">WORKOUT STARTEN</h2>
-            <div class="grid-columns-3" style="margin-bottom:10px;">
-                <button id="preset-10" class="pill-button" onclick="AppController.setDuration(10)">10 MIN</button>
-                <button id="preset-20" class="pill-button" onclick="AppController.setDuration(20)">20 MIN</button>
-                <button id="preset-30" class="pill-button" onclick="AppController.setDuration(30)">30 MIN</button>
-            </div>
-            <div style="margin-bottom:15px; display:flex; align-items:center;">
-                <input type="number" id="custom-duration-input" class="input-field" placeholder="Eigene Zeit (Minuten)" style="margin:0; text-align:center;" oninput="AppController.setCustomDuration(this.value)">
+            <div id="player-exercise-display" style="font-size:26px; font-weight:900; text-align:center; line-height:1.2;">ÜBUNG</div>
+            
+            <div id="player-instruction-display" class="player-instruction-text">
+                Hier steht die Anleitung für die Übung...
             </div>
             
-            <div class="grid-columns-2">
-                <button class="action-button" onclick="PlayerSystem.init()">STARTEN</button>
-                <button class="action-button button-outline" onclick="LogSystem.openOverlay()">LOGBUCH</button>
+            <div id="player-next-box" class="player-next-box" style="display:none;">
+                <span style="color:#888; font-size:10px; font-weight:bold;">ALS NÄCHSTES:</span><br>
+                <span id="player-next-name" style="font-size:18px; font-weight:bold; color:#fff;">-</span>
             </div>
         </div>
 
-        <div class="card-highlight-border" onclick="UIController.openOverlay('overlay-daily')">
-            <h2 style="color:#000; font-size:14px; margin:0;">DAILY CHECK & NOTIZEN ÖFFNEN</h2>
-            <div style="font-size:12px; color:#555; margin-top:5px;">Hier klicken für Checkliste & Tagebuch</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+            <button id="player-btn-start" class="action-button" onclick="PlayerSystem.togglePlay()">START</button>
+            <button id="player-btn-skip" class="action-button button-outline" onclick="PlayerSystem.skipPhase()">SKIP PAUSE</button>
         </div>
     </div>
 
-    <div id="tab-stats" class="app-screen">
-        <h1 class="page-title">STATISTIK</h1>
+    <div id="overlay-rating" class="full-overlay" style="z-index:9100; justify-content:center;">
+        <h1 style="text-align:center;">WORKOUT BEENDET</h1>
+        <p style="text-align:center; color:#888;">Wie anstrengend war es?</p>
+        
+        <div class="content-card" style="text-align:center; padding:30px;">
+            <h2 id="rating-value-display" style="font-size:60px; color:var(--color-accent); margin:10px 0;">5</h2>
+            <input type="range" id="rating-slider" min="1" max="10" value="5" oninput="document.getElementById('rating-value-display').innerText=this.value">
+            
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:#666; margin-top:10px;">
+                <span>SEHR LEICHT</span>
+                <span>EXTREM HART</span>
+            </div>
+        </div>
+        
+        <button class="action-button" onclick="AppCore.saveRatedWorkout()">SPEICHERN & SCHLIESSEN</button>
+    </div>
 
-        <div class="content-card" style="margin-top:20px;">
-            <h2 class="section-title">TRAININGS FREQUENZ</h2>
-            <div class="grid-columns-3">
-                <div class="kpi-container"><span class="kpi-label">WOCHE</span><span class="kpi-value" id="stats-week">0</span></div>
-                <div class="kpi-container"><span class="kpi-label">MONAT</span><span class="kpi-value" id="stats-month">0</span></div>
-                <div class="kpi-container"><span class="kpi-label">JAHR</span><span class="kpi-value" id="stats-year">0</span></div>
+    <div id="screen-home" class="app-screen active-screen">
+        
+        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+            <div>
+                <h1 id="home-day-display">TAG 1</h1>
+                <span id="home-date-display" style="font-size:11px; font-weight:bold; color:var(--color-accent);">LADEN...</span>
+            </div>
+            <div style="text-align:right;">
+                <span style="font-size:9px; font-weight:700; color:#666; display:block;">STREAK</span>
+                <span style="font-size:20px; font-weight:900; color:var(--color-orange);">🔥 <span id="home-streak-display">0</span></span>
             </div>
         </div>
 
-        <div class="content-card">
-            <h2 class="section-title">GEWICHTSVERLAUF</h2>
-            <div style="height:160px; width:100%; position:relative;">
+        <div>
+            <div class="dashboard-grid">
+                <div class="stat-display-box"><span class="stat-label-text">BMI</span><span class="stat-value-text" id="kpi-bmi">-</span></div>
+                <div class="stat-display-box"><span class="stat-label-text">KCAL</span><span class="stat-value-text" id="kpi-kcal">0</span></div>
+                <div class="stat-display-box"><span class="stat-label-text">LEVEL</span><span class="stat-value-text" id="kpi-level" style="color:var(--color-orange)">1</span></div>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-display-box"><span class="stat-label-text">WOCHE</span><span class="stat-value-text" id="freq-week">0</span></div>
+                <div class="stat-display-box"><span class="stat-label-text">MONAT</span><span class="stat-value-text" id="freq-month">0</span></div>
+                <div class="stat-display-box"><span class="stat-label-text">JAHR</span><span class="stat-value-text" id="freq-year">0</span></div>
+            </div>
+        </div>
+
+        <div class="content-card" style="padding:10px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <h2 style="margin:0; font-size:9px;">WASSER BILANZ</h2>
+                <span id="water-text-display" style="font-size:10px; font-weight:bold; color:var(--color-blue);">0.0L</span>
+            </div>
+            <div class="water-compact-row">
+                <button class="water-action-btn" onclick="AppCore.modifyWater(-1)">-</button>
+                <div class="water-bar-track"><div id="water-bar-fill" class="water-bar-fill"></div></div>
+                <button class="water-action-btn" style="background:var(--color-blue); border-color:var(--color-blue);" onclick="AppCore.modifyWater(1)">+</button>
+            </div>
+        </div>
+
+        <div class="content-card" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <h2 style="margin-bottom:10px;">WORKOUT STARTEN</h2>
+            
+            <div class="dashboard-grid">
+                <button id="preset-10" class="button-small" onclick="AppCore.setDuration(10)">10 MIN</button>
+                <button id="preset-20" class="button-small" onclick="AppCore.setDuration(20)">20 MIN</button>
+                <button id="preset-30" class="button-small" onclick="AppCore.setDuration(30)">30 MIN</button>
+            </div>
+            
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="number" id="custom-duration-input" placeholder="Eigene Min..." style="margin:0; text-align:center;" oninput="AppCore.setCustomDuration(this.value)">
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <button class="action-button" onclick="PlayerSystem.init()">LIVE</button>
+                <button class="action-button button-outline" onclick="LogSystem.openOverlay()">LOG</button>
+            </div>
+        </div>
+
+        <button class="button-outline" style="padding:12px; border-radius:10px; font-size:11px; font-weight:700; color:#fff; border-color:#fff;" onclick="UserInterface.openOverlay('overlay-daily')">
+            DAILY CHECKLISTE & NOTIZEN ÖFFNEN
+        </button>
+    </div>
+
+    <div id="screen-stats" class="app-screen">
+        <h1 class="main-title">STATISTIK</h1>
+
+        <div class="content-card" style="margin-top:20px;">
+            <h2 class="sub-title">GEWICHTSVERLAUF</h2>
+            <div style="height:150px; width:100%;">
                 <svg id="chart-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
             </div>
         </div>
-
+        
         <div class="content-card">
-            <h2 class="section-title">KÖRPERDATEN ERFASSEN</h2>
-            <div class="grid-columns-2">
-                <div><span class="data-label">GEWICHT</span><input type="number" id="measure-weight" class="input-field"></div>
-                <div><span class="data-label">BAUCH</span><input type="number" id="measure-waist" class="input-field"></div>
+            <h2 class="sub-title">KÖRPERDATEN LOGGEN</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <input type="number" id="measure-weight" placeholder="Gewicht (kg)">
+                <input type="number" id="measure-waist" placeholder="Bauch (cm)">
+                <input type="number" id="measure-chest" placeholder="Brust (cm)">
+                <input type="number" id="measure-arm" placeholder="Arm (cm)">
+                <input type="number" id="measure-leg" placeholder="Bein (cm)">
+                <input type="number" id="measure-glute" placeholder="Po (cm)">
             </div>
-            <div class="grid-columns-2">
-                <div><span class="data-label">BRUST</span><input type="number" id="measure-chest" class="input-field"></div>
-                <div><span class="data-label">PO / HÜFTE</span><input type="number" id="measure-glute" class="input-field"></div>
-            </div>
-            <div class="grid-columns-2">
-                <div><span class="data-label">OBERARM</span><input type="number" id="measure-arm" class="input-field"></div>
-                <div><span class="data-label">OBERSCHENKEL</span><input type="number" id="measure-leg" class="input-field"></div>
-            </div>
-            <button class="action-button button-outline" onclick="AppController.logBodyMeasurements()">WERTE SPEICHERN</button>
+            <button class="action-button button-outline" style="margin-top:10px;" onclick="AppCore.logBodyMeasurements()">WERTE SPEICHERN</button>
         </div>
 
-        <div id="history-list-container"></div>
+        <div id="history-list-container">
+            </div>
     </div>
 
-    <div id="tab-settings" class="app-screen">
-        <h1 class="page-title">SYSTEM</h1>
+    <div id="screen-settings" class="app-screen">
+        <h1 class="main-title">SYSTEM</h1>
         
         <div class="content-card" style="margin-top:20px;">
-            <h2 class="section-title">TIMER KONFIGURATION</h2>
+            <h2 class="sub-title">TIMER EINSTELLUNGEN</h2>
             
             <div style="display:flex; justify-content:space-between;">
                 <span>Belastungszeit</span>
-                <b id="setting-work-display" style="color:var(--color-accent);">40s</b>
+                <b id="setting-work-display">40s</b>
             </div>
-            <input type="range" id="setting-work-input" min="20" max="120" step="5" oninput="AppController.updateSettings()">
+            <input type="range" id="setting-work-input" min="20" max="120" step="5" oninput="AppCore.updateSettings()">
             
-            <div style="display:flex; justify-content:space-between; margin-top:15px;">
+            <div style="display:flex; justify-content:space-between; margin-top:10px;">
                 <span>Pausenzeit</span>
-                <b id="setting-rest-display" style="color:var(--color-blue);">20s</b>
+                <b id="setting-rest-display">20s</b>
             </div>
-            <input type="range" id="setting-rest-input" min="10" max="90" step="5" oninput="AppController.updateSettings()">
+            <input type="range" id="setting-rest-input" min="10" max="60" step="5" oninput="AppCore.updateSettings()">
         </div>
 
         <div class="content-card">
-            <h2 class="section-title">DATEN & BACKUP</h2>
-            <button class="action-button button-outline" style="margin-bottom:10px;" onclick="BackupSystem.exportData()">BACKUP EXPORTIEREN</button>
+            <h2 class="sub-title">DATEN & BACKUP</h2>
+            <button class="button-outline" style="width:100%; padding:14px; margin-bottom:5px; border-radius:12px;" onclick="BackupSystem.exportData()">BACKUP EXPORTIEREN</button>
             
             <input type="file" id="backup-file-input" style="display:none" onchange="BackupSystem.importData(this)">
-            <button class="action-button button-outline" style="margin-bottom:20px;" onclick="document.getElementById('backup-file-input').click()">BACKUP LADEN</button>
+            <button class="button-outline" style="width:100%; padding:14px; margin-bottom:15px; border-radius:12px;" onclick="document.getElementById('backup-file-input').click()">BACKUP IMPORTIEREN</button>
             
-            <button class="action-button button-outline" style="border-color:var(--color-red); color:var(--color-red);" onclick="AppController.hardReset()">WERKSEINSTELLUNGEN</button>
+            <button class="button-outline" style="width:100%; padding:14px; border-radius:12px; border-color:var(--color-red); color:var(--color-red);" onclick="AppCore.hardReset()">ALLES LÖSCHEN</button>
         </div>
     </div>
 
-    <div class="bottom-navigation">
-        <div class="nav-button active-nav" onclick="UIController.switchTab('tab-home', this)">
+    <div class="navigation-bar">
+        <div class="nav-button active-nav" onclick="UserInterface.switchTab('screen-home', this)">
             <div class="nav-icon">🏠</div>
-            <div class="nav-label">HOME</div>
+            <span class="nav-label">HOME</span>
         </div>
-        <div class="nav-button" onclick="UIController.switchTab('tab-stats', this)">
+        <div class="nav-button" onclick="UserInterface.switchTab('screen-stats', this)">
             <div class="nav-icon">📊</div>
-            <div class="nav-label">STATS</div>
+            <span class="nav-label">STATS</span>
         </div>
-        <div class="nav-button" onclick="UIController.switchTab('tab-settings', this)">
+        <div class="nav-button" onclick="UserInterface.switchTab('screen-settings', this)">
             <div class="nav-icon">⚙️</div>
-            <div class="nav-label">SYSTEM</div>
+            <span class="nav-label">SYSTEM</span>
         </div>
     </div>
 
     <script>
-        // Datenbank Schlüssel
-        const STORAGE_KEY = "BODY_PULSE_V20_MASTER";
+        // --- KONSTANTEN & DATENBANKEN ---
+        const STORAGE_KEY = "BODY_PULSE_V21_1_FULL";
+        
+        // Übungen mit Anleitungen
+        const EXERCISE_DATABASE = {
+            "Planks": "Rücken gerade, Bauch fest anspannen, nicht durchhängen.",
+            "Liegestütze": "Brust bis fast zum Boden, Körper bildet eine Linie.",
+            "Kniebeugen": "Rücken gerade, Gewicht auf den Fersen, Knie stabil.",
+            "Crunches": "Nur Schulterblätter lösen, ausatmen beim Hochgehen.",
+            "Ausfallschritte": "Vorderes Knie 90 Grad, Oberkörper aufrecht halten.",
+            "Dips": "Ellenbogen nah am Körper führen, tief absenken.",
+            "Burpees": "Explosiver Sprung nach oben, sauberer Liegestütz unten.",
+            "Mountain Climber": "Knie abwechselnd schnell zur Brust ziehen.",
+            "Wandsitzen": "Beine im 90 Grad Winkel, Rücken flach an die Wand pressen.",
+            "Hampelmann": "Arme ganz nach oben führen, weich auf Ballen landen.",
+            "Beinheben": "Beine gestreckt heben, unterer Rücken bleibt am Boden.",
+            "Glute Bridge": "Hüfte so weit wie möglich heben, Po oben fest anspannen."
+        };
+        const EXERCISE_NAMES = Object.keys(EXERCISE_DATABASE);
 
-        // Übungsdatenbank
-        const EXERCISE_DB = [
-            "Planks", "Liegestütze", "Kniebeugen", "Crunches", "Ausfallschritte", 
-            "Dips", "Burpees", "Mountain Climber", "Wandsitzen", "Hampelmann", 
-            "Beinheben", "Glute Bridge", "High Knees", "Russian Twist"
-        ];
-
-        // Globales Datenobjekt
-        let appData = {
+        // Globaler Status
+        let applicationData = {
             profile: { height: 0, weight: 0, age: 0 },
-            config: { workTime: 40, restTime: 20, duration: 10, note: "" },
+            config: { workTime: 40, restTime: 20, durationPreference: 10, note: "" },
             status: { waterLevel: 0, waterDate: "", checklist: [false, false, false, false], streak: 0, lastWorkoutDate: 0 },
             history: [],
             bodyLogs: [],
             meta: { installDate: Date.now() }
         };
 
-        // Temporäre Laufzeit-Variablen
-        let runtimeStack = []; // Für Manual Log
-        let player = {
+        // Temporäre Variablen
+        let manualLogStack = [];
+        let temporaryKcalStorage = 0; // Für die Übergabe an Rating
+
+        let playerEngine = {
             timerId: null,
             isRunning: false,
             timeRemaining: 10,
@@ -729,300 +703,291 @@
         // ======================================================
         window.onload = function() {
             const storedData = localStorage.getItem(STORAGE_KEY);
-            if(storedData) {
-                try {
-                    appData = JSON.parse(storedData);
-                    AppController.checkDailyReset();
-                    UIController.refreshAll();
+            if(storedData) { 
+                try { 
+                    applicationData = JSON.parse(storedData); 
+                    AppCore.checkDailyReset();
+                    UserInterface.refreshAll();
                 } catch(e) {
-                    console.error("Datenfehler", e);
-                    localStorage.removeItem(STORAGE_KEY);
-                    location.reload();
+                    console.error("Datenfehler: ", e);
                 }
             } else {
-                // Setup Overlay zeigen
-                document.getElementById('overlay-setup').style.display = 'flex';
+                document.getElementById('ov-setup').style.display = 'flex';
             }
         };
 
         // ======================================================
-        // CONTROLLER: APP LOGIK
+        // APP CORE LOGIC
         // ======================================================
-        const AppController = {
+        const AppCore = {
             saveToStorage: function() {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(applicationData));
             },
-
+            
             finishSetup: function() {
-                const h = parseFloat(document.getElementById('setup-height').value);
-                const w = parseFloat(document.getElementById('setup-weight').value);
-                const a = parseFloat(document.getElementById('setup-age').value);
-
-                if(!h || !w || !a) { alert("Bitte alle Felder ausfüllen."); return; }
-
-                appData.profile.height = h;
-                appData.profile.weight = w;
-                appData.profile.age = a;
-                appData.meta.installDate = Date.now();
-                appData.status.waterDate = new Date().toDateString();
+                applicationData.profile.height = parseFloat(document.getElementById('input-setup-height').value) || 175;
+                applicationData.profile.weight = parseFloat(document.getElementById('input-setup-weight').value) || 75;
+                applicationData.profile.age = parseFloat(document.getElementById('input-setup-age').value) || 30;
+                applicationData.meta.installDate = Date.now();
+                applicationData.status.waterDate = new Date().toDateString();
                 
-                this.saveToStorage();
-                document.getElementById('overlay-setup').style.display = 'none';
-                UIController.refreshAll();
+                this.saveToStorage(); 
+                document.getElementById('ov-setup').style.display = 'none';
+                UserInterface.refreshAll();
             },
 
             checkDailyReset: function() {
                 const today = new Date().toDateString();
-                if(appData.status.waterDate !== today) {
-                    appData.status.waterLevel = 0;
-                    appData.status.waterDate = today;
-                    appData.status.checklist = [false, false, false, false];
-                    // Notiz lassen wir stehen oder löschen wir, Entscheidung: Löschen für neuen Tag
-                    // appData.config.note = ""; 
+                if(applicationData.status.waterDate !== today) {
+                    applicationData.status.waterLevel = 0;
+                    applicationData.status.waterDate = today;
+                    applicationData.status.checklist = [false, false, false, false];
                     this.saveToStorage();
                 }
             },
 
             modifyWater: function(amount) {
-                appData.status.waterLevel = Math.max(0, appData.status.waterLevel + amount);
+                applicationData.status.waterLevel = Math.max(0, applicationData.status.waterLevel + amount);
                 this.saveToStorage();
-                UIController.updateWaterUI();
+                UserInterface.refreshAll();
             },
 
             setDuration: function(minutes) {
-                appData.config.duration = minutes;
-                document.getElementById('custom-duration-input').value = ""; // Reset custom input
+                applicationData.config.durationPreference = minutes;
+                document.getElementById('custom-duration-input').value = "";
                 this.saveToStorage();
-                UIController.updateWorkoutUI();
+                UserInterface.refreshAll();
             },
 
             setCustomDuration: function(val) {
                 if(val > 0) {
-                    appData.config.duration = parseInt(val);
+                    applicationData.config.durationPreference = parseInt(val);
                     this.saveToStorage();
-                    UIController.updateWorkoutUI();
+                    UserInterface.refreshAll();
                 }
             },
 
             saveNote: function(text) {
-                appData.config.note = text;
+                applicationData.config.note = text;
                 this.saveToStorage();
             },
 
             updateSettings: function() {
-                appData.config.workTime = parseInt(document.getElementById('setting-work-input').value);
-                appData.config.restTime = parseInt(document.getElementById('setting-rest-input').value);
+                applicationData.config.workTime = parseInt(document.getElementById('setting-work-input').value);
+                applicationData.config.restTime = parseInt(document.getElementById('setting-rest-input').value);
                 this.saveToStorage();
-                UIController.refreshAll();
+                UserInterface.refreshAll();
             },
 
             logBodyMeasurements: function() {
-                const weight = document.getElementById('measure-weight').value;
-                if(!weight) { alert("Bitte mindestens Gewicht angeben."); return; }
-
                 const logEntry = {
                     date: new Date().toISOString(),
-                    w: parseFloat(weight),
-                    waist: document.getElementById('measure-waist').value,
-                    chest: document.getElementById('measure-chest').value,
-                    glute: document.getElementById('measure-glute').value,
-                    arm: document.getElementById('measure-arm').value,
-                    leg: document.getElementById('measure-leg').value
+                    w: document.getElementById('m-weight').value,
+                    b: document.getElementById('m-waist').value,
+                    c: document.getElementById('m-chest').value,
+                    h: document.getElementById('m-glute').value,
+                    a: document.getElementById('m-arm').value,
+                    l: document.getElementById('m-leg').value
                 };
-
-                appData.profile.weight = parseFloat(weight); // Profil update
-                appData.bodyLogs.push(logEntry);
+                
+                if(logEntry.w) {
+                    applicationData.profile.weight = parseFloat(logEntry.w);
+                    applicationData.bodyLogs.push(logEntry);
+                    this.saveToStorage();
+                    UserInterface.refreshAll();
+                    alert("Messwerte erfolgreich gespeichert!");
+                }
+            },
+            
+            saveRatedWorkout: function() {
+                const rating = document.getElementById('rating-slider').value;
+                const workoutType = document.getElementById('ov-player').style.display === 'none' ? "Live Training" : "Logbuch";
+                
+                // Wir fügen den Eintrag erst JETZT hinzu, mit Rating
+                applicationData.history.push({ 
+                    date: new Date().toISOString(), 
+                    type: "Workout", 
+                    kcal: temporaryKcalStorage, 
+                    rating: rating 
+                });
+                
+                StatsSystem.checkStreak();
                 this.saveToStorage();
-                UIController.refreshAll();
-                alert("Messwerte gespeichert!");
+                UserInterface.refreshAll();
+                
+                document.getElementById('overlay-rating').style.display = 'none';
+                alert("Training gespeichert! Starke Leistung.");
             },
 
             hardReset: function() {
-                if(confirm("ACHTUNG: Alle Daten werden unwiderruflich gelöscht. Fortfahren?")) {
-                    localStorage.removeItem(STORAGE_KEY);
+                if(confirm("ACHTUNG: Möchtest du wirklich alle Daten löschen?")) {
+                    localStorage.clear();
                     location.reload();
                 }
             }
         };
 
         // ======================================================
-        // CONTROLLER: UI & RENDERING
+        // UI & NAVIGATION
         // ======================================================
-        const UIController = {
+        const UserInterface = {
             refreshAll: function() {
-                this.updateHeader();
-                this.updateKPIs();
-                this.updateWaterUI();
-                this.updateWorkoutUI();
-                this.updateSettingsUI();
-                this.updateChecklistUI();
+                // Header Daten
+                const daysSinceStart = Math.ceil((Date.now() - applicationData.meta.installDate) / 86400000);
+                document.getElementById('lbl-day').innerText = "TAG " + daysSinceStart;
+                document.getElementById('lbl-date').innerText = new Date().toLocaleDateString('de-DE').toUpperCase();
+                document.getElementById('lbl-streak').innerText = applicationData.status.streak;
+                document.getElementById('home-streak-display').innerText = applicationData.status.streak;
                 
-                StatsSystem.calculateStats();
+                // KPIs Berechnen
+                const heightM = applicationData.profile.height / 100;
+                const bmi = (applicationData.profile.weight / (heightM * heightM)).toFixed(1);
+                document.getElementById('kpi-bmi').innerText = bmi;
+                
+                const totalKcal = applicationData.history.reduce((sum, item) => sum + (item.kcal || 0), 0);
+                document.getElementById('kpi-kcal').innerText = totalKcal.toLocaleString();
+                document.getElementById('kpi-lvl').innerText = 1 + Math.floor(totalKcal / 1000);
+
+                // Wasser Anzeige
+                const liters = (applicationData.status.waterLevel * 0.25).toFixed(1);
+                document.getElementById('water-txt').innerText = liters + " / 2.5L";
+                const pct = Math.min((applicationData.status.waterLevel / 10) * 100, 100);
+                document.getElementById('water-bar').style.width = pct + "%";
+
+                // Workout Buttons Highlight
+                document.querySelectorAll('.button-small').forEach(btn => btn.classList.remove('active-preset'));
+                const activeBtn = document.getElementById('dur-' + applicationData.config.durationPreference);
+                if(activeBtn) activeBtn.classList.add('active-preset');
+
+                // Settings Slider Werte
+                document.getElementById('rng-work').value = applicationData.config.workTime;
+                document.getElementById('rng-rest').value = applicationData.config.restTime;
+                document.getElementById('lbl-work').innerText = applicationData.config.workTime + "s";
+                document.getElementById('lbl-rest').innerText = applicationData.config.restTime + "s";
+
+                // Notiz Feld
+                document.getElementById('note-txt').value = applicationData.config.note;
+
+                // Statistiken aktualisieren
+                StatsSystem.renderFreq();
                 StatsSystem.renderChart();
-                StatsSystem.renderHistory();
+                StatsSystem.renderList();
             },
 
-            updateHeader: function() {
-                const dayDiff = Math.ceil((Date.now() - appData.meta.installDate) / (1000 * 60 * 60 * 24));
-                document.getElementById('home-day-counter').innerText = "TAG " + (dayDiff || 1);
-                
-                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                document.getElementById('home-date-display').innerText = new Date().toLocaleDateString('de-DE', dateOptions).toUpperCase();
-                
-                document.getElementById('home-streak-value').innerText = appData.status.streak;
-            },
-
-            updateKPIs: function() {
-                if(appData.profile.height > 0) {
-                    const h_m = appData.profile.height / 100;
-                    const bmi = (appData.profile.weight / (h_m * h_m)).toFixed(1);
-                    document.getElementById('kpi-bmi-value').innerText = bmi;
-                }
-                
-                const totalKcal = appData.history.reduce((sum, item) => sum + (item.kcal || 0), 0);
-                document.getElementById('kpi-kcal-value').innerText = totalKcal.toLocaleString();
-                
-                // LEVEL BERECHNUNG: 1 Level pro 1000 kcal
-                const level = 1 + Math.floor(totalKcal / 1000);
-                document.getElementById('kpi-level-value').innerText = level;
-            },
-
-            updateWaterUI: function() {
-                const liters = (appData.status.waterLevel * 0.25).toFixed(1);
-                document.getElementById('water-display-text').innerText = liters + " / 2.5 L";
-                
-                // Max 10 Einheiten = 100%
-                const percentage = Math.min((appData.status.waterLevel / 10) * 100, 100);
-                document.getElementById('water-progress-bar').style.width = percentage + "%";
-            },
-
-            updateWorkoutUI: function() {
-                // Reset Button Styles
-                document.querySelectorAll('.pill-button').forEach(btn => btn.classList.remove('active-pill'));
-                
-                // Set Active
-                const activeId = 'preset-' + appData.config.duration;
-                const btn = document.getElementById(activeId);
-                if(btn) btn.classList.add('active-pill');
-            },
-
-            updateSettingsUI: function() {
-                document.getElementById('setting-work-input').value = appData.config.workTime;
-                document.getElementById('setting-rest-input').value = appData.config.restTime;
-                
-                document.getElementById('setting-work-display').innerText = appData.config.workTime + "s";
-                document.getElementById('setting-rest-display').innerText = appData.config.restTime + "s";
-            },
-
-            updateChecklistUI: function() {
-                document.getElementById('daily-note-input').value = appData.config.note || "";
-                
-                // Render Checklist Items inside Overlay
-                const container = document.getElementById('daily-checklist-container');
-                container.innerHTML = "";
-                
-                const labels = ["Protein Shake", "Kreatin Einnahme", "Vitamine & Omega 3", "7h Schlaf"];
-                
-                labels.forEach((label, index) => {
-                    const div = document.createElement('div');
-                    const isChecked = appData.status.checklist[index];
-                    div.className = "checklist-item" + (isChecked ? " checked" : "");
-                    
-                    div.innerHTML = `
-                        <div class="checkbox-visual"></div>
-                        <span>${label}</span>
-                    `;
-                    
-                    div.onclick = function() {
-                        appData.status.checklist[index] = !appData.status.checklist[index];
-                        AppController.saveToStorage();
-                        UIController.updateChecklistUI();
-                    };
-                    
-                    container.appendChild(div);
-                });
-            },
-
-            switchTab: function(tabId, navElement) {
+            nav: function(screenId, navElement) {
                 // Screens umschalten
-                document.querySelectorAll('.app-screen').forEach(screen => screen.classList.remove('active-screen'));
-                document.getElementById(tabId).classList.add('active-screen');
+                document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active-screen'));
+                document.getElementById(screenId).classList.add('active-screen');
                 
                 // Nav Buttons umschalten
-                document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active-nav'));
-                navElement.classList.add('active-nav');
+                document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                navElement.classList.add('active');
             },
 
+            openDaily: function() {
+                const container = document.getElementById('checklist-container');
+                container.innerHTML = "";
+                
+                // Neue Checklist Items (Eisen, Magnesium, Schlaf weg)
+                const items = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
+                
+                items.forEach((label, index) => {
+                    // Sicherstellen, dass Array lang genug ist
+                    if(applicationData.status.checklist[index] === undefined) applicationData.status.checklist[index] = false;
+                    
+                    const div = document.createElement('div');
+                    const isChecked = applicationData.status.checklist[index];
+                    div.className = "check-item" + (isChecked ? " done" : "");
+                    
+                    div.innerHTML = `<div class="check-box"></div><span>${label}</span>`;
+                    
+                    div.onclick = function() {
+                        applicationData.status.checklist[index] = !applicationData.status.checklist[index];
+                        AppCore.saveToStorage();
+                        UserInterface.openDaily(); // Refresh Checklist View
+                    };
+                    container.appendChild(div);
+                });
+                
+                document.getElementById('ov-daily').style.display = 'flex';
+            },
+
+            closeDaily: function() {
+                document.getElementById('ov-daily').style.display = 'none';
+            },
+
+            closeManual: function() {
+                document.getElementById('ov-manual').style.display = 'none';
+            },
+            
             openOverlay: function(id) {
-                if(id === 'overlay-daily') this.updateChecklistUI();
                 document.getElementById(id).style.display = 'flex';
             },
-
+            
             closeOverlay: function(id) {
                 document.getElementById(id).style.display = 'none';
             }
         };
 
         // ======================================================
-        // SYSTEM: MANUAL LOGGING (STACK)
+        // LOG SYSTEM (SMART MANUAL INPUT)
         // ======================================================
         const LogSystem = {
-            openOverlay: function() {
-                runtimeStack = [];
+            open: function() {
+                manualLogStack = [];
                 this.renderStack();
                 
-                // Select füllen
-                const select = document.getElementById('manual-exercise-select');
+                const select = document.getElementById('man-sel');
                 select.innerHTML = "";
-                EXERCISE_DB.forEach(ex => {
-                    const opt = document.createElement('option');
-                    opt.value = ex;
-                    opt.text = ex;
-                    select.appendChild(opt);
+                EXERCISE_NAMES.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.innerText = name;
+                    select.appendChild(option);
                 });
                 
-                UIController.openOverlay('overlay-manual');
+                document.getElementById('ov-manual').style.display = 'flex';
             },
 
-            addToStack: function() {
-                const name = document.getElementById('manual-exercise-select').value;
-                const rounds = parseInt(document.getElementById('manual-rounds-count').value);
+            add: function() {
+                const name = document.getElementById('man-sel').value;
+                const rounds = parseInt(document.getElementById('man-rounds').value);
+                const standardVal = document.getElementById('man-val-def').value || 0; // Smart Input
                 
                 const entry = {
                     name: name,
                     sets: []
                 };
 
+                // Alle Sätze mit dem Standardwert füllen
                 for(let i = 0; i < rounds; i++) {
-                    entry.sets.push({ val: 0 }); // Placeholder
+                    entry.sets.push({ value: standardVal });
                 }
 
-                runtimeStack.push(entry);
+                manualLogStack.push(entry);
                 this.renderStack();
             },
 
             renderStack: function() {
-                const container = document.getElementById('manual-stack-list');
+                const container = document.getElementById('man-stack');
                 container.innerHTML = "";
-
-                runtimeStack.forEach((item, index) => {
+                
+                manualLogStack.forEach((entry, index) => {
                     const div = document.createElement('div');
-                    div.className = "manual-stack-entry";
+                    div.className = "stack-entry";
                     
-                    let html = `
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <span style="font-weight:900; color:white;">${item.name}</span>
-                            <span style="color:var(--color-red); font-weight:bold; cursor:pointer;" onclick="LogSystem.removeItem(${index})">LÖSCHEN</span>
-                        </div>
-                    `;
+                    let html = `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <b>${entry.name}</b>
+                        <span onclick="LogSystem.remove(${index})" style="color:var(--red); font-weight:bold; cursor:pointer;">✕</span>
+                    </div>`;
 
-                    item.sets.forEach((set, setIndex) => {
-                        html += `
-                            <div class="manual-set-row">
-                                <span style="font-size:12px; color:#aaa;">SATZ ${setIndex+1}</span>
-                                <input type="number" class="manual-set-input" placeholder="Wdh/Sek" oninput="runtimeStack[${index}].sets[${setIndex}].val = this.value">
-                            </div>
-                        `;
+                    entry.sets.forEach((set, setIndex) => {
+                        html += `<div class="set-row">
+                            <span>Satz ${setIndex + 1}</span>
+                            <input type="number" value="${set.value}" 
+                                   oninput="manualLogStack[${index}].sets[${setIndex}].value = this.value"
+                                   style="width:60px; margin:0; padding:4px; text-align:right; font-size:12px;">
+                        </div>`;
                     });
 
                     div.innerHTML = html;
@@ -1030,74 +995,59 @@
                 });
             },
 
-            removeItem: function(index) {
-                runtimeStack.splice(index, 1);
+            remove: function(index) {
+                manualLogStack.splice(index, 1);
                 this.renderStack();
             },
 
-            saveWorkout: function() {
-                if(runtimeStack.length === 0) { alert("Keine Übungen eingetragen."); return; }
+            save: function() {
+                if(manualLogStack.length === 0) return;
                 
                 let totalSets = 0;
-                runtimeStack.forEach(item => totalSets += item.sets.length);
+                manualLogStack.forEach(e => totalSets += e.sets.length);
+                temporaryKcalStorage = totalSets * 15; // Schätzung
                 
-                const kcalEstimate = totalSets * 12; // Annahme
-                
-                const record = {
-                    date: new Date().toISOString(),
-                    type: 'Manual Log',
-                    kcal: kcalEstimate,
-                    details: `${runtimeStack.length} Übungen, ${totalSets} Sätze`
-                };
-
-                appData.history.push(record);
-                StatsSystem.checkStreak();
-                AppController.saveToStorage();
-                UIController.refreshAll();
-                UIController.closeOverlay('overlay-manual');
-                alert("Training gespeichert!");
+                document.getElementById('ov-manual').style.display = 'none';
+                document.getElementById('overlay-rating').style.display = 'flex';
             }
         };
 
         // ======================================================
-        // SYSTEM: PLAYER ENGINE
+        // PLAYER SYSTEM
         // ======================================================
         const PlayerSystem = {
             init: function() {
-                if(!player.audioContext) player.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                if(!playerEngine.audioContext) playerEngine.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Trainingsplan erstellen (Shuffle)
-                player.workoutPlan = [...EXERCISE_DB].sort(() => 0.5 - Math.random()).slice(0, 6);
+                playerEngine.workoutPlan = [...EXERCISE_NAMES].sort(() => 0.5 - Math.random()).slice(0, 6);
+                playerEngine.currentRound = 1;
+                playerEngine.exerciseIndex = 0;
+                playerEngine.phase = 'PREP';
+                playerEngine.timeRemaining = 10;
+                playerEngine.isCompleted = false;
                 
-                player.currentRound = 1;
-                player.exerciseIndex = 0;
-                player.phase = 'PREP';
-                player.timeRemaining = 10;
-                player.isRunning = false;
-                player.isCompleted = false;
-
-                UIController.openOverlay('overlay-player');
-                this.render();
+                document.getElementById('ov-player').style.display = 'flex';
+                this.draw();
             },
 
             togglePlay: function() {
-                const btn = document.getElementById('player-btn-action');
-                if(player.isRunning) {
-                    clearInterval(player.timerId);
-                    player.isRunning = false;
+                const btn = document.getElementById('p-btn-go');
+                if(playerEngine.isRunning) {
+                    clearInterval(playerEngine.timerId);
+                    playerEngine.isRunning = false;
                     btn.innerText = "WEITER";
                 } else {
-                    player.timerId = setInterval(this.tick, 1000);
-                    player.isRunning = true;
+                    playerEngine.timerId = setInterval(this.tick, 1000);
+                    playerEngine.isRunning = true;
                     btn.innerText = "PAUSE";
                 }
             },
 
             tick: function() {
-                if(player.timeRemaining > 0) {
-                    player.timeRemaining--;
-                    if(player.timeRemaining < 4 && player.timeRemaining > 0) PlayerSystem.beep(600);
-                    PlayerSystem.render();
+                if(playerEngine.timeRemaining > 0) {
+                    playerEngine.timeRemaining--;
+                    if(playerEngine.timeRemaining < 4 && playerEngine.timeRemaining > 0) PlayerSystem.beep(600);
+                    PlayerSystem.draw();
                 } else {
                     PlayerSystem.beep(900);
                     PlayerSystem.nextPhase();
@@ -1105,202 +1055,197 @@
             },
 
             nextPhase: function() {
-                if(player.phase === 'PREP') {
-                    player.phase = 'WORK';
-                    player.timeRemaining = appData.config.workTime;
-                } else if(player.phase === 'WORK') {
-                    player.phase = 'REST';
-                    player.timeRemaining = appData.config.restTime;
+                if(playerEngine.phase === 'PREP') {
+                    playerEngine.phase = 'WORK';
+                    playerEngine.timeRemaining = applicationData.config.workTime;
+                } else if(playerEngine.phase === 'WORK') {
+                    playerEngine.phase = 'REST';
+                    playerEngine.timeRemaining = applicationData.config.restTime;
                 } else {
-                    // Ende von REST -> Nächste Übung
-                    player.exerciseIndex++;
-                    if(player.exerciseIndex >= 6) {
-                        player.exerciseIndex = 0;
-                        player.currentRound++;
+                    // Ende von REST
+                    playerEngine.exerciseIndex++;
+                    if(playerEngine.exerciseIndex >= 6) {
+                        playerEngine.exerciseIndex = 0;
+                        playerEngine.currentRound++;
                         
-                        const maxRounds = appData.config.duration === 10 ? 1 : (appData.config.duration === 20 ? 2 : 3);
-                        if(player.currentRound > maxRounds) {
+                        const maxRounds = applicationData.config.durationPreference === 10 ? 1 : (applicationData.config.durationPreference === 20 ? 2 : 3);
+                        if(playerEngine.currentRound > maxRounds) {
                             PlayerSystem.finish();
                             return;
                         }
                     }
-                    player.phase = 'WORK';
-                    player.timeRemaining = appData.config.workTime;
+                    playerEngine.phase = 'WORK';
+                    playerEngine.timeRemaining = applicationData.config.workTime;
                 }
-                PlayerSystem.render();
+                PlayerSystem.draw();
             },
 
             skipPhase: function() {
-                if(player.phase === 'WORK') {
+                if(playerEngine.phase === 'WORK') {
                     alert("Training läuft! Durchhalten!");
                 } else {
-                    player.timeRemaining = 0;
+                    playerEngine.timeRemaining = 0;
                     this.nextPhase();
                 }
             },
 
-            render: function() {
-                document.getElementById('player-time-display').innerText = player.timeRemaining;
-                document.getElementById('player-phase-text').innerText = player.phase;
-                document.getElementById('player-exercise-name').innerText = player.workoutPlan[player.exerciseIndex].toUpperCase();
-                document.getElementById('player-round-info').innerText = `RUNDE ${player.currentRound}`;
+            draw: function() {
+                // Timer
+                document.getElementById('p-time').innerText = playerEngine.timeRemaining;
+                document.getElementById('p-phase').innerText = playerEngine.phase;
+                
+                // Ring
+                const maxTime = playerEngine.phase === 'WORK' ? applicationData.config.workTime : (playerEngine.phase === 'REST' ? applicationData.config.restTime : 10);
+                const offset = 628 - (playerEngine.timeRemaining / maxTime) * 628;
+                document.getElementById('p-ring').style.strokeDashoffset = offset;
 
-                // Ring Berechnung
-                const maxTime = player.phase === 'WORK' ? appData.config.workTime : (player.phase === 'REST' ? appData.config.restTime : 10);
-                const offset = 754 - (player.timeRemaining / maxTime) * 754;
-                document.getElementById('player-progress-ring').style.strokeDashoffset = offset;
+                // Übung & Guide
+                const exName = playerEngine.workoutPlan[playerEngine.exerciseIndex];
+                document.getElementById('p-ex').innerText = exName.toUpperCase();
+                document.getElementById('p-guide').innerText = EXERCISE_DATABASE[exName];
 
-                // Button State
-                const skipBtn = document.getElementById('player-btn-skip');
-                if(player.phase === 'WORK') {
-                    skipBtn.classList.add('button-disabled');
-                    skipBtn.innerText = "GESPERRT";
+                // Next Preview
+                const nextBox = document.getElementById('p-next-box');
+                if(playerEngine.phase === 'REST' || playerEngine.phase === 'PREP') {
+                    nextBox.style.display = 'block';
+                    let nextName = (playerEngine.phase==='PREP') ? exName : (playerEngine.exerciseIndex+1 < 6 ? playerEngine.workoutPlan[playerEngine.exerciseIndex+1] : "NÄCHSTE RUNDE");
+                    document.getElementById('p-next-name').innerText = nextName;
                 } else {
-                    skipBtn.classList.remove('button-disabled');
-                    skipBtn.innerText = "PAUSE ÜBERSPRINGEN";
+                    nextBox.style.display = 'none';
+                }
+
+                // Skip Button Sperre
+                const skipBtn = document.getElementById('p-btn-skip');
+                if(playerEngine.phase === 'WORK') {
+                    skipBtn.style.opacity = '0.3';
+                    skipBtn.innerText = "GESPERRT";
+                    skipBtn.style.pointerEvents = 'none';
+                } else {
+                    skipBtn.style.opacity = '1';
+                    skipBtn.innerText = "SKIP PAUSE";
+                    skipBtn.style.pointerEvents = 'auto';
                 }
             },
 
             finish: function() {
-                clearInterval(player.timerId);
-                const kcal = appData.config.duration * 9; // ~9 kcal/min
-                
-                const record = {
-                    date: new Date().toISOString(),
-                    type: 'Live Training',
-                    kcal: kcal,
-                    details: `${appData.config.duration} Min Zirkel`
-                };
-
-                appData.history.push(record);
-                StatsSystem.checkStreak();
-                AppController.saveToStorage();
-                UIController.refreshAll();
-                UIController.closeOverlay('overlay-player');
-                alert("Training beendet! Starke Leistung.");
+                clearInterval(playerEngine.timerId);
+                temporaryKcalStorage = applicationData.config.durationPreference * 8;
+                document.getElementById('ov-player').style.display = 'none';
+                document.getElementById('overlay-rating').style.display = 'flex';
             },
 
             exit: function() {
-                clearInterval(player.timerId);
-                UIController.closeOverlay('overlay-player');
+                clearInterval(playerEngine.timerId);
+                document.getElementById('ov-player').style.display = 'none';
             },
 
             beep: function(freq) {
-                if(player.isMuted || !player.audioContext) return;
-                const osc = player.audioContext.createOscillator();
-                const gain = player.audioContext.createGain();
+                if(playerEngine.isMuted || !playerEngine.audioContext) return;
+                const osc = playerEngine.audioContext.createOscillator();
+                const gain = playerEngine.audioContext.createGain();
                 osc.connect(gain);
-                gain.connect(player.audioContext.destination);
+                gain.connect(playerEngine.audioContext.destination);
                 osc.frequency.value = freq;
                 gain.gain.value = 0.1;
                 osc.start();
-                osc.stop(player.audioContext.currentTime + 0.1);
+                osc.stop(playerEngine.audioContext.currentTime + 0.1);
             },
-
+            
             toggleMute: function() {
-                player.isMuted = !player.isMuted;
-                document.getElementById('player-mute-btn').innerText = player.isMuted ? "🔇" : "🔊";
+                playerEngine.isMuted = !playerEngine.isMuted;
+                document.getElementById('player-mute-btn').innerText = playerEngine.isMuted ? "🔇" : "🔊";
             }
         };
 
         // ======================================================
-        // SYSTEM: STATISTIK & BACKUP
+        // STATS SYSTEM
         // ======================================================
         const StatsSystem = {
             checkStreak: function() {
                 const today = new Date().toDateString();
-                const last = new Date(appData.status.lastWorkoutDate).toDateString();
+                const last = new Date(applicationData.status.lastWorkoutDate).toDateString();
                 if(today !== last) {
-                    appData.status.streak++;
-                    appData.status.lastWorkoutDate = Date.now();
+                    applicationData.status.streak++;
+                    applicationData.status.lastWorkoutDate = Date.now();
                 }
             },
 
-            calculateStats: function() {
+            renderFreq: function() {
                 const now = new Date();
-                let weekCount = 0, monthCount = 0, yearCount = 0;
-
-                // Wochenstart ermitteln (Montag)
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay() + 1);
-                startOfWeek.setHours(0,0,0,0);
-
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                const startOfYear = new Date(now.getFullYear(), 0, 1);
-
-                appData.history.forEach(item => {
-                    const date = new Date(item.date);
-                    if(date >= startOfWeek) weekCount++;
-                    if(date >= startOfMonth) monthCount++;
-                    if(date >= startOfYear) yearCount++;
-                });
-
-                document.getElementById('stats-week').innerText = weekCount;
-                document.getElementById('stats-month').innerText = monthCount;
-                document.getElementById('stats-year').innerText = yearCount;
-            },
-
-            renderHistory: function() {
-                const list = document.getElementById('history-list-container');
-                list.innerHTML = "<h2 class='section-title'>VERLAUF</h2>";
+                let weekC = 0, monthC = 0, yearC = 0;
                 
-                // Kopie umdrehen (neueste oben) und limitieren
-                const reversed = [...appData.history].reverse().slice(0, 15);
+                const startW = new Date(now); startW.setDate(now.getDate() - now.getDay() + 1); startW.setHours(0,0,0,0);
+                const startM = new Date(now.getFullYear(), now.getMonth(), 1);
+                const startY = new Date(now.getFullYear(), 0, 1);
 
-                reversed.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = "content-card";
-                    div.style.padding = "10px";
-                    
-                    const dateObj = new Date(item.date);
-                    const dateStr = dateObj.toLocaleDateString() + " " + dateObj.getHours() + ":" + (dateObj.getMinutes()<10?'0':'') + dateObj.getMinutes();
-
-                    div.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
-                            <span style="font-weight:bold; color:var(--color-accent);">${item.type}</span>
-                            <span style="color:#666;">${dateStr}</span>
-                        </div>
-                        <div style="font-size:12px; color:#888;">
-                            ${item.kcal} kcal • ${item.details || '-'}
-                        </div>
-                    `;
-                    list.appendChild(div);
+                applicationData.history.forEach(h => {
+                    const d = new Date(h.date);
+                    if(d >= startW) weekC++;
+                    if(d >= startM) monthC++;
+                    if(d >= startY) yearC++;
                 });
+
+                document.getElementById('freq-w').innerText = weekC;
+                document.getElementById('freq-m').innerText = monthC;
+                document.getElementById('freq-y').innerText = yearC;
+                // Auch im Stats Tab aktualisieren
+                document.getElementById('stats-week').innerText = weekC;
+                document.getElementById('stats-month').innerText = monthC;
+                document.getElementById('stats-year').innerText = yearC;
             },
 
             renderChart: function() {
                 const svg = document.getElementById('chart-svg');
                 svg.innerHTML = "";
                 
-                if(appData.bodyLogs.length < 2) return;
+                if(applicationData.bodyLogs.length < 2) return;
 
-                const weights = appData.bodyLogs.map(l => l.w);
-                const min = Math.min(...weights) - 2;
-                const max = Math.max(...weights) + 2;
-                const range = max - min;
-                const count = appData.bodyLogs.length;
+                const weights = applicationData.bodyLogs.map(l => parseFloat(l.w));
+                const min = Math.min(...weights) - 1;
+                const max = Math.max(...weights) + 1;
+                const count = weights.length;
 
                 let points = "";
-                appData.bodyLogs.forEach((log, i) => {
+                weights.forEach((w, i) => {
                     const x = (i / (count - 1)) * 100;
-                    const y = 100 - ((log.w - min) / range * 100);
+                    const y = 100 - ((w - min) / (max - min) * 100);
                     points += `${x},${y} `;
                 });
 
-                // SVG Polylinie zeichnen
-                const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-                polyline.setAttribute("points", points);
-                polyline.setAttribute("fill", "none");
-                polyline.setAttribute("stroke", "#32d74b");
-                polyline.setAttribute("stroke-width", "3");
+                svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
+            },
+
+            renderList: function() {
+                const container = document.getElementById('hist-list');
+                container.innerHTML = "<h2>VERLAUF</h2>";
                 
-                svg.appendChild(polyline);
+                [...applicationData.history].reverse().slice(0, 15).forEach(h => {
+                    const div = document.createElement('div');
+                    div.className = "card";
+                    div.style.padding = "10px";
+                    
+                    const ratingText = h.rating ? ` • Int: ${h.rating}/10` : "";
+                    
+                    div.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                            <span style="font-weight:bold; color:var(--color-accent);">${h.type}</span>
+                            <span style="color:#666;">${new Date(h.date).toLocaleDateString()}</span>
+                        </div>
+                        <div style="font-size:11px; color:#888;">
+                            ${h.kcal} kcal${ratingText}
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
             }
         };
 
+        // ======================================================
+        // BACKUP SYSTEM
+        // ======================================================
         const BackupSystem = {
-            exportData: function() {
-                const dataStr = JSON.stringify(appData);
+            export: function() {
+                const dataStr = JSON.stringify(applicationData);
                 const blob = new Blob([dataStr], {type: "application/json"});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -1309,20 +1254,17 @@
                 a.click();
             },
 
-            importData: function(inputElement) {
+            import: function(inputElement) {
                 const file = inputElement.files[0];
                 if(!file) return;
-                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     try {
-                        const imported = JSON.parse(e.target.result);
-                        appData = imported;
-                        AppController.saveToStorage();
-                        alert("Daten erfolgreich importiert!");
+                        applicationData = JSON.parse(e.target.result);
+                        AppCore.saveToStorage();
                         location.reload();
                     } catch(err) {
-                        alert("Fehler beim Importieren der Datei.");
+                        alert("Fehler beim Laden.");
                     }
                 };
                 reader.readAsText(file);
