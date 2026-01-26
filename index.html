@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V26.0 - UNABRIDGED</title>
+    <title>Body Pulse V27.0 - SCROLL FIX</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -56,14 +56,15 @@
             padding-top: var(--safe-area-top);
         }
 
-        /* SCREEN LAYOUTS */
+        /* SCREEN LAYOUTS - HIER WAR DER FEHLER: PADDING ERHÖHT */
         .app-screen-container {
             flex: 1;
             display: none;
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            padding-bottom: 90px;
+            /* WICHTIG: Erhöht auf 160px damit man unter der Navbar hervor scrollen kann */
+            padding-bottom: 160px; 
         }
 
         .app-screen-container.screen-active {
@@ -156,6 +157,15 @@
             text-transform: uppercase;
             color: #666666;
             margin: 0 0 8px 0;
+            letter-spacing: 1px;
+        }
+        
+        h2.sub-headline-compact {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666666;
+            margin: 0 0 5px 0;
             letter-spacing: 1px;
         }
 
@@ -379,7 +389,8 @@
         .overlay-scroll-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 60px;
+            /* WICHTIG: Mehr Platz unten im Overlay, damit man alles scrollen kann */
+            padding-bottom: 120px;
         }
         
         .overlay-sticky-footer {
@@ -782,7 +793,7 @@
         // ======================================================
         // DATENBANK & KONSTANTEN
         // ======================================================
-        const LOCAL_STORAGE_KEY = "BP_V26_UNABRIDGED";
+        const LOCAL_STORAGE_KEY = "BP_V27_SCROLL_FIXED";
         
         // Vollständige Übungsdatenbank MIT KATEGORIEN UND ANLEITUNGEN
         const EXERCISE_DB = {
@@ -1414,8 +1425,6 @@
                 document.getElementById('player-progress-ring').style.strokeDashoffset = offset;
 
                 // Anzeige Logik
-                // Work/Prep: Zeige aktuelle Übung
-                // Rest: Zeige "Pause" und nächste Übung in der Box
                 
                 let currentExName = playerState.workoutPlan[playerState.exerciseIdx];
                 let nextExName = (playerState.exerciseIdx + 1 < playerState.workoutPlan.length) ? playerState.workoutPlan[playerState.exerciseIdx + 1] : "ENDE";
@@ -1577,7 +1586,7 @@
                             let diff = valCurr - valPrev;
                             let diffStr = (diff > 0 ? "+" : "") + diff.toFixed(1);
                             
-                            // Logik für Farbe: Bei Gewicht ist Minus gut (Grün), bei Muskeln ist Plus gut (Grün)
+                            // Logik für Farbe
                             let colorClass = "diff-neutral";
                             if(k.id === 'w') {
                                 if(diff < 0) colorClass = "diff-positive";
