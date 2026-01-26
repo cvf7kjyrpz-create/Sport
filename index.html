@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V23.1 - DETAIL UPDATE</title>
+    <title>Body Pulse V26.0 - UNABRIDGED</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,34 +11,25 @@
 
     <style>
         /* ======================================================================
-           SEKTION 1: GRUNDLEGENDE CSS-VARIABLEN UND RESET
+           1. CSS GRUNDLAGEN (Vollständig ausgeschrieben)
            ====================================================================== */
         :root {
-            /* Farbpalette */
             --color-background: #000000;
             --color-card-background: #111111;
             --color-card-light: #1c1c1e;
             --color-border: #333333;
-            
-            /* Textfarben */
             --color-text-primary: #ffffff;
             --color-text-secondary: #8e8e93;
-            
-            /* Akzentfarben */
             --color-accent-green: #32d74b;
             --color-accent-blue: #0a84ff;
             --color-accent-orange: #ff9f0a;
             --color-accent-red: #ff453a;
-            
-            /* System Schriftart */
+            --color-accent-purple: #bf5af2;
             --font-family-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-            
-            /* Safe Area Insets */
             --safe-area-top: env(safe-area-inset-top);
             --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Globaler Reset */
         * {
             box-sizing: border-box;
             outline: none;
@@ -65,9 +56,7 @@
             padding-top: var(--safe-area-top);
         }
 
-        /* ======================================================================
-           SEKTION 2: SCREEN-LAYOUTS UND NAVIGATION
-           ====================================================================== */
+        /* SCREEN LAYOUTS */
         .app-screen-container {
             flex: 1;
             display: none;
@@ -89,21 +78,17 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Home Screen (Kein Scrollen) */
         #screen-home-tab {
             overflow: hidden;
             justify-content: space-between;
         }
         
-        /* Scrollbare Screens */
         #screen-stats-tab, #screen-settings-tab {
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* ======================================================================
-           SEKTION 3: UI KARTEN, TEXTE UND GRIDS
-           ====================================================================== */
+        /* UI KARTEN */
         .ui-card {
             background-color: var(--color-card-background);
             border: 1px solid var(--color-border);
@@ -113,18 +98,18 @@
             position: relative;
         }
 
-        /* KOMPAKTE CARD FÜR WORKOUT STARTER */
         .ui-card-compact {
             background-color: var(--color-card-background);
             border: 1px solid var(--color-border);
             border-radius: 14px;
-            padding: 8px 12px; 
+            padding: 8px 12px;
             margin-bottom: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        /* DASHBOARD GRID */
         .dashboard-grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -147,7 +132,6 @@
             font-size: 16px;
             font-weight: 800;
             color: #ffffff;
-            display: block;
         }
 
         .stat-label-text {
@@ -156,9 +140,9 @@
             font-weight: 700;
             text-transform: uppercase;
             margin-top: 3px;
-            display: block;
         }
 
+        /* TEXTE */
         h1.headline-text {
             font-size: 24px;
             font-weight: 800;
@@ -174,19 +158,8 @@
             margin: 0 0 8px 0;
             letter-spacing: 1px;
         }
-        
-        h2.sub-headline-compact {
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #666666;
-            margin: 0 0 5px 0;
-            letter-spacing: 1px;
-        }
 
-        /* ======================================================================
-           SEKTION 4: BUTTONS UND EINGABEFELDER
-           ====================================================================== */
+        /* BUTTONS */
         .primary-button {
             background-color: var(--color-text-primary);
             color: #000000;
@@ -201,7 +174,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.1s;
         }
         .primary-button:active {
             transform: scale(0.98);
@@ -227,11 +199,10 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
         
-        /* Button für Bibliothek */
         .library-button {
             background-color: var(--color-card-light);
             border: 1px solid var(--color-border);
-            color: #aaa;
+            color: #aaaaaa;
             width: 100%;
             padding: 10px;
             border-radius: 10px;
@@ -260,7 +231,7 @@
             border-color: #ffffff;
         }
 
-        /* Eingabefelder */
+        /* INPUTS */
         input.text-input, select.select-input, textarea.text-area-input {
             width: 100%;
             background-color: #111111;
@@ -273,11 +244,13 @@
             font-family: inherit;
             -webkit-appearance: none;
         }
+        select.select-input optgroup {
+            color: var(--color-text-secondary);
+            font-style: normal;
+            font-weight: bold;
+        }
 
-        /* ======================================================================
-           SEKTION 5: FEATURE MODULE (WASSER, CHECKLISTE, LOG)
-           ====================================================================== */
-        
+        /* WASSER TRACKER */
         .water-tracker-row {
             display: flex;
             align-items: center;
@@ -309,6 +282,7 @@
             transition: width 0.5s ease;
         }
 
+        /* CHECKLISTE */
         .checklist-row-item {
             display: flex;
             align-items: center;
@@ -339,6 +313,7 @@
             font-weight: 500;
         }
 
+        /* LOGBUCH ITEMS */
         .log-stack-card {
             background-color: var(--color-card-light);
             border-left: 3px solid var(--color-accent-green);
@@ -357,31 +332,31 @@
             border-top: 1px solid #222222;
         }
 
-        /* Library List Item */
+        /* BIBLIOTHEK ITEM */
         .library-item {
             padding: 14px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #222222;
             background: var(--color-card-light);
             margin-bottom: 5px;
             border-radius: 8px;
             cursor: pointer;
         }
-        .library-item:active { background: #333; }
-        .lib-name { font-weight: bold; color: white; display:block; margin-bottom:4px; font-size:14px; }
-        .lib-desc { font-size: 11px; color: #888; line-height:1.4; display:block; }
-        .lib-more { font-size: 10px; color: var(--color-accent-blue); margin-top:5px; display:block; text-transform:uppercase; font-weight:bold; }
+        .library-item:active { background: #333333; }
+        .lib-header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+        .lib-name-text { font-weight: bold; color: white; font-size:14px; }
+        .lib-category-badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; background: #333333; color: #aaaaaa; }
+        .lib-desc-text { font-size: 11px; color: #888888; line-height:1.4; display:block; }
+        .lib-more-link { font-size: 10px; color: var(--color-accent-blue); margin-top:5px; display:block; text-transform:uppercase; font-weight:bold; }
 
-        /* Detail Text im Overlay */
-        .detail-text-content {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #ddd;
-            white-space: pre-wrap; /* Damit Zeilenumbrüche funktionieren */
-        }
+        /* VERGLEICHS TABELLE */
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .comparison-table td { padding: 8px 0; border-bottom: 1px solid #222222; font-size: 13px; color: #dddddd; }
+        .comparison-table td:last-child { text-align: right; font-weight: bold; }
+        .diff-positive { color: var(--color-accent-green); }
+        .diff-negative { color: var(--color-accent-red); }
+        .diff-neutral { color: #666666; }
 
-        /* ======================================================================
-           SEKTION 6: VOLLBILD OVERLAYS (POPUP FENSTER)
-           ====================================================================== */
+        /* OVERLAYS */
         .fullscreen-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -413,6 +388,10 @@
             background-color: #000000;
         }
 
+        .detail-text-content { font-size: 16px; line-height: 1.6; color: #dddddd; white-space: pre-wrap; }
+        .detail-category-label { color: var(--color-accent-purple); font-weight: bold; text-transform: uppercase; font-size: 11px; margin-bottom: 10px; display: block; }
+
+        /* PLAYER */
         .player-visual-circle {
             position: relative;
             width: 240px;
@@ -422,17 +401,9 @@
             align-items: center;
             justify-content: center;
         }
-        .player-svg-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            transform: rotate(-90deg);
-        }
-        .player-timer-text {
-            font-size: 80px;
-            font-weight: 900;
-            font-variant-numeric: tabular-nums;
-            z-index: 2;
-        }
+        .player-svg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .player-timer-text { font-size: 80px; font-weight: 900; font-variant-numeric: tabular-nums; z-index: 2; }
+        
         .player-next-exercise-box {
             background-color: #222222;
             padding: 10px;
@@ -442,7 +413,17 @@
             width: 100%;
             border: 1px solid #333333;
         }
-        .player-guide-text {
+        
+        .player-category-label {
+            color: var(--color-accent-purple);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .player-guide-link {
             font-size: 13px;
             color: var(--color-accent-blue);
             margin-top: 8px;
@@ -452,10 +433,23 @@
             cursor: pointer;
             text-decoration: underline;
         }
+        
+        /* NEXT BOX BUTTON */
+        .player-next-guide-button {
+            font-size: 11px;
+            color: var(--color-accent-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: inline-block;
+            border: 1px solid var(--color-accent-blue);
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: rgba(10, 132, 255, 0.1);
+            cursor: pointer;
+        }
 
-        /* ======================================================================
-           SEKTION 7: UNTERE NAVIGATIONSLEISTE
-           ====================================================================== */
+        /* NAVIGATION BAR */
         .bottom-navbar {
             position: fixed;
             bottom: 0; left: 0; width: 100%; height: 80px;
@@ -478,21 +472,10 @@
             transition: 0.2s;
             cursor: pointer;
         }
-        .nav-item-btn.nav-active {
-            opacity: 1;
-            color: var(--color-text-primary);
-            transform: translateY(-2px);
-        }
+        .nav-item-btn.nav-active { opacity: 1; color: var(--color-text-primary); transform: translateY(-2px); }
+        .nav-icon-font { font-size: 24px; margin-bottom: 3px; }
+        .nav-label-text { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
 
-        .nav-icon-font {
-            font-size: 24px;
-            margin-bottom: 3px;
-        }
-        .nav-label-text {
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
     </style>
 </head>
 <body>
@@ -541,6 +524,7 @@
         </div>
         <div class="overlay-scroll-content">
             <div class="ui-card">
+                <span id="detail-category-badge" class="detail-category-label">KATEGORIE</span>
                 <h2 class="sub-headline-text">ANLEITUNG</h2>
                 <div id="detail-content-text" class="detail-text-content"></div>
             </div>
@@ -595,12 +579,17 @@
                 <div id="player-time-display" class="player-timer-text">10</div>
             </div>
 
-            <div id="player-exercise-name" style="font-size:26px; font-weight:900; text-align:center;">ÜBUNG</div>
-            <div id="player-guide-text" class="player-guide-text" onclick="PlayerSystem.showCurrentDetail()">Anleitung anzeigen (Klick)</div>
+            <div style="text-align:center;">
+                <div id="player-category-display" class="player-category-label">BAUCH & CORE</div>
+                <div id="player-exercise-name" style="font-size:26px; font-weight:900; line-height:1.2;">ÜBUNG</div>
+            </div>
+            
+            <div id="player-guide-text" class="player-guide-link" onclick="PlayerSystem.showCurrentDetail()">Anleitung anzeigen (Klick)</div>
             
             <div id="player-next-box" class="player-next-exercise-box" style="display:none;">
                 <span style="color:#888; font-size:10px; font-weight:bold;">ALS NÄCHSTES:</span><br>
-                <span id="player-next-name" style="font-size:18px; font-weight:bold; color:#fff;">-</span>
+                <span id="player-next-name" style="font-size:18px; font-weight:bold; color:#fff;">-</span><br>
+                <div class="player-next-guide-button" onclick="PlayerSystem.showNextDetail()">NÄCHSTE ANLEITUNG LESEN</div>
             </div>
         </div>
 
@@ -680,7 +669,7 @@
         </div>
 
         <div class="ui-card-compact" style="flex:1;">
-            <h2 class="sub-headline-compact" style="text-align:center;">WORKOUT STARTEN</h2>
+            <h2 class="sub-headline-compact" style="text-align:center; margin-bottom:5px;">WORKOUT STARTEN</h2>
             <div class="dashboard-grid-layout">
                 <button id="preset-btn-10" class="small-toggle-button" onclick="AppController.setDuration(10)">10 MIN</button>
                 <button id="preset-btn-20" class="small-toggle-button" onclick="AppController.setDuration(20)">20 MIN</button>
@@ -692,6 +681,17 @@
             
             <button class="library-button" onclick="UserInterface.openLibraryOverlay()">BIBLIOTHEK ANZEIGEN</button>
             
+            <div style="margin-bottom:8px;">
+                <span style="font-size:9px; font-weight:bold; color:#666; margin-left:2px;">TRAININGS-FOKUS:</span>
+                <select id="home-focus-select" class="select-input" style="margin-top:2px; padding:8px;">
+                    <option value="all">Ganzkörper (Mix)</option>
+                    <option value="Bauch & Core">Bauch & Core</option>
+                    <option value="Beine & Po">Beine & Po</option>
+                    <option value="Oberkörper">Oberkörper</option>
+                    <option value="Ganzkörper & Cardio">Cardio Focus</option>
+                </select>
+            </div>
+
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                 <button class="primary-button" onclick="PlayerSystem.initializePlayer()">LIVE START</button>
                 <button class="outline-button" onclick="LogSystem.openOverlay()">LOGBUCH</button>
@@ -714,7 +714,14 @@
         </div>
         
         <div class="ui-card">
-            <h2 class="sub-headline-text">KÖRPERDATEN</h2>
+            <h2 class="sub-headline-text">VERGLEICH (ZULETZT)</h2>
+            <div id="compare-table-container" style="padding:5px;">
+                <span style="font-size:11px; color:#666;">Keine Daten zum Vergleichen.</span>
+            </div>
+        </div>
+
+        <div class="ui-card">
+            <h2 class="sub-headline-text">MESSUNG EINTRAGEN</h2>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
                 <input type="number" id="measure-weight" class="text-input" placeholder="Gewicht (kg)">
                 <input type="number" id="measure-waist" class="text-input" placeholder="Bauch (cm)">
@@ -775,158 +782,194 @@
         // ======================================================
         // DATENBANK & KONSTANTEN
         // ======================================================
-        const LOCAL_STORAGE_KEY = "BP_V23_1_DETAILED";
+        const LOCAL_STORAGE_KEY = "BP_V26_UNABRIDGED";
         
-        // Vollständige Übungsdatenbank MIT DETAILS (Kurz & Lang)
+        // Vollständige Übungsdatenbank MIT KATEGORIEN UND ANLEITUNGEN
         const EXERCISE_DB = {
             "Planks": {
-                short: "Rücken gerade, Bauch fest anspannen, nicht durchhängen.",
+                cat: "Bauch & Core",
+                short: "Rücken gerade, Bauch fest anspannen.",
                 long: "1. Lege dich auf den Bauch.\n2. Stütze dich auf die Unterarme, Ellbogen unter den Schultern.\n3. Hebe deinen Körper an, sodass er von Kopf bis Fuß eine Linie bildet.\n4. Spanne Bauch und Po fest an. Vermeide ein Hohlkreuz!\n5. Halte die Position und atme ruhig weiter."
             },
             "Liegestütze": {
+                cat: "Oberkörper",
                 short: "Brust bis fast zum Boden, Körper eine Linie.",
                 long: "1. Hände etwas breiter als schulterbreit aufstellen.\n2. Füße zusammen oder leicht geöffnet.\n3. Körper anspannen (Linie).\n4. Senke den Körper kontrolliert ab, bis die Brust fast den Boden berührt.\n5. Drücke dich explosiv wieder nach oben."
             },
             "Kniebeugen": {
+                cat: "Beine & Po",
                 short: "Rücken gerade, Gewicht auf den Fersen, Knie stabil.",
                 long: "1. Stehe schulterbreit.\n2. Schiebe den Po nach hinten unten, als würdest du dich setzen.\n3. Halte den Rücken gerade und die Brust oben.\n4. Gehe so tief, wie du die Spannung halten kannst.\n5. Drücke dich aus den Fersen wieder hoch."
             },
             "Crunches": {
+                cat: "Bauch & Core",
                 short: "Nur Schulterblätter lösen, ausatmen beim Hochgehen.",
                 long: "1. Rückenlage, Beine angewinkelt aufstellen.\n2. Hände an die Schläfen (nicht am Kopf ziehen!).\n3. Hebe nur die Schulterblätter vom Boden ab.\n4. Atme beim Hochgehen aus, beim Senken ein.\n5. Der untere Rücken bleibt am Boden."
             },
             "Ausfallschritte": {
+                cat: "Beine & Po",
                 short: "Vorderes Knie 90 Grad, Oberkörper aufrecht halten.",
                 long: "1. Mache einen großen Schritt nach vorne.\n2. Senke das hintere Knie bis knapp über den Boden.\n3. Beide Knie sollten ca. 90 Grad gebeugt sein.\n4. Oberkörper bleibt aufrecht.\n5. Drücke dich wieder zurück in den Stand und wechsle das Bein."
             },
             "Dips": {
+                cat: "Oberkörper",
                 short: "Ellenbogen nah am Körper führen, tief absenken.",
                 long: "1. Stütze dich auf einer Erhöhung (Stuhl/Bank) oder am Boden ab.\n2. Beine gestreckt oder angewinkelt.\n3. Senke den Po ab, indem du die Arme beugst.\n4. Ellenbogen zeigen nach hinten, nicht nach außen.\n5. Drücke dich wieder hoch."
             },
             "Burpees": {
+                cat: "Ganzkörper & Cardio",
                 short: "Explosiver Sprung nach oben, sauberer Liegestütz unten.",
                 long: "1. Aus dem Stand in die Hocke, Hände zum Boden.\n2. Springe mit den Füßen nach hinten in die Liegestützposition.\n3. Absolviere einen Liegestütz (optional: Brust ablegen).\n4. Springe mit den Füßen wieder zu den Händen.\n5. Mache einen Strecksprung nach oben."
             },
             "Mountain Climber": {
+                cat: "Ganzkörper & Cardio",
                 short: "Knie abwechselnd schnell zur Brust ziehen.",
                 long: "1. Startposition: Liegestütz/Plank auf den Händen.\n2. Ziehe abwechselnd und dynamisch ein Knie zur Brust.\n3. Halte den Rücken gerade und den Po tief.\n4. Bewege dich rhythmisch und schnell."
             },
             "Wandsitzen": {
-                short: "Beine im 90 Grad Winkel, Rücken flach an die Wand pressen.",
+                cat: "Beine & Po",
+                short: "Beine im 90 Grad Winkel, Rücken flach an die Wand.",
                 long: "1. Lehne dich mit dem Rücken gegen eine Wand.\n2. Rutsche nach unten, bis Ober- und Unterschenkel einen 90° Winkel bilden.\n3. Drücke den unteren Rücken fest gegen die Wand.\n4. Halte die Position statisch."
             },
             "Hampelmann": {
+                cat: "Ganzkörper & Cardio",
                 short: "Arme ganz nach oben führen, weich auf Ballen landen.",
                 long: "1. Starte im aufrechten Stand, Füße zusammen, Arme am Körper.\n2. Springe, öffne die Beine und führe die Hände über dem Kopf zusammen.\n3. Springe zurück in die Ausgangsposition.\n4. Lande weich auf den Fußballen."
             },
             "Beinheben": {
+                cat: "Bauch & Core",
                 short: "Beine gestreckt heben, unterer Rücken bleibt am Boden.",
                 long: "1. Rückenlage, Hände unter den Po oder neben den Körper.\n2. Hebe beide Beine gestreckt an, bis sie senkrecht stehen.\n3. Senke sie langsam ab, ohne den Boden zu berühren.\n4. WICHTIG: Der untere Rücken muss Kontakt zum Boden halten!"
             },
             "Glute Bridge": {
+                cat: "Beine & Po",
                 short: "Hüfte so weit wie möglich heben, Po oben fest anspannen.",
                 long: "1. Rückenlage, Füße nah am Po aufstellen.\n2. Hebe das Becken an, bis Oberschenkel und Oberkörper eine Linie bilden.\n3. Spanne den Po oben maximal an.\n4. Senke das Becken kontrolliert ab (nicht ablegen)."
             },
             "High Knees": {
+                cat: "Ganzkörper & Cardio",
                 short: "Knie explosiv bis zur Hüfte hochziehen, Rücken gerade.",
                 long: "1. Laufe auf der Stelle.\n2. Ziehe dabei die Knie so hoch wie möglich (Hüfthöhe).\n3. Nutze die Arme aktiv mit.\n4. Bleibe aufrecht im Oberkörper."
             },
             "Russian Twist": {
+                cat: "Bauch & Core",
                 short: "Beine in der Luft, Oberkörper rotieren, Boden berühren.",
                 long: "1. Setze dich hin, lehne den Oberkörper leicht zurück.\n2. Hebe die Füße vom Boden ab (Balance halten).\n3. Rotiere den Oberkörper und berühre abwechselnd links und rechts den Boden.\n4. Folge den Händen mit dem Blick."
             },
             "Superman": {
+                cat: "Bauch & Core",
                 short: "Arme und Beine gleichzeitig heben, Spannung halten.",
                 long: "1. Bauchlage, Arme nach vorne gestreckt.\n2. Hebe gleichzeitig Arme und Beine vom Boden ab.\n3. Halte die Spannung im unteren Rücken kurz.\n4. Senke alles wieder ab."
             },
             "Wadenheben": {
+                cat: "Beine & Po",
                 short: "Auf Zehenspitzen drücken, langsam absenken.",
                 long: "1. Stehe aufrecht, Füße hüftbreit.\n2. Drücke dich so hoch wie möglich auf die Zehenspitzen.\n3. Halte kurz die Spannung in den Waden.\n4. Senke die Fersen langsam wieder ab (ohne Boden ganz zu berühren für mehr Intensität)."
             },
             "Side Plank (L)": {
+                cat: "Bauch & Core",
                 short: "Hüfte oben halten, Körper bildet eine Linie.",
                 long: "1. Lege dich auf die linke Seite.\n2. Stütze dich auf den linken Unterarm.\n3. Hebe die Hüfte an, bis der Körper eine gerade Linie bildet.\n4. Halte diese Position statisch."
             },
             "Side Plank (R)": {
+                cat: "Bauch & Core",
                 short: "Hüfte oben halten, Körper bildet eine Linie.",
                 long: "1. Lege dich auf die rechte Seite.\n2. Stütze dich auf den rechten Unterarm.\n3. Hebe die Hüfte an, bis der Körper eine gerade Linie bildet.\n4. Halte diese Position statisch."
             },
             "Diamond Pushups": {
+                cat: "Oberkörper",
                 short: "Hände bilden Raute unter der Brust, Trizeps Fokus.",
                 long: "1. Liegestützposition, aber Hände sind direkt unter der Brust.\n2. Daumen und Zeigefinger bilden ein Dreieck/Raute.\n3. Führe den Liegestütz aus, Ellenbogen nah am Körper.\n4. Zielmuskel: Trizeps."
             },
             "Bicycle Crunches": {
+                cat: "Bauch & Core",
                 short: "Ellenbogen zum gegenüberliegenden Knie, Bein strecken.",
                 long: "1. Rückenlage, Hände an den Kopf, Beine in der Luft.\n2. Führe rechten Ellenbogen zum linken Knie, während das rechte Bein gestreckt wird.\n3. Wechsle fließend die Seite (wie Fahrradfahren).\n4. Drehe den Oberkörper aktiv ein."
             },
             "Flutter Kicks": {
+                cat: "Bauch & Core",
                 short: "Beine gestreckt knapp über Boden abwechselnd auf/ab.",
                 long: "1. Rückenlage, Hände unter den Po.\n2. Hebe beide Beine gestreckt leicht an.\n3. Bewege sie abwechselnd kleine Stücke auf und ab (Paddelbewegung).\n4. Rücken fest am Boden lassen."
             },
             "Box Jumps": {
+                cat: "Ganzkörper & Cardio",
                 short: "Beidbeinig auf Erhöhung springen, weich landen.",
                 long: "1. Stehe vor einer stabilen Box oder Erhöhung.\n2. Gehe leicht in die Hocke und hole Schwung.\n3. Springe beidbeinig auf die Box.\n4. Lande weich und richte dich komplett auf.\n5. Steige einzeln wieder hinab."
             },
             "Schattenboxen": {
+                cat: "Ganzkörper & Cardio",
                 short: "Schnelle, saubere Schläge, in Bewegung bleiben.",
                 long: "1. Leichte Grätschstellung, Fäuste vor das Gesicht (Deckung).\n2. Schlage abwechselnd gerade nach vorne.\n3. Drehe die Hüfte bei jedem Schlag mit ein.\n4. Bleib leichtfüßig in Bewegung."
             },
             "Sit-Ups": {
+                cat: "Bauch & Core",
                 short: "Oberkörper komplett aufrichten, Wirbel für Wirbel.",
                 long: "1. Rückenlage, Beine angewinkelt, Füße am Boden.\n2. Richte den Oberkörper komplett auf, bis du sitzt.\n3. Berühre evtl. deine Füße.\n4. Rolle dich kontrolliert Wirbel für Wirbel wieder ab."
             },
             "Trizeps Dips": {
+                cat: "Oberkörper",
                 short: "An Stuhl/Bank abstützen, tief beugen.",
                 long: "1. Setze dich vor einen Stuhl/Sofa, Hände auf der Kante.\n2. Strecke die Beine aus (schwer) oder winkle sie an (leicht).\n3. Beuge die Arme, bis der Po fast den Boden berührt.\n4. Drücke dich aus den Armen wieder hoch."
             },
             "Reverse Crunches": {
+                cat: "Bauch & Core",
                 short: "Hüfte vom Boden lösen, Knie zur Brust rollen.",
                 long: "1. Rückenlage, Beine angewinkelt in der Luft.\n2. Spanne den Bauch an und rolle das Becken vom Boden ab.\n3. Ziehe die Knie Richtung Stirn.\n4. Senke das Becken langsam wieder ab."
             },
             "Plank Jacks": {
-                short: "In Plank-Position Beine wie beim Hampelmann öffnen/schließen.",
+                cat: "Ganzkörper & Cardio",
+                short: "In Plank-Position Beine wie beim Hampelmann.",
                 long: "1. Starte im Unterarmstütz (Plank).\n2. Springe mit den Füßen auseinander (Grätsche) und sofort wieder zusammen.\n3. Der Oberkörper bleibt stabil, Po nicht zu hoch."
             },
             "Skater Jumps": {
+                cat: "Ganzkörper & Cardio",
                 short: "Seitlich springen, inneres Bein hinterkreuzen.",
                 long: "1. Springe seitlich auf das rechte Bein.\n2. Kreuze das linke Bein hinter dem rechten, ohne den Boden zu berühren.\n3. Springe sofort zur anderen Seite.\n4. Nutze die Arme für Schwung."
             },
             "Donkey Kicks": {
+                cat: "Beine & Po",
                 short: "Vierfüßlerstand, Bein angewinkelt nach oben kicken.",
                 long: "1. Vierfüßlerstand auf Händen und Knien.\n2. Hebe ein Bein angewinkelt (90°) nach oben, als würdest du die Decke treten.\n3. Spanne den Po oben an.\n4. Senke das Bein, ohne abzusetzen."
             },
             "Fire Hydrants": {
+                cat: "Beine & Po",
                 short: "Vierfüßlerstand, Bein seitlich anheben.",
                 long: "1. Vierfüßlerstand.\n2. Hebe ein Bein seitlich an (wie ein Hund am Hydranten), Knie bleibt gebeugt.\n3. Halte den Rücken gerade, nicht zur Seite kippen.\n4. Senke das Bein wieder."
             },
             "Armkreisen": {
+                cat: "Oberkörper",
                 short: "Arme seitlich strecken, kleine schnelle Kreise.",
                 long: "1. Stehe aufrecht, Arme waagerecht zur Seite gestreckt.\n2. Mache kleine, schnelle Kreise mit den Armen.\n3. Halte die Schultern tief und den Nacken entspannt.\n4. Wechsle nach der Hälfte der Zeit die Richtung."
             },
             "Seitl. Beinheben": {
+                cat: "Beine & Po",
                 short: "Auf der Seite liegen, oberes Bein gestreckt heben.",
                 long: "1. Lege dich auf die Seite, Kopf auf dem Arm ablegen.\n2. Das obere Bein ist gestreckt.\n3. Hebe das Bein kontrolliert so hoch wie möglich.\n4. Senke es langsam, ohne es ganz abzulegen."
             },
             "Käfer (Dead Bug)": {
+                cat: "Bauch & Core",
                 short: "Rücken flach, gegenüberliegenden Arm/Bein senken.",
                 long: "1. Rückenlage, Arme senkrecht nach oben, Beine 90° in der Luft.\n2. Strecke rechten Arm nach hinten und linkes Bein nach vorne aus.\n3. Rücken bleibt flach am Boden!\n4. Zurück zur Mitte und Seite wechseln."
             },
             "Hollow Body": {
+                cat: "Bauch & Core",
                 short: "Schiffchen-Position, unterer Rücken fest am Boden.",
                 long: "1. Rückenlage, Arme nach hinten gestreckt.\n2. Hebe Arme, Kopf, Schultern und Beine gleichzeitig an.\n3. Der Körper bildet eine bananenförmige Kurve.\n4. Der untere Rücken MUSS Kontakt zum Boden haben."
             },
             "Inchworm": {
+                cat: "Ganzkörper & Cardio",
                 short: "Aus dem Stand in Plank laufen und zurück.",
                 long: "1. Stehe aufrecht.\n2. Beuge dich vor, Hände zum Boden (Beine möglichst gestreckt).\n3. Laufe mit den Händen nach vorne in die Plank-Position.\n4. Laufe mit den Händen wieder zurück zu den Füßen und richte dich auf."
             },
             "Wall Pushups": {
+                cat: "Oberkörper",
                 short: "Liegestütz gegen Wand, Körper gespannt.",
                 long: "1. Stehe etwa einen Schritt von einer Wand entfernt.\n2. Hände auf Schulterhöhe an die Wand.\n3. Beuge die Arme und bringe das Gesicht zur Wand.\n4. Drücke dich wieder weg. Körper bleibt steif wie ein Brett."
             }
         };
-        const EXERCISE_KEYS = Object.keys(EXERCISE_DB);
+        const EXERCISE_KEYS = Object.keys(EXERCISE_DB).sort();
 
-        // Checklist Items (Eisen & Magnesium hinzugefügt)
+        // Checklist Items
         const CHECKLIST_ITEMS_LIST = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
 
         // Globaler App Status
@@ -954,7 +997,8 @@
             round:1, 
             exerciseIdx:0, 
             workoutPlan:[], 
-            isCompleted:false 
+            isCompleted:false,
+            exercisesCount: 0
         };
         let audioCtx=null, isSoundOn=true;
         let tempKcalStorage = 0;
@@ -1141,9 +1185,12 @@
                     div.className = "library-item";
                     div.onclick = () => { UserInterface.openDetailOverlay(key); };
                     div.innerHTML = `
-                        <span class="lib-name">${key}</span>
-                        <span class="lib-desc">${exercise.short}</span>
-                        <span class="lib-more">ANLEITUNG ÖFFNEN ▸</span>
+                        <div class="lib-header-row">
+                            <span class="lib-name-text">${key}</span>
+                            <span class="lib-category-badge">${exercise.cat}</span>
+                        </div>
+                        <span class="lib-desc-text">${exercise.short}</span>
+                        <span class="lib-more-link">ANLEITUNG ÖFFNEN ▸</span>
                     `;
                     container.appendChild(div);
                 });
@@ -1153,6 +1200,7 @@
             openDetailOverlay: function(exerciseKey) {
                 let exercise = EXERCISE_DB[exerciseKey];
                 document.getElementById('detail-title-text').innerText = exerciseKey;
+                document.getElementById('detail-category-badge').innerText = exercise.cat;
                 document.getElementById('detail-content-text').innerText = exercise.long;
                 document.getElementById('overlay-detail-view').style.display = 'flex';
             },
@@ -1171,17 +1219,35 @@
                 this.renderStack();
                 let select = document.getElementById('manual-exercise-select'); 
                 select.innerHTML = "";
-                EXERCISE_KEYS.forEach(key => { 
-                    let opt = document.createElement('option'); 
-                    opt.value = key; 
-                    opt.innerText = key; 
-                    select.appendChild(opt); 
+                
+                // Gruppieren der Übungen für das Dropdown
+                let groups = {};
+                EXERCISE_KEYS.forEach(key => {
+                    let cat = EXERCISE_DB[key].cat;
+                    if(!groups[cat]) groups[cat] = [];
+                    groups[cat].push(key);
                 });
+
+                // Dropdown füllen mit optgroups
+                Object.keys(groups).sort().forEach(cat => {
+                    let group = document.createElement('optgroup');
+                    group.label = cat;
+                    groups[cat].forEach(exName => {
+                        let opt = document.createElement('option');
+                        opt.value = exName;
+                        opt.innerText = exName;
+                        group.appendChild(opt);
+                    });
+                    select.appendChild(group);
+                });
+
                 document.getElementById('overlay-manual-view').style.display = 'flex';
             },
 
             addToStack: function() {
                 let name = document.getElementById('manual-exercise-select').value;
+                if(!name) return; 
+
                 let rounds = parseInt(document.getElementById('manual-rounds-input').value);
                 let defaultVal = document.getElementById('manual-value-default').value || 0;
                 
@@ -1226,7 +1292,56 @@
             initializePlayer: function() {
                 if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
                 
-                playerState.workoutPlan = [...EXERCISE_KEYS].sort(() => 0.5 - Math.random()).slice(0, 6);
+                // 1. Berechnung der Anzahl Übungen basierend auf Zeit
+                // Formel: Gesamtsekunden / (Work + Rest)
+                let totalSeconds = appData.config.durationPreference * 60;
+                let cycleSeconds = appData.config.workTime + appData.config.restTime;
+                let exerciseCount = Math.floor(totalSeconds / cycleSeconds);
+                // Mindestens 1 Übung
+                if(exerciseCount < 1) exerciseCount = 1;
+                
+                playerState.exercisesCount = exerciseCount;
+
+                // 2. Generiere Workout basierend auf FOKUS
+                let focus = document.getElementById('home-focus-select').value;
+                let poolMain = [];
+                let poolOther = [];
+                
+                EXERCISE_KEYS.forEach(key => {
+                    let cat = EXERCISE_DB[key].cat;
+                    if(focus === 'all') {
+                        poolMain.push(key);
+                    } else {
+                        if(cat === focus) poolMain.push(key);
+                        else poolOther.push(key);
+                    }
+                });
+
+                let plan = [];
+                
+                if(focus === 'all') {
+                    // Zufällig mischen
+                    for(let i=0; i<exerciseCount; i++) {
+                        plan.push(poolMain[Math.floor(Math.random() * poolMain.length)]);
+                    }
+                } else {
+                    // Gewichtet: ca 70% Fokus, 30% Rest
+                    let mainCount = Math.ceil(exerciseCount * 0.7);
+                    let otherCount = exerciseCount - mainCount;
+                    
+                    for(let i=0; i<mainCount; i++) {
+                        if(poolMain.length > 0) plan.push(poolMain[Math.floor(Math.random() * poolMain.length)]);
+                        else if(poolOther.length > 0) plan.push(poolOther[Math.floor(Math.random() * poolOther.length)]);
+                    }
+                    for(let i=0; i<otherCount; i++) {
+                        if(poolOther.length > 0) plan.push(poolOther[Math.floor(Math.random() * poolOther.length)]);
+                        else if(poolMain.length > 0) plan.push(poolMain[Math.floor(Math.random() * poolMain.length)]);
+                    }
+                    // Mischen, damit Fokus nicht nur am Anfang kommt
+                    plan.sort(() => 0.5 - Math.random());
+                }
+
+                playerState.workoutPlan = plan;
                 playerState.round = 1; 
                 playerState.exerciseIdx = 0; 
                 playerState.phase = 'PREP'; 
@@ -1266,19 +1381,15 @@
                     playerState.phase = 'WORK'; 
                     playerState.timeRemaining = appData.config.workTime; 
                 } else if(playerState.phase === 'WORK') { 
+                    // Prüfen ob letzte Übung
+                    if(playerState.exerciseIdx >= playerState.workoutPlan.length - 1) {
+                        PlayerSystem.finish();
+                        return;
+                    }
                     playerState.phase = 'REST'; 
                     playerState.timeRemaining = appData.config.restTime; 
                 } else {
                     playerState.exerciseIdx++;
-                    if(playerState.exerciseIdx >= 6) {
-                        playerState.exerciseIdx = 0; 
-                        playerState.round++;
-                        let maxRounds = appData.config.durationPreference === 10 ? 1 : (appData.config.durationPreference === 20 ? 2 : 3);
-                        if(playerState.round > maxRounds) { 
-                            PlayerSystem.finish(); 
-                            return; 
-                        }
-                    }
                     playerState.phase = 'WORK'; 
                     playerState.timeRemaining = appData.config.workTime;
                 }
@@ -1302,22 +1413,31 @@
                 let offset = 691 - (playerState.timeRemaining / maxTime) * 691;
                 document.getElementById('player-progress-ring').style.strokeDashoffset = offset;
 
-                let exName = playerState.workoutPlan[playerState.exerciseIdx];
-                document.getElementById('player-exercise-name').innerText = exName.toUpperCase();
+                // Anzeige Logik
+                // Work/Prep: Zeige aktuelle Übung
+                // Rest: Zeige "Pause" und nächste Übung in der Box
                 
-                // Kurze Anleitung + Klick Handler
-                let guideEl = document.getElementById('player-guide-text');
-                guideEl.innerText = EXERCISE_DB[exName].short + " (Details)";
+                let currentExName = playerState.workoutPlan[playerState.exerciseIdx];
+                let nextExName = (playerState.exerciseIdx + 1 < playerState.workoutPlan.length) ? playerState.workoutPlan[playerState.exerciseIdx + 1] : "ENDE";
                 
-                let nextBox = document.getElementById('player-next-box');
-                if(playerState.phase === 'REST' || playerState.phase === 'PREP') {
-                    nextBox.style.display = 'block';
-                    let nextName = (playerState.phase === 'PREP') ? exName : (playerState.exerciseIdx+1 < 6 ? playerState.workoutPlan[playerState.exerciseIdx+1] : "NÄCHSTE RUNDE");
-                    document.getElementById('player-next-name').innerText = nextName;
+                if(playerState.phase === 'WORK' || playerState.phase === 'PREP') {
+                    let exData = EXERCISE_DB[currentExName];
+                    document.getElementById('player-exercise-name').innerText = currentExName.toUpperCase();
+                    document.getElementById('player-category-display').innerText = exData.cat;
+                    document.getElementById('player-guide-text').style.display = 'block';
+                    document.getElementById('player-next-box').style.display = 'none';
+                    
+                    document.getElementById('player-round-display').innerText = `ÜBUNG ${playerState.exerciseIdx + 1} / ${playerState.workoutPlan.length}`;
                 } else {
-                    nextBox.style.display = 'none';
+                    // PAUSE
+                    document.getElementById('player-exercise-name').innerText = "PAUSE";
+                    document.getElementById('player-category-display').innerText = "ERHOLUNG";
+                    document.getElementById('player-guide-text').style.display = 'none';
+                    
+                    document.getElementById('player-next-box').style.display = 'block';
+                    document.getElementById('player-next-name').innerText = nextExName;
                 }
-
+                
                 let skipBtn = document.getElementById('player-btn-skip');
                 if(playerState.phase === 'WORK') { 
                     skipBtn.style.opacity = 0.3; 
@@ -1334,10 +1454,17 @@
                 let exName = playerState.workoutPlan[playerState.exerciseIdx];
                 UserInterface.openDetailOverlay(exName);
             },
+            
+            showNextDetail: function() {
+                if(playerState.exerciseIdx + 1 < playerState.workoutPlan.length) {
+                    let nextName = playerState.workoutPlan[playerState.exerciseIdx + 1];
+                    UserInterface.openDetailOverlay(nextName);
+                }
+            },
 
             finish: function() {
                 clearInterval(playerState.timerId);
-                tempKcalStorage = appData.config.durationPreference * 8;
+                tempKcalStorage = appData.config.durationPreference * 8; // Grobe Schätzung
                 document.getElementById('overlay-player-view').style.display = 'none';
                 document.getElementById('overlay-rating-view').style.display = 'flex';
             },
@@ -1424,6 +1551,55 @@
                     let max = Math.max(...vals) + 1;
                     let pts = vals.map((w, i) => `${(i / (vals.length - 1)) * 100},${100 - ((w - min) / (max - min) * 100)}`).join(' ');
                     svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
+                }
+
+                // VERGLEICHS TABELLE RENDERN
+                let compareContainer = document.getElementById('compare-table-container');
+                if(appData.bodyMeasurementsLog.length >= 2) {
+                    let current = appData.bodyMeasurementsLog[appData.bodyMeasurementsLog.length - 1];
+                    let previous = appData.bodyMeasurementsLog[appData.bodyMeasurementsLog.length - 2];
+                    
+                    let keys = [
+                        {id:'w', label:'Gewicht'},
+                        {id:'b', label:'Bauch'},
+                        {id:'c', label:'Brust'},
+                        {id:'a', label:'Arm'},
+                        {id:'l', label:'Bein'},
+                        {id:'g', label:'Po'}
+                    ];
+
+                    let html = `<table class="comparison-table">`;
+                    keys.forEach(k => {
+                        let valCurr = parseFloat(current[k.id]);
+                        let valPrev = parseFloat(previous[k.id]);
+                        
+                        if(!isNaN(valCurr) && !isNaN(valPrev)) {
+                            let diff = valCurr - valPrev;
+                            let diffStr = (diff > 0 ? "+" : "") + diff.toFixed(1);
+                            
+                            // Logik für Farbe: Bei Gewicht ist Minus gut (Grün), bei Muskeln ist Plus gut (Grün)
+                            let colorClass = "diff-neutral";
+                            if(k.id === 'w') {
+                                if(diff < 0) colorClass = "diff-positive";
+                                else if(diff > 0) colorClass = "diff-negative";
+                            } else {
+                                if(diff > 0) colorClass = "diff-positive";
+                                else if(diff < 0) colorClass = "diff-negative";
+                            }
+
+                            if(diff === 0) colorClass = "diff-neutral";
+
+                            html += `<tr>
+                                <td>${k.label}</td>
+                                <td>${valCurr}</td>
+                                <td class="${colorClass}">${diffStr}</td>
+                            </tr>`;
+                        }
+                    });
+                    html += `</table><div style="margin-top:5px; font-size:9px; color:#666; text-align:right;">Vergleich zum ${new Date(previous.date).toLocaleDateString()}</div>`;
+                    compareContainer.innerHTML = html;
+                } else {
+                    compareContainer.innerHTML = `<span style="font-size:11px; color:#666;">Mindestens 2 Messungen für Vergleich benötigt.</span>`;
                 }
 
                 let list = document.getElementById('history-list-container'); 
