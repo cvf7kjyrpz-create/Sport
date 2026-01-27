@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V27.0 - SCROLL FIX</title>
+    <title>Body Pulse V28.0 - COMPACT NAV</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -56,15 +56,14 @@
             padding-top: var(--safe-area-top);
         }
 
-        /* SCREEN LAYOUTS - HIER WAR DER FEHLER: PADDING ERHÖHT */
+        /* SCREEN LAYOUTS - FIX: Padding reduziert auf 100px */
         .app-screen-container {
             flex: 1;
             display: none;
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            /* WICHTIG: Erhöht auf 160px damit man unter der Navbar hervor scrollen kann */
-            padding-bottom: 160px; 
+            padding-bottom: 100px; 
         }
 
         .app-screen-container.screen-active {
@@ -389,7 +388,6 @@
         .overlay-scroll-content {
             flex: 1;
             overflow-y: auto;
-            /* WICHTIG: Mehr Platz unten im Overlay, damit man alles scrollen kann */
             padding-bottom: 120px;
         }
         
@@ -460,15 +458,18 @@
             cursor: pointer;
         }
 
-        /* NAVIGATION BAR */
+        /* NAVIGATION BAR - FIX: Tiefer und kompakter */
         .bottom-navbar {
             position: fixed;
-            bottom: 0; left: 0; width: 100%; height: 80px;
+            bottom: 0; left: 0; width: 100%;
+            height: auto;
+            min-height: 60px; /* Reduziert von 80px */
             background-color: rgba(10,10,10,0.95);
             border-top: 1px solid #333333;
             display: flex;
             justify-content: space-around;
-            padding-bottom: var(--safe-area-bottom);
+            padding-top: 8px;
+            padding-bottom: calc(10px + var(--safe-area-bottom)); /* Dynamic Padding */
             z-index: 1000;
         }
 
@@ -484,7 +485,7 @@
             cursor: pointer;
         }
         .nav-item-btn.nav-active { opacity: 1; color: var(--color-text-primary); transform: translateY(-2px); }
-        .nav-icon-font { font-size: 24px; margin-bottom: 3px; }
+        .nav-icon-font { font-size: 20px; margin-bottom: 2px; } /* Kleiner */
         .nav-label-text { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; }
 
     </style>
@@ -793,7 +794,7 @@
         // ======================================================
         // DATENBANK & KONSTANTEN
         // ======================================================
-        const LOCAL_STORAGE_KEY = "BP_V27_SCROLL_FIXED";
+        const LOCAL_STORAGE_KEY = "BP_V28_COMPACT_NAV";
         
         // Vollständige Übungsdatenbank MIT KATEGORIEN UND ANLEITUNGEN
         const EXERCISE_DB = {
