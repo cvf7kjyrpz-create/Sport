@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V39.0 - FULL SOURCE</title>
+    <title>Body Pulse V40.0 - FIXED DATA & TIME</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,7 +11,7 @@
 
     <style>
         /* ======================================================================
-           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG ENTPACKT)
+           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG)
            ====================================================================== */
         :root {
             --color-background: #000000;
@@ -61,7 +61,6 @@
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            /* WICHTIG: Platz für die Navigation unten */
             padding-bottom: 100px; 
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -125,9 +124,16 @@
         }
 
         .freq-value-text {
-            font-size: 20px;
+            font-size: 18px; /* Etwas kleiner damit Text passt */
             font-weight: 900;
             color: var(--color-accent-green);
+            line-height: 1.2;
+        }
+
+        .freq-sub-text {
+            font-size: 10px;
+            color: #888;
+            font-weight: 600;
         }
 
         .stat-label-text {
@@ -138,7 +144,7 @@
             margin-top: 4px;
         }
 
-        /* NEUES STATISTIK GRID (MODERN) */
+        /* METRICS GRID FÜR STATISTIK */
         .metrics-grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -176,31 +182,11 @@
             border-radius: 6px;
         }
 
-        /* FARBLOGIK FÜR DIE BADGES */
-        .trend-positive-good {
-            background-color: rgba(50, 215, 75, 0.15);
-            color: var(--color-accent-green);
-        }
-
-        .trend-negative-good {
-            background-color: rgba(50, 215, 75, 0.15);
-            color: var(--color-accent-green);
-        }
-
-        .trend-positive-bad {
-            background-color: rgba(255, 69, 58, 0.15);
-            color: var(--color-accent-red);
-        }
-
-        .trend-negative-bad {
-            background-color: rgba(255, 69, 58, 0.15);
-            color: var(--color-accent-red);
-        }
-
-        .trend-neutral {
-            background-color: #222222;
-            color: #666666;
-        }
+        .trend-positive-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
+        .trend-negative-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
+        .trend-positive-bad { background-color: rgba(255, 69, 58, 0.15); color: var(--color-accent-red); }
+        .trend-negative-bad { background-color: rgba(255, 69, 58, 0.15); color: var(--color-accent-red); }
+        .trend-neutral { background-color: #222222; color: #666666; }
 
         .metric-current-value {
             font-size: 22px;
@@ -229,10 +215,7 @@
             margin-bottom: 8px;
             font-family: inherit;
         }
-
-        input.text-input:focus {
-            border-color: var(--color-accent-blue);
-        }
+        input.text-input:focus { border-color: var(--color-accent-blue); }
 
         /* BUTTONS */
         .primary-button {
@@ -246,14 +229,9 @@
             font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
-        .primary-button:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
+        .primary-button:active { transform: scale(0.98); opacity: 0.9; }
 
         .outline-button {
             background-color: transparent;
@@ -266,13 +244,9 @@
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
-        .outline-button:active {
-            background-color: #222222;
-        }
+        .outline-button:active { background-color: #222222; }
 
         .small-toggle-button {
             padding: 8px;
@@ -567,15 +541,15 @@
         <div class="dashboard-grid-layout">
             <div class="stat-display-item">
                 <span class="stat-label-text">WOCHE</span>
-                <span class="freq-value-text" id="freq-week">0</span>
+                <div id="freq-week" class="freq-value-text">0</div>
             </div>
             <div class="stat-display-item">
                 <span class="stat-label-text">MONAT</span>
-                <span class="freq-value-text" id="freq-month">0</span>
+                <div id="freq-month" class="freq-value-text">0</div>
             </div>
             <div class="stat-display-item">
                 <span class="stat-label-text">JAHR</span>
-                <span class="freq-value-text" id="freq-year">0</span>
+                <div id="freq-year" class="freq-value-text">0</div>
             </div>
         </div>
 
@@ -680,7 +654,8 @@
     </div>
 
     <script>
-        const STORAGE_KEY = "BODYPULSE_APP_DATA_V39_FULL";
+        // DER FIXE SCHLÜSSEL FÜR ALLE ZUKÜNFTIGEN VERSIONEN
+        const STORAGE_KEY = "BODYPULSE_MASTER_DATA";
 
         /**
          * ÜBUNGSDATENBANK
@@ -872,7 +847,7 @@
         const CHECKLIST_ITEMS = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
 
         /**
-         * DATENSTRUKTUR
+         * DATENSTRUKTUR (MIT DEFAULT WERTEN)
          */
         let db = {
             profile: { height: 0, weight: 0, age: 0 },
@@ -978,23 +953,56 @@
                 }
             },
 
+            // FREQUENZ UND MINUTEN BERECHNUNG
             calculateFrequency: function() {
                 const now = new Date();
+                
+                // Wochenstart (Montag) berechnen
                 const startOfWeek = new Date(now); 
                 const day = startOfWeek.getDay() || 7; 
                 if(day !== 1) startOfWeek.setHours(-24 * (day - 1)); 
                 else startOfWeek.setHours(0,0,0,0);
                 
-                let w = 0, m = 0, y = 0;
+                let w_count = 0; let w_min = 0;
+                let m_count = 0; let m_min = 0;
+                let y_count = 0; let y_min = 0;
                 
                 db.history.forEach(h => {
                     const d = new Date(h.date);
-                    if(d >= startOfWeek) w++;
-                    if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) m++;
-                    if(d.getFullYear() === now.getFullYear()) y++;
+                    // Versuche Dauer zu ermitteln. 
+                    // Fallback: Wenn 'duration' nicht gespeichert wurde (alte Daten), 
+                    // schätzen wir es aus kcal (kcal / 8) oder nehmen 0.
+                    let duration = 0;
+                    if(h.duration) {
+                        duration = h.duration;
+                    } else if (h.kcal) {
+                        duration = Math.round(h.kcal / 8);
+                    }
+
+                    // WOCHE
+                    if(d >= startOfWeek) {
+                        w_count++;
+                        w_min += duration;
+                    }
+                    
+                    // MONAT
+                    if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                        m_count++;
+                        m_min += duration;
+                    }
+                    
+                    // JAHR
+                    if(d.getFullYear() === now.getFullYear()) {
+                        y_count++;
+                        y_min += duration;
+                    }
                 });
                 
-                return { w, m, y };
+                return {
+                    w: w_count, w_m: w_min,
+                    m: m_count, m_m: m_min,
+                    y: y_count, y_m: y_min
+                };
             }
         };
 
@@ -1058,11 +1066,11 @@
                 document.getElementById('home-streak-val').innerText = db.status.streak;
                 document.getElementById('home-total-val').innerText = db.history.length;
 
-                // 2. FREQUENZ ANZEIGE
+                // 2. FREQUENZ ANZEIGE (MIT MINUTEN)
                 const freq = AppController.calculateFrequency();
-                document.getElementById('freq-week').innerText = freq.w;
-                document.getElementById('freq-month').innerText = freq.m;
-                document.getElementById('freq-year').innerText = freq.y;
+                document.getElementById('freq-week').innerHTML = `${freq.w} <span class="freq-sub-text">(${freq.w_m} MIN)</span>`;
+                document.getElementById('freq-month').innerHTML = `${freq.m} <span class="freq-sub-text">(${freq.m_m} MIN)</span>`;
+                document.getElementById('freq-year').innerHTML = `${freq.y} <span class="freq-sub-text">(${freq.y_m} MIN)</span>`;
 
                 // 3. BMI BERECHNUNG
                 const hMeters = db.profile.height / 100;
@@ -1095,7 +1103,7 @@
                 StatsSystem.render();
             },
             
-            // HIER IST DIE LOGIK FÜR DIE MODERNEN KACHELN
+            // DIE MODERNEN KACHELN
             renderModernStats: function() {
                 const gridContainer = document.getElementById('metrics-grid-container');
                 gridContainer.innerHTML = "";
@@ -1104,42 +1112,28 @@
                     const cur = db.measurements[db.measurements.length - 1];
                     const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
                     
-                    // Definition der Metriken und ob "weniger" besser ist (invert: true)
+                    // Definition: invert=true heißt "weniger ist besser" (z.B. Gewicht)
                     const metrics = [
-                        { id:'w', label:'GEWICHT', unit:'kg', invert: true },  // Weniger Gewicht = Gut (Grün)
-                        { id:'b', label:'BAUCH', unit:'cm', invert: true },    // Weniger Bauch = Gut (Grün)
-                        { id:'c', label:'BRUST', unit:'cm', invert: false },   // Mehr Brust = Gut (Grün)
-                        { id:'a', label:'ARM', unit:'cm', invert: false },     // Mehr Arm = Gut (Grün)
-                        { id:'l', label:'BEIN', unit:'cm', invert: false },    // Mehr Bein = Gut (Grün)
-                        { id:'g', label:'PO', unit:'cm', invert: false }       // Mehr Po = Gut (Grün)
+                        { id:'w', label:'GEWICHT', unit:'kg', invert: true },
+                        { id:'b', label:'BAUCH', unit:'cm', invert: true },
+                        { id:'c', label:'BRUST', unit:'cm', invert: false },
+                        { id:'a', label:'ARM', unit:'cm', invert: false },
+                        { id:'l', label:'BEIN', unit:'cm', invert: false },
+                        { id:'g', label:'PO', unit:'cm', invert: false }
                     ];
                     
                     metrics.forEach(m => {
                         const valCur = cur[m.id] || 0;
-                        
-                        // Nur anzeigen, wenn aktueller Wert > 0
                         if(valCur > 0) {
                             let badgeHtml = `<span class="metric-trend-badge trend-neutral">START</span>`;
                             
                             if(pre && pre[m.id] > 0) {
                                 const diff = valCur - pre[m.id];
-                                
                                 if(diff !== 0) {
-                                    // Logik: Ist die Änderung gut?
-                                    // Wenn invert true (Gewicht/Bauch): diff < 0 ist gut.
-                                    // Wenn invert false (Muskeln): diff > 0 ist gut.
                                     const isGood = m.invert ? (diff < 0) : (diff > 0);
-                                    
-                                    // Klasse wählen basierend auf isGood
-                                    // Wenn gut: Grün (positive-good oder negative-good)
-                                    // Wenn schlecht: Rot (positive-bad oder negative-bad)
                                     let cssClass = "";
-                                    
-                                    if(isGood) {
-                                        cssClass = diff > 0 ? "trend-positive-good" : "trend-negative-good";
-                                    } else {
-                                        cssClass = diff > 0 ? "trend-positive-bad" : "trend-negative-bad";
-                                    }
+                                    if(isGood) cssClass = diff > 0 ? "trend-positive-good" : "trend-negative-good";
+                                    else cssClass = diff > 0 ? "trend-positive-bad" : "trend-negative-bad";
                                     
                                     const sign = diff > 0 ? "+" : "";
                                     badgeHtml = `<span class="metric-trend-badge ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
@@ -1185,10 +1179,10 @@
                     svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
                 }
 
-                // 2. DAS NEUE METRICS GRID AUFRUFEN
+                // 2. METRICS
                 UserInterface.renderModernStats();
 
-                // 3. HISTORY LISTE
+                // 3. HISTORY
                 const list = document.getElementById('workout-history-list');
                 list.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
                 
@@ -1372,10 +1366,12 @@
                 const rating = document.getElementById('rating-slider').value;
                 const kcal = db.config.duration * 8;
                 
+                // HIER SPEICHERN WIR JETZT AUCH DIE MINUTEN (duration)
                 db.history.push({
                     date: new Date().toISOString(),
                     kcal: kcal,
                     rating: rating,
+                    duration: db.config.duration, // NEU
                     type: "Live Training"
                 });
                 
@@ -1425,20 +1421,58 @@
                 a.download = 'bodypulse_backup.json';
                 a.click();
             },
+            // INTELLIGENTER IMPORT DER ALTE UND NEUE BACKUPS VERSTEHT
             import: function(el) {
                 const reader = new FileReader();
                 reader.onload = e => {
                     try {
                         const data = JSON.parse(e.target.result);
-                        if(data.profile || data.prof) {
+                        
+                        // FALL 1: Altes Backup (ausführliche Namen)
+                        if(data.profile) {
                             db = data;
-                            AppController.save();
-                            location.reload();
-                        } else {
-                            alert("Ungültiges Format.");
                         }
+                        // FALL 2: Mittleres Backup (gekürzte Namen aus V38)
+                        else if(data.prof) {
+                            db.profile = {
+                                height: data.prof.h,
+                                weight: data.prof.w,
+                                age: data.prof.a
+                            };
+                            db.config = {
+                                work: data.cfg.work,
+                                rest: data.cfg.rest,
+                                duration: data.cfg.dur,
+                                note: data.cfg.note
+                            };
+                            db.status = {
+                                checklist: data.stat.list || [false,false,false,false,false],
+                                streak: data.stat.str,
+                                lastWorkout: data.stat.last
+                            };
+                            // Mapping History
+                            db.history = data.hist.map(h => ({
+                                date: h.d,
+                                kcal: h.k,
+                                rating: h.r,
+                                type: h.t
+                            }));
+                            // Mapping Measurements
+                            db.measurements = data.meas.map(m => ({
+                                date: m.d,
+                                w: m.w, b: m.b, c: m.c, a: m.a, l: m.l, g: m.g
+                            }));
+                            db.meta = { installed: data.meta.date };
+                        } else {
+                            throw new Error("Format unbekannt");
+                        }
+                        
+                        AppController.save();
+                        alert("Backup erfolgreich wiederhergestellt!");
+                        location.reload();
                     } catch(err) {
-                        alert("Fehler beim Import.");
+                        alert("Fehler beim Importieren: " + err.message);
+                        console.error(err);
                     }
                 };
                 reader.readAsText(el.files[0]);
