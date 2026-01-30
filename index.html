@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V37.0 - UNABRIDGED SOURCE</title>
+    <title>Body Pulse V39.0 - FULL SOURCE</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,7 +11,7 @@
 
     <style>
         /* ======================================================================
-           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG & STRUKTURIERT)
+           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG ENTPACKT)
            ====================================================================== */
         :root {
             --color-background: #000000;
@@ -61,7 +61,7 @@
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            /* Platz unten für die Navigation reservieren */
+            /* WICHTIG: Platz für die Navigation unten */
             padding-bottom: 100px; 
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -138,18 +138,18 @@
             margin-top: 4px;
         }
 
-        /* METRICS GRID FÜR STATISTIK */
+        /* NEUES STATISTIK GRID (MODERN) */
         .metrics-grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .metric-card-item {
             background-color: var(--color-card-light);
             border: 1px solid var(--color-border);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 14px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -158,43 +158,62 @@
         .metric-card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
+            align-items: flex-start;
+            margin-bottom: 8px;
         }
 
         .metric-label {
             font-size: 11px;
-            color: #888888;
             font-weight: 700;
+            color: #888888;
             text-transform: uppercase;
         }
 
-        .metric-current-value {
-            font-size: 18px;
-            font-weight: 800;
-            color: white;
-        }
-
-        .metric-diff-badge {
+        .metric-trend-badge {
             font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 6px;
         }
 
-        .diff-good {
+        /* FARBLOGIK FÜR DIE BADGES */
+        .trend-positive-good {
+            background-color: rgba(50, 215, 75, 0.15);
             color: var(--color-accent-green);
-            background-color: rgba(50, 215, 75, 0.1);
         }
 
-        .diff-bad {
+        .trend-negative-good {
+            background-color: rgba(50, 215, 75, 0.15);
+            color: var(--color-accent-green);
+        }
+
+        .trend-positive-bad {
+            background-color: rgba(255, 69, 58, 0.15);
             color: var(--color-accent-red);
-            background-color: rgba(255, 69, 58, 0.1);
         }
 
-        .diff-neutral {
-            color: #666666;
+        .trend-negative-bad {
+            background-color: rgba(255, 69, 58, 0.15);
+            color: var(--color-accent-red);
+        }
+
+        .trend-neutral {
             background-color: #222222;
+            color: #666666;
+        }
+
+        .metric-current-value {
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-unit {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666666;
+            margin-left: 2px;
         }
 
         /* INPUTS */
@@ -661,7 +680,7 @@
     </div>
 
     <script>
-        const STORAGE_KEY = "BODYPULSE_APP_DATA_V37_FULL";
+        const STORAGE_KEY = "BODYPULSE_APP_DATA_V39_FULL";
 
         /**
          * ÜBUNGSDATENBANK
@@ -921,7 +940,6 @@
             },
 
             saveMeasurement: function() {
-                // FIXED: Logik robuster gemacht
                 const wInput = parseFloat(document.getElementById('meas-weight').value);
                 const bInput = parseFloat(document.getElementById('meas-waist').value);
                 const cInput = parseFloat(document.getElementById('meas-chest').value);
@@ -929,7 +947,6 @@
                 const lInput = parseFloat(document.getElementById('meas-leg').value);
                 const gInput = parseFloat(document.getElementById('meas-glute').value);
                 
-                // Wir speichern, wenn wenigstens das Gewicht da ist.
                 if(wInput > 0) {
                     const entry = {
                         date: new Date().toISOString(),
@@ -948,7 +965,6 @@
                     UserInterface.refreshAll();
                     alert("Messung erfolgreich gespeichert!");
                     
-                    // Felder leeren
                     document.querySelectorAll('#screen-stats input').forEach(i => i.value = "");
                 } else {
                     alert("Bitte gib mindestens dein Gewicht ein, um zu speichern.");
@@ -962,11 +978,8 @@
                 }
             },
 
-            // Neue Funktion für die Frequenz-Anzeige (Woche/Monat/Jahr)
             calculateFrequency: function() {
                 const now = new Date();
-                
-                // Wochenstart berechnen (Montag)
                 const startOfWeek = new Date(now); 
                 const day = startOfWeek.getDay() || 7; 
                 if(day !== 1) startOfWeek.setHours(-24 * (day - 1)); 
@@ -976,14 +989,8 @@
                 
                 db.history.forEach(h => {
                     const d = new Date(h.date);
-                    
-                    // Woche: Datensatz ist jünger als Wochenstart
                     if(d >= startOfWeek) w++;
-                    
-                    // Monat: Gleicher Monat & gleiches Jahr
                     if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) m++;
-                    
-                    // Jahr: Gleiches Jahr
                     if(d.getFullYear() === now.getFullYear()) y++;
                 });
                 
@@ -1086,12 +1093,121 @@
 
                 // 8. STATISTIK RENDER
                 StatsSystem.render();
+            },
+            
+            // HIER IST DIE LOGIK FÜR DIE MODERNEN KACHELN
+            renderModernStats: function() {
+                const gridContainer = document.getElementById('metrics-grid-container');
+                gridContainer.innerHTML = "";
+                
+                if(db.measurements.length > 0) {
+                    const cur = db.measurements[db.measurements.length - 1];
+                    const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
+                    
+                    // Definition der Metriken und ob "weniger" besser ist (invert: true)
+                    const metrics = [
+                        { id:'w', label:'GEWICHT', unit:'kg', invert: true },  // Weniger Gewicht = Gut (Grün)
+                        { id:'b', label:'BAUCH', unit:'cm', invert: true },    // Weniger Bauch = Gut (Grün)
+                        { id:'c', label:'BRUST', unit:'cm', invert: false },   // Mehr Brust = Gut (Grün)
+                        { id:'a', label:'ARM', unit:'cm', invert: false },     // Mehr Arm = Gut (Grün)
+                        { id:'l', label:'BEIN', unit:'cm', invert: false },    // Mehr Bein = Gut (Grün)
+                        { id:'g', label:'PO', unit:'cm', invert: false }       // Mehr Po = Gut (Grün)
+                    ];
+                    
+                    metrics.forEach(m => {
+                        const valCur = cur[m.id] || 0;
+                        
+                        // Nur anzeigen, wenn aktueller Wert > 0
+                        if(valCur > 0) {
+                            let badgeHtml = `<span class="metric-trend-badge trend-neutral">START</span>`;
+                            
+                            if(pre && pre[m.id] > 0) {
+                                const diff = valCur - pre[m.id];
+                                
+                                if(diff !== 0) {
+                                    // Logik: Ist die Änderung gut?
+                                    // Wenn invert true (Gewicht/Bauch): diff < 0 ist gut.
+                                    // Wenn invert false (Muskeln): diff > 0 ist gut.
+                                    const isGood = m.invert ? (diff < 0) : (diff > 0);
+                                    
+                                    // Klasse wählen basierend auf isGood
+                                    // Wenn gut: Grün (positive-good oder negative-good)
+                                    // Wenn schlecht: Rot (positive-bad oder negative-bad)
+                                    let cssClass = "";
+                                    
+                                    if(isGood) {
+                                        cssClass = diff > 0 ? "trend-positive-good" : "trend-negative-good";
+                                    } else {
+                                        cssClass = diff > 0 ? "trend-positive-bad" : "trend-negative-bad";
+                                    }
+                                    
+                                    const sign = diff > 0 ? "+" : "";
+                                    badgeHtml = `<span class="metric-trend-badge ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
+                                } else {
+                                    badgeHtml = `<span class="metric-trend-badge trend-neutral">+/- 0</span>`;
+                                }
+                            }
+                            
+                            const card = document.createElement('div');
+                            card.className = "metric-card-item";
+                            card.innerHTML = `
+                                <div class="metric-card-header">
+                                    <span class="metric-label">${m.label}</span>
+                                    ${badgeHtml}
+                                </div>
+                                <div class="metric-current-value">
+                                    ${valCur} <span class="metric-unit">${m.unit}</span>
+                                </div>
+                            `;
+                            gridContainer.appendChild(card);
+                        }
+                    });
+                } else {
+                    gridContainer.innerHTML = "<div style='grid-column:1/-1; text-align:center; color:#666; font-size:12px; padding:10px;'>Noch keine Messdaten vorhanden.</div>";
+                }
             }
         };
 
-        // ======================================================
-        // PLAYER SYSTEM
-        // ======================================================
+        const StatsSystem = {
+            render: function() {
+                // 1. GEWICHTS GRAPH
+                const svg = document.getElementById('weight-chart-svg');
+                svg.innerHTML = "";
+                if(db.measurements.length > 1) {
+                    const vals = db.measurements.map(m => parseFloat(m.w));
+                    const min = Math.min(...vals) - 1;
+                    const max = Math.max(...vals) + 1;
+                    const points = vals.map((w, i) => {
+                        const x = (i / (vals.length - 1)) * 100;
+                        const y = 100 - ((w - min) / (max - min) * 100);
+                        return `${x},${y}`;
+                    }).join(' ');
+                    svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
+                }
+
+                // 2. DAS NEUE METRICS GRID AUFRUFEN
+                UserInterface.renderModernStats();
+
+                // 3. HISTORY LISTE
+                const list = document.getElementById('workout-history-list');
+                list.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
+                
+                [...db.history].reverse().slice(0, 10).forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = "ui-card";
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
+                            <span>${entry.type}</span>
+                            <span style="color:#666">${new Date(entry.date).toLocaleDateString()}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--color-accent-blue); margin-top:4px;">
+                            ${entry.kcal} kcal • Intensität: ${entry.rating}/10
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            }
+        };
 
         const PlayerSystem = {
             timerId: null,
@@ -1300,106 +1416,6 @@
             }
         };
 
-        const StatsSystem = {
-            render: function() {
-                // 1. GEWICHTS GRAPH
-                const svg = document.getElementById('weight-chart-svg');
-                svg.innerHTML = "";
-                if(db.measurements.length > 1) {
-                    const vals = db.measurements.map(m => parseFloat(m.w));
-                    const min = Math.min(...vals) - 1;
-                    const max = Math.max(...vals) + 1;
-                    const points = vals.map((w, i) => {
-                        const x = (i / (vals.length - 1)) * 100;
-                        const y = 100 - ((w - min) / (max - min) * 100);
-                        return `${x},${y}`;
-                    }).join(' ');
-                    svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
-                }
-
-                // 2. METRICS GRID (Das neue Design)
-                const gridContainer = document.getElementById('metrics-grid-container');
-                gridContainer.innerHTML = "";
-                
-                if(db.measurements.length > 0) {
-                    const cur = db.measurements[db.measurements.length - 1];
-                    const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
-                    
-                    const fields = [
-                        {id:'w', label:'Gewicht', unit:'kg'},
-                        {id:'b', label:'Bauch', unit:'cm'},
-                        {id:'c', label:'Brust', unit:'cm'},
-                        {id:'a', label:'Arm', unit:'cm'},
-                        {id:'l', label:'Bein', unit:'cm'},
-                        {id:'g', label:'Po', unit:'cm'}
-                    ];
-                    
-                    fields.forEach(f => {
-                        const valCur = cur[f.id] || 0;
-                        
-                        // Nur anzeigen, wenn ein aktueller Wert da ist
-                        if(valCur > 0) {
-                            let diffHtml = "";
-                            
-                            if(pre && pre[f.id] > 0) {
-                                const diff = valCur - pre[f.id];
-                                let cssClass = "diff-neutral";
-                                
-                                if(diff !== 0) {
-                                    if(f.id === 'w') {
-                                        // Gewicht: minus ist gut (grün), plus ist schlecht (rot)
-                                        cssClass = diff < 0 ? "diff-good" : "diff-bad";
-                                    } else {
-                                        // Muskeln/Umfang: plus ist gut (grün)
-                                        cssClass = diff > 0 ? "diff-good" : "diff-neutral";
-                                    }
-                                }
-                                
-                                const sign = diff > 0 ? "+" : "";
-                                diffHtml = `<span class="metric-diff-badge ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
-                            } else {
-                                diffHtml = `<span class="metric-diff-badge diff-neutral">START</span>`;
-                            }
-                            
-                            const card = document.createElement('div');
-                            card.className = "metric-card-item";
-                            card.innerHTML = `
-                                <div class="metric-card-header">
-                                    <span class="metric-label">${f.label}</span>
-                                    ${diffHtml}
-                                </div>
-                                <div class="metric-current-value">
-                                    ${valCur} <span style="font-size:12px; font-weight:600; color:#666;">${f.unit}</span>
-                                </div>
-                            `;
-                            gridContainer.appendChild(card);
-                        }
-                    });
-                } else {
-                    gridContainer.innerHTML = "<div style='grid-column:1/-1; text-align:center; color:#666; font-size:12px; padding:10px;'>Noch keine Messdaten vorhanden.</div>";
-                }
-
-                // 3. HISTORY LISTE
-                const list = document.getElementById('workout-history-list');
-                list.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
-                
-                [...db.history].reverse().slice(0, 10).forEach(entry => {
-                    const card = document.createElement('div');
-                    card.className = "ui-card";
-                    card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
-                            <span>${entry.type}</span>
-                            <span style="color:#666">${new Date(entry.date).toLocaleDateString()}</span>
-                        </div>
-                        <div style="font-size:12px; color:var(--color-accent-blue); margin-top:4px;">
-                            ${entry.kcal} kcal • Intensität: ${entry.rating}/10
-                        </div>
-                    `;
-                    list.appendChild(card);
-                });
-            }
-        };
-
         const BackupSystem = {
             export: function() {
                 const blob = new Blob([JSON.stringify(db)], {type:'application/json'});
@@ -1415,7 +1431,6 @@
                     try {
                         const data = JSON.parse(e.target.result);
                         if(data.profile || data.prof) {
-                            // Einfacher Check, ob Format passt
                             db = data;
                             AppController.save();
                             location.reload();
