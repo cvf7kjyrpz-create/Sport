@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V35.0 - FULL CODE COMPACT UI</title>
+    <title>Body Pulse V37.0 - UNABRIDGED SOURCE</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -60,9 +60,9 @@
             display: none;
             flex-direction: column;
             width: 100%;
-            padding: 12px; 
-            /* Padding unten angepasst für Kompaktheit */
-            padding-bottom: 90px; 
+            padding: 15px;
+            /* Platz unten für die Navigation reservieren */
+            padding-bottom: 100px; 
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -71,17 +71,35 @@
             display: flex;
         }
 
-        /* UI KARTEN STYLES */
+        /* UI ELEMENTE */
         .ui-card {
             background-color: var(--color-card-background);
             border: 1px solid var(--color-border);
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 8px;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 10px;
             position: relative;
         }
 
-        /* GRID FÜR KPI BOXEN */
+        /* TEXT STYLES */
+        h1.headline-text {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        h2.sub-headline-text {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* DASHBOARD GRID SYSTEM */
         .dashboard-grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -92,8 +110,8 @@
         .stat-display-item {
             background-color: var(--color-card-light);
             border: 1px solid #222222;
-            border-radius: 10px;
-            padding: 8px 4px;
+            border-radius: 12px;
+            padding: 10px 5px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -101,12 +119,11 @@
         }
 
         .stat-value-text {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
             color: #ffffff;
         }
-        
-        /* Hervorgehobene Werte für die Frequenz-Anzeige */
+
         .freq-value-text {
             font-size: 20px;
             font-weight: 900;
@@ -118,24 +135,84 @@
             color: var(--color-text-secondary);
             font-weight: 700;
             text-transform: uppercase;
-            margin-top: 3px;
+            margin-top: 4px;
         }
 
-        /* TEXT FORMATE */
-        h1.headline-text {
-            font-size: 22px;
-            font-weight: 900;
-            margin-bottom: 2px;
-            line-height: 1.1;
+        /* METRICS GRID FÜR STATISTIK */
+        .metrics-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
-        h2.sub-headline-text {
-            font-size: 10px;
+        .metric-card-item {
+            background-color: var(--color-card-light);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .metric-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #888888;
             font-weight: 700;
             text-transform: uppercase;
+        }
+
+        .metric-current-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .metric-diff-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .diff-good {
+            color: var(--color-accent-green);
+            background-color: rgba(50, 215, 75, 0.1);
+        }
+
+        .diff-bad {
+            color: var(--color-accent-red);
+            background-color: rgba(255, 69, 58, 0.1);
+        }
+
+        .diff-neutral {
             color: #666666;
+            background-color: #222222;
+        }
+
+        /* INPUTS */
+        input.text-input, select.select-input, textarea.text-area-input {
+            width: 100%;
+            background-color: #0a0a0a;
+            border: 1px solid #333333;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
             margin-bottom: 8px;
-            letter-spacing: 1px;
+            font-family: inherit;
+        }
+
+        input.text-input:focus {
+            border-color: var(--color-accent-blue);
         }
 
         /* BUTTONS */
@@ -147,7 +224,7 @@
             padding: 14px;
             border-radius: 12px;
             font-size: 13px;
-            font-weight: 800;
+            font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
             display: flex;
@@ -155,8 +232,8 @@
             justify-content: center;
         }
         .primary-button:active {
-            opacity: 0.8;
             transform: scale(0.98);
+            opacity: 0.9;
         }
 
         .outline-button {
@@ -195,20 +272,7 @@
             border-color: #ffffff;
         }
 
-        /* FORMULAR ELEMENTE */
-        input.text-input, select.select-input, textarea.text-area-input {
-            width: 100%;
-            background-color: #111111;
-            border: 1px solid #333333;
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 8px;
-            font-family: inherit;
-        }
-
-        /* CHECKLISTE DESIGN */
+        /* CHECKLISTE */
         .checklist-row-item {
             display: flex;
             align-items: center;
@@ -237,31 +301,13 @@
             font-size: 14px;
         }
 
-        /* COMPARISON TABLE STYLING */
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .comparison-table td {
-            padding: 10px 0;
-            border-bottom: 1px solid #222222;
-            font-size: 14px;
-        }
-        .comparison-table td:last-child {
-            text-align: right;
-            font-weight: 800;
-        }
-        .diff-positive { color: var(--color-accent-green); }
-        .diff-negative { color: var(--color-accent-red); }
-        .diff-neutral { color: #666666; }
-
-        /* NAVIGATION LEISTE (FIXED BOTTOM - FLACHER) */
+        /* NAVIGATION LEISTE (FIXED BOTTOM) */
         .bottom-navbar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: calc(55px + var(--safe-area-bottom));
+            height: calc(60px + var(--safe-area-bottom));
             background-color: rgba(10, 10, 10, 0.98);
             border-top: 1px solid #222222;
             display: flex;
@@ -321,15 +367,15 @@
         .overlay-scroll-content {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 100px;
+            padding-bottom: 80px;
         }
 
         /* PLAYER COMPONENTS */
         .player-visual-circle {
             position: relative;
-            width: 240px;
-            height: 240px;
-            margin: 15px auto;
+            width: 220px;
+            height: 220px;
+            margin: 10px auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -340,26 +386,27 @@
             transform: rotate(-90deg);
         }
         .player-timer-text {
-            font-size: 80px;
+            font-size: 70px;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
+        }
+        .player-guide-link {
+            font-size: 13px;
+            color: var(--color-accent-blue);
+            text-decoration: underline;
+            font-weight: 700;
+            margin-top: 10px;
+            cursor: pointer;
         }
         .player-next-preview-box {
             background-color: #222222;
             padding: 12px;
             border-radius: 10px;
-            margin-top: 10px;
-            text-align: center;
+            margin-top: 15px;
             width: 100%;
             border: 1px solid #333333;
-        }
-        .player-guide-link {
-            font-size: 14px;
-            color: var(--color-accent-blue);
-            margin-top: 10px;
-            text-decoration: underline;
-            cursor: pointer;
-            font-weight: 600;
+            text-align: center;
+            display: none;
         }
 
     </style>
@@ -369,7 +416,7 @@
     <div id="overlay-setup" class="fullscreen-overlay" style="z-index:11000; justify-content:center;">
         <h1 style="text-align:center; margin-bottom:20px;">WILLKOMMEN</h1>
         <div class="ui-card">
-            <h2 class="sub-headline-text">PROFIL DATEN</h2>
+            <h2 class="sub-headline-text">DEIN PROFIL</h2>
             <input type="number" id="setup-height" class="text-input" placeholder="Größe (cm)">
             <input type="number" id="setup-weight" class="text-input" placeholder="Gewicht (kg)">
             <input type="number" id="setup-age" class="text-input" placeholder="Alter">
@@ -377,23 +424,22 @@
         <button class="primary-button" onclick="AppController.finishSetup()">LOS GEHT'S</button>
     </div>
 
-    <div id="overlay-daily" class="fullscreen-overlay">
+    <div id="overlay-notes" class="fullscreen-overlay">
         <div class="overlay-header-row">
             <h1 class="headline-text">NOTIZEN</h1>
-            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-daily')">FERTIG</button>
+            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-notes')">SCHLIESSEN</button>
         </div>
         <div class="overlay-scroll-content">
             <div class="ui-card">
-                <h2 class="sub-headline-text">TAGEBUCH</h2>
-                <textarea id="note-input" class="text-area-input" style="height:300px;" placeholder="Gedanken zum heutigen Tag..." oninput="AppController.saveNote(this.value)"></textarea>
+                <textarea id="note-input" class="text-area-input" style="height:300px; background-color:transparent; border:none;" placeholder="Tippe hier deine Gedanken..." oninput="AppController.saveNote(this.value)"></textarea>
             </div>
         </div>
     </div>
 
     <div id="overlay-library" class="fullscreen-overlay">
         <div class="overlay-header-row">
-            <h1 class="headline-text">BIBLIOTHEK</h1>
-            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-library')">ZURÜCK</button>
+            <h1 class="headline-text">ÜBUNGEN</h1>
+            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-library')">SCHLIESSEN</button>
         </div>
         <div class="overlay-scroll-content" id="library-list">
             </div>
@@ -401,13 +447,13 @@
 
     <div id="overlay-detail" class="fullscreen-overlay" style="z-index:12000;">
         <div class="overlay-header-row">
-            <h1 class="headline-text" id="detail-title">ANLEITUNG</h1>
+            <h1 class="headline-text" id="detail-title">TITEL</h1>
             <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-detail')">SCHLIESSEN</button>
         </div>
         <div class="overlay-scroll-content">
             <div class="ui-card">
-                <span id="detail-category" style="color:var(--color-accent-purple); font-weight:bold; font-size:12px; text-transform:uppercase;">KATEGORIE</span>
-                <div id="detail-body" style="white-space:pre-wrap; line-height:1.6; margin-top:10px; font-size:15px; color:#eee;">TEXT</div>
+                <span id="detail-category" style="color:var(--color-accent-purple); font-weight:bold; font-size:11px; text-transform:uppercase;">KATEGORIE</span>
+                <div id="detail-body" style="white-space:pre-wrap; line-height:1.6; margin-top:10px; font-size:15px; color:#dddddd;">TEXT</div>
             </div>
         </div>
     </div>
@@ -415,7 +461,7 @@
     <div id="overlay-player" class="fullscreen-overlay">
         <div class="overlay-header-row">
             <button class="small-toggle-button" onclick="PlayerSystem.exit()">ABBRECHEN</button>
-            <span id="player-status-round" style="font-weight:800; color:#888; font-size:12px;">ÜBUNG 1 / 10</span>
+            <span id="player-status-round" style="font-weight:bold; color:#888; font-size:12px;">ÜBUNG 1 / 10</span>
             <div id="player-mute" onclick="PlayerSystem.toggleMute()" style="font-size:24px; cursor:pointer;">🔊</div>
         </div>
         <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
@@ -423,41 +469,38 @@
             
             <div class="player-visual-circle">
                 <svg class="player-svg-container">
-                    <circle cx="120" cy="120" r="110" stroke="#222" stroke-width="12" fill="none"/>
-                    <circle id="player-ring" cx="120" cy="120" r="110" stroke="white" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="0" style="transition:1s linear;"/>
+                    <circle cx="110" cy="110" r="100" stroke="#222" stroke-width="12" fill="none"/>
+                    <circle id="player-ring" cx="110" cy="110" r="100" stroke="white" stroke-width="12" fill="none" stroke-dasharray="628" stroke-dashoffset="0" style="transition:1s linear;"/>
                 </svg>
                 <div id="player-timer" class="player-timer-text">10</div>
             </div>
 
             <div style="text-align:center; padding:0 15px;">
                 <div id="player-ex-cat" style="color:var(--color-accent-purple); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:5px;">KATEGORIE</div>
-                <div id="player-ex-name" style="font-size:26px; font-weight:900; line-height:1.1;">ÜBUNG NAME</div>
-                <div id="player-guide-trigger" class="player-guide-link" onclick="PlayerSystem.showCurrentGuide()">ANLEITUNG LESEN</div>
+                <div id="player-ex-name" style="font-size:24px; font-weight:900; line-height:1.1;">ÜBUNG NAME</div>
+                <div id="player-guide-trigger" class="player-guide-link" onclick="PlayerSystem.showCurrentGuide()">Anleitung ansehen</div>
             </div>
 
-            <div id="player-next-box" class="player-next-preview-box" style="display:none;">
-                <span style="font-size:10px; color:#888; font-weight:800;">NÄCHSTE:</span><br>
-                <span id="player-next-name" style="font-size:18px; font-weight:900; color:#fff;">NAME</span><br>
-                <button class="primary-button" style="margin-top:8px; padding:6px; font-size:10px; width:auto; display:inline-flex;" onclick="PlayerSystem.showNextGuide()">VORSCHAU</button>
+            <div id="player-next-box" class="player-next-preview-box">
+                <span style="font-size:10px; color:#888; font-weight:800;">ALS NÄCHSTES:</span><br>
+                <span id="player-next-name" style="font-size:16px; font-weight:900;">-</span>
+                <div style="margin-top:5px; font-size:10px; color:var(--color-accent-blue); font-weight:bold; cursor:pointer;" onclick="PlayerSystem.showNextGuide()">VORSCHAU ANZEIGEN</div>
             </div>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
             <button id="player-play-pause" class="primary-button" onclick="PlayerSystem.toggle()">START</button>
-            <button id="player-skip" class="outline-button" onclick="PlayerSystem.skip()">SKIP</button>
+            <button id="player-skip" class="outline-button" onclick="PlayerSystem.skip()">ÜBERSPRINGEN</button>
         </div>
     </div>
 
     <div id="overlay-rating" class="fullscreen-overlay" style="z-index:13000; justify-content:flex-start;">
-        <h1 style="text-align:center; font-size:28px; font-weight:900; color:var(--color-accent-green); margin-top:20px;">GESCHAFFT!</h1>
+        <h1 style="text-align:center; margin-top:20px; margin-bottom:20px; color:var(--color-accent-green);">GESCHAFFT!</h1>
         
-        <div class="overlay-scroll-content" style="padding-top:10px;">
+        <div class="overlay-scroll-content">
             <div class="ui-card" style="text-align:center;">
-                <p style="color:#aaa; font-weight:700; font-size:12px;">INTENSITÄT</p>
-                <h2 id="rating-val" style="font-size:40px; color:var(--color-accent-green); margin:5px 0;">5</h2>
+                <p style="font-size:10px; font-weight:700; color:#666;">INTENSITÄT</p>
+                <h2 id="rating-val" style="font-size:50px; margin:5px 0;">5</h2>
                 <input type="range" id="rating-slider" min="1" max="10" value="5" style="width:100%;" oninput="document.getElementById('rating-val').innerText=this.value">
-                <div style="display:flex; justify-content:space-between; font-size:10px; color:#666; font-weight:bold; margin-top:5px;">
-                    <span>EASY</span><span>MAX</span>
-                </div>
             </div>
 
             <div class="ui-card">
@@ -466,23 +509,24 @@
                     </div>
             </div>
 
-            <button class="primary-button" style="background-color:var(--color-accent-green); color:black; margin-top:10px;" onclick="PlayerSystem.saveAndFinish()">SPEICHERN & BEENDEN</button>
+            <button class="primary-button" style="margin-top:10px;" onclick="PlayerSystem.saveAndFinish()">SPEICHERN & BEENDEN</button>
         </div>
     </div>
 
+
     <div id="screen-home" class="app-screen-container screen-active">
         
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
             <div>
-                <h1 id="home-day-title" class="headline-text" style="font-size:20px;">TAG 1</h1>
+                <h1 id="home-day-title" class="headline-text">TAG X</h1>
                 <span id="home-date-title" style="color:var(--color-accent-green); font-weight:bold; font-size:11px;">DATUM</span>
             </div>
             
             <div style="text-align:right;">
-                <span style="font-size:10px; color:#888; font-weight:800;">TOTAL</span>
-                <span style="font-size:16px; font-weight:900; color:#fff; margin-left:2px;"> <span id="home-total-val">0</span></span>
-                <span style="font-size:10px; color:#888; font-weight:800; margin-left:8px;">STREAK</span>
-                <span style="font-size:16px; font-weight:900; color:var(--color-accent-orange); margin-left:2px;">🔥 <span id="home-streak-val">0</span></span>
+                <span style="font-size:10px; color:#888; font-weight:800;">TOTAL</span> 
+                <span id="home-total-val" style="font-weight:900; font-size:14px;">0</span>
+                <span style="font-size:10px; color:#888; font-weight:800; margin-left:8px;">STREAK</span> 
+                <span id="home-streak-val" style="font-weight:900; color:var(--color-accent-orange); font-size:14px;">0</span>
             </div>
         </div>
 
@@ -523,288 +567,294 @@
                 <button id="dur-30" class="small-toggle-button" onclick="AppController.setDuration(30)">30 MIN</button>
             </div>
             
-            <select id="home-focus" class="select-input" style="padding:10px; font-size:13px;">
+            <select id="home-focus" class="select-input" style="font-size:13px; padding:10px;">
                 <option value="all">Mix (Ganzkörper)</option>
                 <option value="Bauch & Core">Bauch & Core</option>
                 <option value="Beine & Po">Beine & Po</option>
                 <option value="Oberkörper">Oberkörper</option>
-                <option value="Ganzkörper & Cardio">Cardio</option>
+                <option value="Ganzkörper & Cardio">Cardio & Fettverbrennung</option>
             </select>
 
-            <button class="primary-button" onclick="PlayerSystem.start()" style="margin-bottom:0;">STARTEN</button>
+            <button class="primary-button" onclick="PlayerSystem.start()" style="margin-bottom:0;">TRAINING STARTEN</button>
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button class="outline-button" onclick="UserInterface.openLibrary()">ÜBUNGEN</button>
-            <button class="outline-button" onclick="UserInterface.openDaily()">NOTIZEN</button>
+            <button class="outline-button" onclick="UserInterface.openNotes()">NOTIZEN</button>
         </div>
     </div>
 
     <div id="screen-stats" class="app-screen-container">
         <h1 class="headline-text">STATISTIK</h1>
         
-        <div class="ui-card" style="margin-top:10px;">
-            <h2 class="sub-headline-text">GEWICHT</h2>
-            <div style="height:140px; width:100%; margin-top:5px;">
-                <svg id="weight-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
+        <div class="ui-card" style="margin-top:10px; padding-bottom:5px;">
+            <h2 class="sub-headline-text">GEWICHTSVERLAUF</h2>
+            <div style="height:120px; width:100%;">
+                <svg id="weight-chart-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
             </div>
         </div>
 
         <div class="ui-card">
-            <h2 class="sub-headline-text">VERGLEICH</h2>
-            <div id="compare-table-div" style="font-size:13px; color:#888;">Mind. 2 Messungen nötig.</div>
+            <h2 class="sub-headline-text">AKTUELLE MESSWERTE</h2>
+            <div id="metrics-grid-container" class="metrics-grid-layout">
+                </div>
         </div>
 
         <div class="ui-card">
-            <h2 class="sub-headline-text">NEUE MESSUNG</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <input type="number" id="m-weight" class="text-input" placeholder="Gewicht (kg)">
-                <input type="number" id="m-waist" class="text-input" placeholder="Bauch (cm)">
-                <input type="number" id="m-chest" class="text-input" placeholder="Brust (cm)">
-                <input type="number" id="m-arm" class="text-input" placeholder="Arm (cm)">
-                <input type="number" id="m-leg" class="text-input" placeholder="Bein (cm)">
-                <input type="number" id="m-glute" class="text-input" placeholder="Po (cm)">
+            <h2 class="sub-headline-text">NEUE MESSUNG EINTRAGEN</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <input type="number" id="meas-weight" class="text-input" placeholder="Gewicht (kg)">
+                <input type="number" id="meas-waist" class="text-input" placeholder="Bauch (cm)">
+                <input type="number" id="meas-chest" class="text-input" placeholder="Brust (cm)">
+                <input type="number" id="meas-arm" class="text-input" placeholder="Arm (cm)">
+                <input type="number" id="meas-leg" class="text-input" placeholder="Bein (cm)">
+                <input type="number" id="meas-glute" class="text-input" placeholder="Po (cm)">
             </div>
-            <button class="primary-button" style="margin-top:5px;" onclick="AppController.saveMeasurement()">SPEICHERN</button>
+            <button class="primary-button" style="margin-top:5px;" onclick="AppController.saveMeasurement()">WERTE SPEICHERN</button>
         </div>
 
-        <div id="workout-history-list"></div>
+        <div id="workout-history-list">
+            </div>
     </div>
 
-    <div id="screen-settings" class="app-screen-container">
+    <div id="screen-system" class="app-screen-container">
         <h1 class="headline-text">SYSTEM</h1>
         
         <div class="ui-card" style="margin-top:10px;">
-            <h2 class="sub-headline-text">TIMER</h2>
+            <h2 class="sub-headline-text">TIMER EINSTELLUNGEN</h2>
             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span style="font-size:13px;">Belastung</span>
-                <b id="val-work" style="color:var(--color-accent-green); font-size:13px;">40s</b>
+                <span style="font-size:12px;">BELASTUNG</span>
+                <b id="val-work" style="color:var(--color-accent-green);">40s</b>
             </div>
             <input type="range" id="range-work" min="20" max="120" step="5" style="width:100%; margin-bottom:15px;" oninput="AppController.updateConfig()">
             
             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span style="font-size:13px;">Pause</span>
-                <b id="val-rest" style="color:var(--color-accent-blue); font-size:13px;">20s</b>
+                <span style="font-size:12px;">PAUSE</span>
+                <b id="val-rest" style="color:var(--color-accent-blue);">20s</b>
             </div>
             <input type="range" id="range-rest" min="10" max="60" step="5" style="width:100%;" oninput="AppController.updateConfig()">
         </div>
 
         <div class="ui-card">
-            <h2 class="sub-headline-text">DATEN</h2>
-            <button class="outline-button" style="margin-bottom:8px;" onclick="BackupSystem.export()">EXPORT</button>
+            <h2 class="sub-headline-text">DATENVERWALTUNG</h2>
+            <button class="outline-button" style="margin-bottom:8px;" onclick="BackupSystem.export()">EXPORTIEREN</button>
             <input type="file" id="import-file" style="display:none" onchange="BackupSystem.import(this)">
-            <button class="outline-button" style="margin-bottom:20px;" onclick="document.getElementById('import-file').click()">IMPORT</button>
-            <button class="outline-button" style="border-color:var(--color-accent-red); color:var(--color-accent-red);" onclick="AppController.clearAll()">RESET APP</button>
+            <button class="outline-button" style="margin-bottom:20px;" onclick="document.getElementById('import-file').click()">IMPORTIEREN</button>
+            
+            <button class="outline-button" style="border-color:var(--color-accent-red); color:var(--color-accent-red);" onclick="AppController.clearAll()">APP ZURÜCKSETZEN</button>
         </div>
     </div>
 
     <div class="bottom-navbar">
         <div id="nav-home" class="nav-item-btn nav-active" onclick="UserInterface.nav('screen-home', this)">
             <div class="nav-icon-font">🏠</div>
-            <span class="nav-label-text">Home</span>
+            <span class="nav-label-text">HOME</span>
         </div>
         <div id="nav-stats" class="nav-item-btn" onclick="UserInterface.nav('screen-stats', this)">
             <div class="nav-icon-font">📊</div>
-            <span class="nav-label-text">Stats</span>
+            <span class="nav-label-text">STATS</span>
         </div>
-        <div id="nav-settings" class="nav-item-btn" onclick="UserInterface.nav('screen-settings', this)">
+        <div id="nav-system" class="nav-item-btn" onclick="UserInterface.nav('screen-system', this)">
             <div class="nav-icon-font">⚙️</div>
-            <span class="nav-label-text">System</span>
+            <span class="nav-label-text">SYSTEM</span>
         </div>
     </div>
 
     <script>
-        const STORAGE_KEY = "BODYPULSE_APP_DATA_V35";
+        const STORAGE_KEY = "BODYPULSE_APP_DATA_V37_FULL";
 
         /**
-         * VOLLSTÄNDIGE ÜBUNGSDATENBANK
-         * Hier sind alle 36 Übungen komplett ausgeschrieben.
+         * ÜBUNGSDATENBANK
+         * Vollständig ausgeschrieben, keine Kürzungen.
          */
         const EXERCISES = {
             "Planks": {
                 cat: "Bauch & Core",
                 short: "Statische Halteübung für den Rumpf.",
-                long: "1. Unterarmstütz einnehmen.\n2. Ellbogen direkt unter den Schultern.\n3. Körper bildet eine Linie.\n4. Bauch und Po fest anspannen."
+                long: "1. Gehe in den Unterarmstütz.\n2. Platziere die Ellbogen direkt unter den Schultern.\n3. Strecke den Körper durch, sodass er eine gerade Linie bildet.\n4. Spanne Bauch und Po fest an und halte die Position."
             },
             "Liegestütze": {
                 cat: "Oberkörper",
-                short: "Kräftigung für Brust und Arme.",
-                long: "1. Hände schulterbreit platzieren.\n2. Körper steif wie ein Brett halten.\n3. Brust tief absenken.\n4. Kontrolliert hochdrücken."
+                short: "Klassische Kräftigung für Brust und Arme.",
+                long: "1. Platziere die Hände etwas weiter als schulterbreit.\n2. Halte den Körper steif wie ein Brett.\n3. Senke die Brust tief zum Boden ab.\n4. Drücke dich kraftvoll wieder nach oben."
             },
             "Kniebeugen": {
                 cat: "Beine & Po",
                 short: "Basisübung für den Unterkörper.",
-                long: "1. Schulterbreit stehen.\n2. Po nach hinten unten führen.\n3. Rücken gerade halten.\n4. Aus den Fersen hochdrücken."
+                long: "1. Stelle dich schulterbreit hin.\n2. Schiebe den Po nach hinten unten, als würdest du dich setzen.\n3. Halte den Rücken gerade.\n4. Drücke dich aus den Fersen wieder hoch."
             },
             "Crunches": {
                 cat: "Bauch & Core",
                 short: "Für die gerade Bauchmuskulatur.",
-                long: "1. Rückenlage, Beine anwinkeln.\n2. Schulterblätter vom Boden lösen.\n3. Bauch fest anspannen.\n4. Langsam senken."
+                long: "1. Lege dich auf den Rücken, Beine angewinkelt.\n2. Hebe die Schulterblätter vom Boden ab.\n3. Spanne den Bauch aktiv an.\n4. Senke dich langsam wieder ab."
             },
             "Ausfallschritte": {
                 cat: "Beine & Po",
                 short: "Stärkt Beine und Balance.",
-                long: "1. Großer Schritt nach vorne.\n2. Hinteres Knie tief absenken.\n3. Oberkörper aufrecht halten.\n4. Zurückdrücken und wechseln."
+                long: "1. Mache einen großen Schritt nach vorne.\n2. Senke das hintere Knie tief ab.\n3. Halte den Oberkörper aufrecht.\n4. Drücke dich zurück in den Stand."
             },
             "Dips": {
                 cat: "Oberkörper",
                 short: "Effektiv für den Trizeps.",
-                long: "1. Rücklings an einer Kante abstützen.\n2. Arme beugen und Po senken.\n3. Aus den Armen hochdrücken."
+                long: "1. Stütze dich rücklings an einer Kante ab.\n2. Beuge die Arme und senke den Po.\n3. Drücke dich aus der Kraft der Arme wieder hoch."
             },
             "Burpees": {
                 cat: "Ganzkörper & Cardio",
                 short: "Kraft und Ausdauer kombiniert.",
-                long: "1. Aus dem Stand in die Hocke.\n2. Sprung in den Liegestütz.\n3. Liegestütz ausführen.\n4. Sprung zurück und Strecksprung."
+                long: "1. Gehe in die Hocke.\n2. Springe in den Liegestütz.\n3. Mache einen Liegestütz (optional).\n4. Springe zurück in die Hocke und mache einen Strecksprung."
             },
             "Mountain Climber": {
                 cat: "Ganzkörper & Cardio",
                 short: "Dynamische Core-Übung.",
-                long: "1. Liegestützposition einnehmen.\n2. Knie abwechselnd schnell zur Brust ziehen.\n3. Rücken gerade halten."
+                long: "1. Gehe in die Liegestützposition.\n2. Ziehe die Knie abwechselnd schnell zur Brust.\n3. Halte den Rücken gerade und stabil."
             },
             "Wandsitzen": {
                 cat: "Beine & Po",
                 short: "Statische Oberschenkel-Übung.",
-                long: "1. Rücken flach an die Wand.\n2. Beine im 90 Grad Winkel beugen.\n3. Position halten und atmen."
+                long: "1. Lehne dich mit dem Rücken flach an eine Wand.\n2. Rutsche runter bis die Knie bei 90 Grad sind.\n3. Halte diese Position so lange wie möglich."
             },
             "Hampelmann": {
                 cat: "Ganzkörper & Cardio",
                 short: "Klassisches Cardio.",
-                long: "1. Stand geschlossen.\n2. Sprung in die Grätsche, Arme hoch.\n3. Zurück in den Stand."
+                long: "1. Starte im geschlossenen Stand.\n2. Springe in die Grätsche und führe die Arme oben zusammen.\n3. Springe zurück in den Ausgangsstand."
             },
             "Beinheben": {
                 cat: "Bauch & Core",
                 short: "Für den unteren Bauch.",
-                long: "1. Rückenlage, Hände unter den Po.\n2. Gestreckte Beine anheben.\n3. Langsam senken ohne abzulegen."
+                long: "1. Lege dich auf den Rücken, Hände unter den Po.\n2. Hebe die gestreckten Beine an.\n3. Senke sie langsam ab, ohne den Boden zu berühren."
             },
             "Glute Bridge": {
                 cat: "Beine & Po",
                 short: "Für Po und Rücken.",
-                long: "1. Rückenlage, Füße aufstellen.\n2. Becken so weit wie möglich hochdrücken.\n3. Po oben fest anspannen."
+                long: "1. Lege dich auf den Rücken, Füße aufgestellt.\n2. Drücke das Becken so weit wie möglich nach oben.\n3. Spanne den Po oben fest an."
             },
             "High Knees": {
                 cat: "Ganzkörper & Cardio",
                 short: "Intensives Laufen am Platz.",
-                long: "1. Laufen am Platz.\n2. Knie bis zur Hüfte hochziehen.\n3. Arme aktiv mitnehmen."
+                long: "1. Laufe auf der Stelle.\n2. Ziehe die Knie bei jedem Schritt bis zur Hüfte hoch.\n3. Nimm die Arme aktiv mit."
             },
             "Russian Twist": {
                 cat: "Bauch & Core",
                 short: "Für die schrägen Bauchmuskeln.",
-                long: "1. Sitzend, Füße in die Luft.\n2. Oberkörper nach links und rechts rotieren.\n3. Boden berühren."
+                long: "1. Setze dich hin, hebe die Füße an.\n2. Rotiere den Oberkörper nach links und rechts.\n3. Berühre jeweils den Boden neben dir."
             },
             "Superman": {
                 cat: "Bauch & Core",
                 short: "Für den unteren Rücken.",
-                long: "1. Bauchlage.\n2. Arme und Beine gleichzeitig heben.\n3. Spannung kurz halten."
+                long: "1. Lege dich auf den Bauch.\n2. Hebe Arme und Beine gleichzeitig an.\n3. Halte die Spannung kurz und senke ab."
             },
             "Wadenheben": {
                 cat: "Beine & Po",
                 short: "Für die Waden.",
-                long: "1. Aufrecht stehen.\n2. Auf Zehenspitzen hochdrücken.\n3. Langsam wieder absenken."
+                long: "1. Stehe aufrecht.\n2. Drücke dich auf die Zehenspitzen hoch.\n3. Senke die Fersen langsam wieder ab."
             },
             "Side Plank (L)": {
                 cat: "Bauch & Core",
                 short: "Seitlicher Stütz Links.",
-                long: "1. Linker Unterarmstütz.\n2. Hüfte hochdrücken.\n3. Eine gerade Linie bilden und halten."
+                long: "1. Stütze dich auf den linken Unterarm.\n2. Hebe die Hüfte an.\n3. Dein Körper bildet eine gerade Linie. Halten!"
             },
             "Side Plank (R)": {
                 cat: "Bauch & Core",
                 short: "Seitlicher Stütz Rechts.",
-                long: "1. Rechter Unterarmstütz.\n2. Hüfte hochdrücken.\n3. Eine gerade Linie bilden und halten."
+                long: "1. Stütze dich auf den rechten Unterarm.\n2. Hebe die Hüfte an.\n3. Dein Körper bildet eine gerade Linie. Halten!"
             },
             "Diamond Pushups": {
                 cat: "Oberkörper",
                 short: "Liegestütz für Trizeps.",
-                long: "1. Hände bilden ein Dreieck unter der Brust.\n2. Eng am Körper absenken.\n3. Kraftvoll hochdrücken."
+                long: "1. Forme mit Daumen und Zeigefinger ein Dreieck.\n2. Platziere die Hände unter der Brust.\n3. Senke dich ab und drücke dich hoch."
             },
             "Bicycle Crunches": {
                 cat: "Bauch & Core",
                 short: "Rotation für den Bauch.",
-                long: "1. Rückenlage, Hände an den Kopf.\n2. Ellbogen zum gegenüberliegenden Knie führen.\n3. Beine radelnd bewegen."
+                long: "1. Rückenlage, Hände an den Kopf.\n2. Führe den rechten Ellbogen zum linken Knie.\n3. Wechsle fließend die Seiten wie beim Radfahren."
             },
             "Flutter Kicks": {
                 cat: "Bauch & Core",
                 short: "Beine paddeln.",
-                long: "1. Rückenlage, Beine gestreckt.\n2. Beine leicht anheben.\n3. Kleine Auf- und Ab-Bewegungen machen."
+                long: "1. Rückenlage, Beine gestreckt.\n2. Hebe die Beine leicht an.\n3. Mache kleine Auf- und Ab-Bewegungen (Paddeln)."
             },
             "Box Jumps": {
                 cat: "Ganzkörper & Cardio",
                 short: "Sprungkraft.",
-                long: "1. Vor einer stabilen Erhöhung stehen.\n2. Beidbeinig hochspringen.\n3. Sicher landen und aufrichten."
+                long: "1. Stehe vor einer stabilen Erhöhung.\n2. Springe beidbeinig explosiv nach oben.\n3. Lande sicher und richte dich auf."
             },
             "Schattenboxen": {
                 cat: "Ganzkörper & Cardio",
                 short: "Boxen in die Luft.",
-                long: "1. Lockere Boxerstellung.\n2. Schnelle Schläge in die Luft.\n3. Ständig in Bewegung bleiben."
+                long: "1. Gehe in eine lockere Boxerstellung.\n2. Schlage schnelle Kombinationen in die Luft.\n3. Bleibe dabei immer in Bewegung."
             },
             "Sit-Ups": {
                 cat: "Bauch & Core",
-                short: "Rumpfbeuge.",
-                long: "1. Rückenlage, Beine aufgestellt.\n2. Oberkörper ganz aufrichten.\n3. Langsam wieder abrollen."
+                short: "Ganze Rumpfbeuge.",
+                long: "1. Rückenlage, Beine aufgestellt.\n2. Richte den Oberkörper komplett auf.\n3. Rolle dich kontrolliert wieder ab."
             },
             "Trizeps Dips": {
                 cat: "Oberkörper",
                 short: "Armstrecker.",
-                long: "1. Rücklings an Kante stützen.\n2. Arme beugen, Po tief.\n3. Wieder hochdrücken."
+                long: "1. Stütze dich rücklings auf einer Kante ab.\n2. Beuge die Arme, bis der Po fast den Boden berührt.\n3. Drücke dich wieder hoch."
             },
             "Reverse Crunches": {
                 cat: "Bauch & Core",
                 short: "Becken einrollen.",
-                long: "1. Rückenlage.\n2. Knie zur Brust ziehen.\n3. Becken vom Boden abheben."
+                long: "1. Rückenlage.\n2. Ziehe die Knie zur Brust.\n3. Hebe das Becken leicht vom Boden ab."
             },
             "Plank Jacks": {
                 cat: "Ganzkörper & Cardio",
                 short: "Plank mit Beinsprung.",
-                long: "1. Plank Position halten.\n2. Mit den Beinen auseinander und zusammen springen.\n3. Rumpf stabil halten."
+                long: "1. Halte die Plank-Position.\n2. Springe mit den Füßen auseinander und wieder zusammen.\n3. Halte den Rumpf dabei stabil."
             },
             "Skater Jumps": {
                 cat: "Ganzkörper & Cardio",
                 short: "Seitliche Sprünge.",
-                long: "1. Seitlich springen.\n2. Das andere Bein hinten kreuzen.\n3. Arme für Schwung nutzen."
+                long: "1. Springe seitlich auf ein Bein.\n2. Kreuze das andere Bein hinten.\n3. Wechsle dynamisch die Seite."
             },
             "Donkey Kicks": {
                 cat: "Beine & Po",
                 short: "Po-Isolation.",
-                long: "1. Vierfüßlerstand.\n2. Angewinkeltes Bein nach oben kicken.\n3. Po oben anspannen."
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Kicke ein Bein angewinkelt nach oben zur Decke.\n3. Spanne den Po oben fest an."
             },
             "Fire Hydrants": {
                 cat: "Beine & Po",
                 short: "Hüft-Rotation.",
-                long: "1. Vierfüßlerstand.\n2. Bein seitlich anheben.\n3. Rücken gerade lassen."
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Hebe ein Bein seitlich angewinkelt an.\n3. Halte den Rücken dabei gerade."
             },
             "Armkreisen": {
                 cat: "Oberkörper",
                 short: "Schulter-Ausdauer.",
-                long: "1. Arme seitlich strecken.\n2. Schnelle kleine Kreise machen.\n3. Spannung halten."
+                long: "1. Strecke die Arme seitlich aus.\n2. Mache kleine, schnelle Kreise.\n3. Halte die Spannung in den Schultern."
             },
             "Seitl. Beinheben": {
                 cat: "Beine & Po",
                 short: "Hüft-Isolation.",
-                long: "1. Seitenlage.\n2. Oberes Bein gestreckt heben.\n3. Langsam senken."
+                long: "1. Lege dich auf die Seite.\n2. Hebe das obere gestreckte Bein an.\n3. Senke es langsam wieder ab."
             },
             "Käfer (Dead Bug)": {
                 cat: "Bauch & Core",
                 short: "Koordination Core.",
-                long: "1. Rückenlage, Arme und Beine in die Luft.\n2. Diagonal (Rechter Arm, Linkes Bein) strecken.\n3. Rücken am Boden halten."
+                long: "1. Rückenlage, Arme und Beine in die Luft.\n2. Strecke diagonal Arm und Bein aus.\n3. Halte den unteren Rücken fest am Boden."
             },
             "Hollow Body": {
                 cat: "Bauch & Core",
                 short: "Statische Spannung.",
-                long: "1. Rückenlage, Arme hinter den Kopf.\n2. Arme und Beine leicht anheben.\n3. Schiffchen-Form halten."
+                long: "1. Rückenlage, Arme hinter den Kopf.\n2. Hebe Arme und Beine leicht an (Schiffchen-Form).\n3. Halte die Spannung."
             },
             "Inchworm": {
                 cat: "Ganzkörper & Cardio",
                 short: "In Stütz laufen.",
-                long: "1. Aus dem Stand vorbeugen.\n2. Mit den Händen vorlaufen bis zum Stütz.\n3. Wieder zurücklaufen."
+                long: "1. Beuge dich aus dem Stand vor.\n2. Laufe mit den Händen vor in den Stütz.\n3. Laufe mit den Händen wieder zurück zu den Füßen."
             },
             "Wall Pushups": {
                 cat: "Oberkörper",
                 short: "Liegestütz an Wand.",
-                long: "1. Vor einer Wand stehen.\n2. Dagegen lehnen.\n3. Arme beugen und drücken."
+                long: "1. Stehe vor einer Wand.\n2. Lehne dich mit den Händen dagegen.\n3. Beuge die Arme und drücke dich wieder ab."
             }
         };
 
         const CHECKLIST_ITEMS = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
 
+        /**
+         * DATENSTRUKTUR
+         */
         let db = {
             profile: { height: 0, weight: 0, age: 0 },
             config: { work: 40, rest: 20, duration: 10, note: "" },
@@ -827,7 +877,7 @@
         let isMuted = false;
 
         // ======================================================
-        // APP CONTROLLER
+        // APP CONTROLLER LOGIK
         // ======================================================
 
         const AppController = {
@@ -871,59 +921,78 @@
             },
 
             saveMeasurement: function() {
-                const wInput = document.getElementById('m-weight').value;
-                const entry = {
-                    date: new Date().toISOString(),
-                    w: parseFloat(wInput) || 0,
-                    b: parseFloat(document.getElementById('m-waist').value) || 0,
-                    c: parseFloat(document.getElementById('m-chest').value) || 0,
-                    a: parseFloat(document.getElementById('m-arm').value) || 0,
-                    l: parseFloat(document.getElementById('m-leg').value) || 0,
-                    g: parseFloat(document.getElementById('m-glute').value) || 0
-                };
-                if(entry.w > 0) {
-                    db.profile.weight = entry.w;
+                // FIXED: Logik robuster gemacht
+                const wInput = parseFloat(document.getElementById('meas-weight').value);
+                const bInput = parseFloat(document.getElementById('meas-waist').value);
+                const cInput = parseFloat(document.getElementById('meas-chest').value);
+                const aInput = parseFloat(document.getElementById('meas-arm').value);
+                const lInput = parseFloat(document.getElementById('meas-leg').value);
+                const gInput = parseFloat(document.getElementById('meas-glute').value);
+                
+                // Wir speichern, wenn wenigstens das Gewicht da ist.
+                if(wInput > 0) {
+                    const entry = {
+                        date: new Date().toISOString(),
+                        w: wInput,
+                        b: bInput || 0,
+                        c: cInput || 0,
+                        a: aInput || 0,
+                        l: lInput || 0,
+                        g: gInput || 0
+                    };
+                    
+                    db.profile.weight = wInput; // Profil aktualisieren
                     db.measurements.push(entry);
                     this.save();
+                    
                     UserInterface.refreshAll();
-                    alert("Gespeichert!");
+                    alert("Messung erfolgreich gespeichert!");
+                    
+                    // Felder leeren
                     document.querySelectorAll('#screen-stats input').forEach(i => i.value = "");
                 } else {
-                    alert("Gewicht ist erforderlich.");
+                    alert("Bitte gib mindestens dein Gewicht ein, um zu speichern.");
                 }
             },
 
             clearAll: function() {
-                if(confirm("Alles löschen?")) {
+                if(confirm("Wirklich alles löschen? Dies kann nicht rückgängig gemacht werden.")) {
                     localStorage.removeItem(STORAGE_KEY);
                     location.reload();
                 }
             },
 
-            // Neue Funktion für die Frequenz-Anzeige
+            // Neue Funktion für die Frequenz-Anzeige (Woche/Monat/Jahr)
             calculateFrequency: function() {
                 const now = new Date();
+                
+                // Wochenstart berechnen (Montag)
                 const startOfWeek = new Date(now); 
                 const day = startOfWeek.getDay() || 7; 
                 if(day !== 1) startOfWeek.setHours(-24 * (day - 1)); 
                 else startOfWeek.setHours(0,0,0,0);
                 
                 let w = 0, m = 0, y = 0;
+                
                 db.history.forEach(h => {
                     const d = new Date(h.date);
-                    // Woche
+                    
+                    // Woche: Datensatz ist jünger als Wochenstart
                     if(d >= startOfWeek) w++;
-                    // Monat
+                    
+                    // Monat: Gleicher Monat & gleiches Jahr
                     if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) m++;
-                    // Jahr
+                    
+                    // Jahr: Gleiches Jahr
                     if(d.getFullYear() === now.getFullYear()) y++;
                 });
+                
                 return { w, m, y };
             }
         };
 
         // ======================================================
-        // USER INTERFACE
+        // USER INTERFACE LOGIK
         // ======================================================
 
         const UserInterface = {
@@ -938,8 +1007,8 @@
                 document.getElementById(id).style.display = 'none';
             },
 
-            openDaily: function() {
-                document.getElementById('overlay-daily').style.display = 'flex';
+            openNotes: function() {
+                document.getElementById('overlay-notes').style.display = 'flex';
             },
 
             openLibrary: function() {
@@ -949,13 +1018,13 @@
                     const ex = EXERCISES[key];
                     const card = document.createElement('div');
                     card.className = "ui-card";
-                    card.style.cursor="pointer";
+                    card.style.cursor = "pointer";
                     card.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;">
+                        <div style="display:flex; justify-content:space-between;">
                             <b>${key}</b>
-                            <span style="font-size:10px;color:var(--color-accent-purple);">${ex.cat}</span>
+                            <span style="font-size:10px; color:var(--color-accent-purple); text-transform:uppercase;">${ex.cat}</span>
                         </div>
-                        <p style="font-size:12px;color:#aaa;margin-top:5px;">${ex.short}</p>
+                        <p style="font-size:12px; color:#888; margin-top:5px;">${ex.short}</p>
                     `;
                     card.onclick = () => UserInterface.showDetail(key);
                     list.appendChild(card);
@@ -972,9 +1041,9 @@
             },
 
             refreshAll: function() {
-                // Header Daten
+                // 1. HEADER DATEN
                 const days = Math.ceil((Date.now() - db.meta.installed) / 86400000);
-                document.getElementById('home-day-title').innerText = "TAG " + (days||1);
+                document.getElementById('home-day-title').innerText = "TAG " + (days || 1);
                 
                 const today = new Date();
                 document.getElementById('home-date-title').innerText = today.toLocaleDateString('de-DE', {weekday:'short', day:'2-digit', month:'short'}).toUpperCase();
@@ -982,40 +1051,40 @@
                 document.getElementById('home-streak-val').innerText = db.status.streak;
                 document.getElementById('home-total-val').innerText = db.history.length;
 
-                // Frequenz Anzeige
+                // 2. FREQUENZ ANZEIGE
                 const freq = AppController.calculateFrequency();
                 document.getElementById('freq-week').innerText = freq.w;
                 document.getElementById('freq-month').innerText = freq.m;
                 document.getElementById('freq-year').innerText = freq.y;
 
-                // BMI Berechnung
-                const hM = db.profile.height / 100;
+                // 3. BMI BERECHNUNG
+                const hMeters = db.profile.height / 100;
                 let bmi = "-";
-                if(db.profile.weight > 0 && hM > 0) {
-                    bmi = (db.profile.weight / (hM*hM)).toFixed(1);
+                if(db.profile.weight > 0 && hMeters > 0) {
+                    bmi = (db.profile.weight / (hMeters * hMeters)).toFixed(1);
                 }
                 document.getElementById('home-bmi').innerText = bmi;
 
-                // KCAL & Level
-                const tKcal = db.history.reduce((a,c) => a + (c.kcal||0), 0);
-                document.getElementById('home-kcal').innerText = tKcal.toLocaleString();
-                document.getElementById('home-lvl').innerText = 1 + Math.floor(tKcal/1000);
+                // 4. KALORIEN & LEVEL
+                const totalKcal = db.history.reduce((acc, curr) => acc + (curr.kcal || 0), 0);
+                document.getElementById('home-kcal').innerText = totalKcal.toLocaleString();
+                document.getElementById('home-lvl').innerText = 1 + Math.floor(totalKcal / 1000);
 
-                // Dauer Buttons
+                // 5. BUTTON STATES
                 document.querySelectorAll('.small-toggle-button').forEach(b => b.classList.remove('button-active'));
                 const btn = document.getElementById('dur-' + db.config.duration);
                 if(btn) btn.classList.add('button-active');
 
-                // Settings Slider
+                // 6. SLIDER SETTINGS
                 document.getElementById('range-work').value = db.config.work;
                 document.getElementById('range-rest').value = db.config.rest;
                 document.getElementById('val-work').innerText = db.config.work + "s";
                 document.getElementById('val-rest').innerText = db.config.rest + "s";
                 
-                // Notizen
+                // 7. NOTIZEN
                 document.getElementById('note-input').value = db.config.note;
 
-                // Stats Chart & Liste
+                // 8. STATISTIK RENDER
                 StatsSystem.render();
             }
         };
@@ -1025,55 +1094,67 @@
         // ======================================================
 
         const PlayerSystem = {
+            timerId: null,
+            running: false,
+            time: 10,
+            phase: 'PREP',
+            idx: 0,
+            plan: [],
+            
             start: function() {
                 if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 
                 const focus = document.getElementById('home-focus').value;
-                const duration = db.config.duration * 60;
-                const cycle = db.config.work + db.config.rest;
-                const count = Math.max(1, Math.floor(duration / cycle));
+                const totalSeconds = db.config.duration * 60;
+                const cycleTime = db.config.work + db.config.rest;
+                const count = Math.max(1, Math.floor(totalSeconds / cycleTime));
                 
-                let poolMain = [], poolSec = [];
-                Object.keys(EXERCISES).forEach(k => {
-                    if(focus==='all' || EXERCISES[k].cat === focus) poolMain.push(k);
-                    else poolSec.push(k);
+                let poolMain = [];
+                let poolSec = [];
+                
+                Object.keys(EXERCISES).forEach(key => {
+                    if(focus === 'all' || EXERCISES[key].cat === focus) {
+                        poolMain.push(key);
+                    } else {
+                        poolSec.push(key);
+                    }
                 });
 
-                let plan = [];
-                for(let i=0; i<count; i++) {
-                    if(focus==='all' || Math.random()<0.75) {
-                        plan.push(poolMain[Math.floor(Math.random()*poolMain.length)]);
+                let newPlan = [];
+                for(let i=0; i < count; i++) {
+                    if(focus === 'all' || Math.random() < 0.75) {
+                        newPlan.push(poolMain[Math.floor(Math.random() * poolMain.length)]);
                     } else {
-                        plan.push(poolSec[Math.floor(Math.random()*poolSec.length)]);
+                        newPlan.push(poolSec[Math.floor(Math.random() * poolSec.length)]);
                     }
                 }
                 
-                player.plan = plan;
-                player.idx = 0;
-                player.phase = 'PREP';
-                player.time = 10;
-                player.running = false;
+                this.plan = newPlan;
+                this.idx = 0;
+                this.phase = 'PREP';
+                this.time = 10;
+                this.running = false;
                 
                 document.getElementById('overlay-player').style.display = 'flex';
                 this.draw();
             },
 
             toggle: function() {
-                if(player.running) {
-                    clearInterval(player.timerId);
-                    player.running = false;
+                if(this.running) {
+                    clearInterval(this.timerId);
+                    this.running = false;
                     document.getElementById('player-play-pause').innerText = "WEITER";
                 } else {
-                    player.timerId = setInterval(this.tick.bind(this), 1000);
-                    player.running = true;
+                    this.timerId = setInterval(this.tick.bind(this), 1000);
+                    this.running = true;
                     document.getElementById('player-play-pause').innerText = "PAUSE";
                 }
             },
 
             tick: function() {
-                if(player.time > 0) {
-                    player.time--; 
-                    if(player.time < 4 && player.time > 0) this.beep(600);
+                if(this.time > 0) {
+                    this.time--; 
+                    if(this.time < 4 && this.time > 0) this.beep(600);
                     this.draw();
                 } else {
                     this.beep(900);
@@ -1082,70 +1163,74 @@
             },
 
             nextPhase: function() {
-                if(player.phase === 'PREP') {
-                    player.phase = 'WORK';
-                    player.time = db.config.work;
-                } else if(player.phase === 'WORK') {
-                    if(player.idx >= player.plan.length-1) {
+                if(this.phase === 'PREP') {
+                    this.phase = 'WORK';
+                    this.time = db.config.work;
+                } else if(this.phase === 'WORK') {
+                    if(this.idx >= this.plan.length - 1) {
                         this.finish();
                         return;
                     }
-                    player.phase = 'REST';
-                    player.time = db.config.rest;
+                    this.phase = 'REST';
+                    this.time = db.config.rest;
                 } else {
-                    player.idx++;
-                    player.phase = 'WORK';
-                    player.time = db.config.work;
+                    this.idx++;
+                    this.phase = 'WORK';
+                    this.time = db.config.work;
                 }
                 this.draw();
             },
 
             skip: function() {
-                if(player.phase !== 'WORK') {
-                    player.time = 0;
+                if(this.phase !== 'WORK') {
+                    this.time = 0;
                     this.nextPhase();
                 } else {
-                    alert("Kein Skip während Belastung!");
+                    alert("Belastung nicht überspringbar!");
                 }
             },
 
             draw: function() {
-                document.getElementById('player-timer').innerText = player.time;
-                document.getElementById('player-phase').innerText = player.phase==='PREP'?"BEREIT":(player.phase==='WORK'?"GO!":"PAUSE");
+                document.getElementById('player-timer').innerText = this.time;
+                document.getElementById('player-phase').innerText = this.phase === 'PREP' ? "BEREIT" : (this.phase === 'WORK' ? "GO!" : "PAUSE");
                 
-                const max = player.phase==='WORK'?db.config.work:(player.phase==='REST'?db.config.rest:10);
-                document.getElementById('player-ring').style.strokeDashoffset = 691 - (player.time/max)*691;
+                const max = this.phase === 'WORK' ? db.config.work : (this.phase === 'REST' ? db.config.rest : 10);
+                document.getElementById('player-ring').style.strokeDashoffset = 628 - (this.time / max) * 628;
                 
-                const col = player.phase==='WORK'?"var(--color-accent-green)":(player.phase==='REST'?"var(--color-accent-blue)":"#fff");
-                document.getElementById('player-phase').style.color = col;
-                document.getElementById('player-ring').style.stroke = col;
+                const color = this.phase === 'WORK' ? "var(--color-accent-green)" : (this.phase === 'REST' ? "var(--color-accent-blue)" : "#fff");
+                document.getElementById('player-phase').style.color = color;
+                document.getElementById('player-ring').style.stroke = color;
 
-                const ex = EXERCISES[player.plan[player.idx]];
-                if(player.phase !== 'REST') {
-                    document.getElementById('player-ex-name').innerText = player.plan[player.idx].toUpperCase();
+                const exName = this.plan[this.idx];
+                const ex = EXERCISES[exName];
+
+                if(this.phase !== 'REST') {
+                    document.getElementById('player-ex-name').innerText = exName.toUpperCase();
                     document.getElementById('player-ex-cat').innerText = ex.cat;
-                    document.getElementById('player-guide-trigger').style.display='block';
-                    document.getElementById('player-next-box').style.display='none';
+                    document.getElementById('player-guide-trigger').style.display = 'block';
+                    document.getElementById('player-next-box').style.display = 'none';
                 } else {
                     document.getElementById('player-ex-name').innerText = "PAUSE";
                     document.getElementById('player-ex-cat').innerText = "ERHOLUNG";
-                    document.getElementById('player-guide-trigger').style.display='none';
-                    document.getElementById('player-next-box').style.display='block';
-                    document.getElementById('player-next-name').innerText = player.plan[player.idx+1];
+                    document.getElementById('player-guide-trigger').style.display = 'none';
+                    
+                    document.getElementById('player-next-box').style.display = 'block';
+                    document.getElementById('player-next-name').innerText = this.plan[this.idx + 1];
                 }
-                document.getElementById('player-status-round').innerText = `ÜBUNG ${player.idx+1} / ${player.plan.length}`;
+                
+                document.getElementById('player-status-round').innerText = (this.idx + 1) + " / " + this.plan.length;
             },
 
             showCurrentGuide: function() {
-                UserInterface.showDetail(player.plan[player.idx]);
+                UserInterface.showDetail(this.plan[this.idx]);
             },
 
             showNextGuide: function() {
-                UserInterface.showDetail(player.plan[player.idx+1]);
+                UserInterface.showDetail(this.plan[this.idx + 1]);
             },
 
             finish: function() {
-                clearInterval(player.timerId);
+                clearInterval(this.timerId);
                 document.getElementById('overlay-player').style.display = 'none';
                 this.renderFinishChecklist();
                 document.getElementById('overlay-rating').style.display = 'flex';
@@ -1192,21 +1277,21 @@
 
             exit: function() {
                 if(confirm("Abbrechen?")) {
-                    clearInterval(player.timerId);
-                    document.getElementById('overlay-player').style.display='none';
+                    clearInterval(this.timerId);
+                    document.getElementById('overlay-player').style.display = 'none';
                 }
             },
 
-            beep: function(f) {
+            beep: function(freq) {
                 if(isMuted || !audioContext) return;
-                const o = audioContext.createOscillator();
-                const g = audioContext.createGain();
-                o.connect(g);
-                g.connect(audioContext.destination);
-                o.frequency.value = f;
-                g.gain.value = 0.1;
-                o.start();
-                o.stop(audioContext.currentTime + 0.1);
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.frequency.value = freq;
+                gain.gain.value = 0.1;
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.1);
             },
             
             toggleMute: function() {
@@ -1217,93 +1302,142 @@
 
         const StatsSystem = {
             render: function() {
-                // Graph
-                const svg = document.getElementById('weight-svg');
+                // 1. GEWICHTS GRAPH
+                const svg = document.getElementById('weight-chart-svg');
                 svg.innerHTML = "";
                 if(db.measurements.length > 1) {
                     const vals = db.measurements.map(m => parseFloat(m.w));
-                    const min = Math.min(...vals)-1;
-                    const max = Math.max(...vals)+1;
-                    const pts = vals.map((w,i) => `${(i/(vals.length-1))*100},${100-((w-min)/(max-min)*100)}`).join(' ');
-                    svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
-                }
-                
-                // Compare Table
-                const tbl = document.getElementById('compare-table-div');
-                if(db.measurements.length >= 2) {
-                    const cur = db.measurements[db.measurements.length-1];
-                    const pre = db.measurements[db.measurements.length-2];
-                    const flds = [
-                        {k:'w',l:'Gewicht'},
-                        {k:'b',l:'Bauch'},
-                        {k:'c',l:'Brust'},
-                        {k:'a',l:'Arm'},
-                        {k:'l',l:'Bein'},
-                        {k:'g',l:'Po'}
-                    ];
-                    
-                    let h = `<table class="comparison-table">`;
-                    flds.forEach(f => {
-                        const vC = parseFloat(cur[f.k])||0;
-                        const vP = parseFloat(pre[f.k])||0;
-                        if(vC>0 || vP>0) {
-                            const d = vC - vP;
-                            const cls = d===0?"diff-neutral":(f.k==='w'?(d<0?"diff-positive":"diff-negative"):(d>0?"diff-positive":"diff-negative"));
-                            h += `<tr><td>${f.l}</td><td>${vC>0?vC:'-'}</td><td class="${cls}">${d>0?"+":""}${d.toFixed(1)}</td></tr>`;
-                        }
-                    });
-                    tbl.innerHTML = h+"</table>";
+                    const min = Math.min(...vals) - 1;
+                    const max = Math.max(...vals) + 1;
+                    const points = vals.map((w, i) => {
+                        const x = (i / (vals.length - 1)) * 100;
+                        const y = 100 - ((w - min) / (max - min) * 100);
+                        return `${x},${y}`;
+                    }).join(' ');
+                    svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
                 }
 
-                // History List
-                const lst = document.getElementById('workout-history-list');
-                lst.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
-                [...db.history].reverse().slice(0,10).forEach(e => {
-                    const d = document.createElement('div');
-                    d.className="ui-card";
-                    d.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:bold;">
-                            <span>${e.type}</span>
-                            <span style="color:#666">${new Date(e.date).toLocaleDateString()}</span>
+                // 2. METRICS GRID (Das neue Design)
+                const gridContainer = document.getElementById('metrics-grid-container');
+                gridContainer.innerHTML = "";
+                
+                if(db.measurements.length > 0) {
+                    const cur = db.measurements[db.measurements.length - 1];
+                    const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
+                    
+                    const fields = [
+                        {id:'w', label:'Gewicht', unit:'kg'},
+                        {id:'b', label:'Bauch', unit:'cm'},
+                        {id:'c', label:'Brust', unit:'cm'},
+                        {id:'a', label:'Arm', unit:'cm'},
+                        {id:'l', label:'Bein', unit:'cm'},
+                        {id:'g', label:'Po', unit:'cm'}
+                    ];
+                    
+                    fields.forEach(f => {
+                        const valCur = cur[f.id] || 0;
+                        
+                        // Nur anzeigen, wenn ein aktueller Wert da ist
+                        if(valCur > 0) {
+                            let diffHtml = "";
+                            
+                            if(pre && pre[f.id] > 0) {
+                                const diff = valCur - pre[f.id];
+                                let cssClass = "diff-neutral";
+                                
+                                if(diff !== 0) {
+                                    if(f.id === 'w') {
+                                        // Gewicht: minus ist gut (grün), plus ist schlecht (rot)
+                                        cssClass = diff < 0 ? "diff-good" : "diff-bad";
+                                    } else {
+                                        // Muskeln/Umfang: plus ist gut (grün)
+                                        cssClass = diff > 0 ? "diff-good" : "diff-neutral";
+                                    }
+                                }
+                                
+                                const sign = diff > 0 ? "+" : "";
+                                diffHtml = `<span class="metric-diff-badge ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
+                            } else {
+                                diffHtml = `<span class="metric-diff-badge diff-neutral">START</span>`;
+                            }
+                            
+                            const card = document.createElement('div');
+                            card.className = "metric-card-item";
+                            card.innerHTML = `
+                                <div class="metric-card-header">
+                                    <span class="metric-label">${f.label}</span>
+                                    ${diffHtml}
+                                </div>
+                                <div class="metric-current-value">
+                                    ${valCur} <span style="font-size:12px; font-weight:600; color:#666;">${f.unit}</span>
+                                </div>
+                            `;
+                            gridContainer.appendChild(card);
+                        }
+                    });
+                } else {
+                    gridContainer.innerHTML = "<div style='grid-column:1/-1; text-align:center; color:#666; font-size:12px; padding:10px;'>Noch keine Messdaten vorhanden.</div>";
+                }
+
+                // 3. HISTORY LISTE
+                const list = document.getElementById('workout-history-list');
+                list.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
+                
+                [...db.history].reverse().slice(0, 10).forEach(entry => {
+                    const card = document.createElement('div');
+                    card.className = "ui-card";
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
+                            <span>${entry.type}</span>
+                            <span style="color:#666">${new Date(entry.date).toLocaleDateString()}</span>
                         </div>
-                        <div style="font-size:12px;color:var(--color-accent-blue);margin-top:4px;">
-                            ${e.kcal} kcal • Intensität: ${e.rating}/10
+                        <div style="font-size:12px; color:var(--color-accent-blue); margin-top:4px;">
+                            ${entry.kcal} kcal • Intensität: ${entry.rating}/10
                         </div>
                     `;
-                    lst.appendChild(d);
+                    list.appendChild(card);
                 });
             }
         };
 
         const BackupSystem = {
             export: function() {
+                const blob = new Blob([JSON.stringify(db)], {type:'application/json'});
+                const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], {type:'application/json'}));
-                a.download = 'bp_backup.json';
+                a.href = url;
+                a.download = 'bodypulse_backup.json';
                 a.click();
             },
             import: function(el) {
-                const r = new FileReader();
-                r.onload = e => {
+                const reader = new FileReader();
+                reader.onload = e => {
                     try {
-                        const dat = JSON.parse(e.target.result);
-                        if(!dat.profile) { alert("Format zu alt."); return; }
-                        db = dat;
-                        AppController.save();
-                        location.reload();
+                        const data = JSON.parse(e.target.result);
+                        if(data.profile || data.prof) {
+                            // Einfacher Check, ob Format passt
+                            db = data;
+                            AppController.save();
+                            location.reload();
+                        } else {
+                            alert("Ungültiges Format.");
+                        }
                     } catch(err) {
-                        alert("Fehler beim Import");
+                        alert("Fehler beim Import.");
                     }
                 };
-                r.readAsText(el.files[0]);
+                reader.readAsText(el.files[0]);
             }
         };
 
         window.onload = function() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if(saved) {
-                try { db = JSON.parse(saved); } catch(e) {}
-                AppController.checkDailyReset();
+                try { 
+                    db = JSON.parse(saved); 
+                } catch(e) {
+                    console.error("Datenfehler", e);
+                }
                 UserInterface.refreshAll();
             } else {
                 document.getElementById('overlay-setup').style.display = 'flex';
