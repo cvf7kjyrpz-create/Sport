@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V31.0 - UNABRIDGED FINAL</title>
+    <title>Body Pulse V32.0 - FIXED DATA</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,7 +11,7 @@
 
     <style>
         /* ======================================================================
-           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG EXPANSIERT)
+           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG)
            ====================================================================== */
         :root {
             --color-background: #000000;
@@ -61,8 +61,8 @@
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            /* SEHR WICHTIG: Erhöhter Abstand unten für Scroll-Freiheit der Buttons */
-            padding-bottom: 180px; 
+            /* SEHR WICHTIG: Genug Platz unten, damit die Buttons nicht verdeckt werden */
+            padding-bottom: 200px; 
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -647,7 +647,7 @@
     </div>
 
     <script>
-        const STORAGE_KEY = "BODYPULSE_V31_FULL_UNABRIDGED";
+        const STORAGE_KEY = "BODYPULSE_APP_DATA_FIXED";
 
         /**
          * VOLLSTÄNDIGE ÜBUNGSDATENBANK
@@ -925,26 +925,31 @@
 
             saveMeasurement: function() {
                 const wInput = document.getElementById('m-weight').value;
-                if(!wInput) return alert("Gewicht ist Pflicht!");
-
+                
+                // Wir erzwingen Zahlen oder 0, um NaN Fehler zu vermeiden
                 const entry = {
                     date: new Date().toISOString(),
-                    w: wInput,
-                    b: document.getElementById('m-waist').value,
-                    c: document.getElementById('m-chest').value,
-                    a: document.getElementById('m-arm').value,
-                    l: document.getElementById('m-leg').value,
-                    g: document.getElementById('m-glute').value
+                    w: parseFloat(wInput) || 0,
+                    b: parseFloat(document.getElementById('m-waist').value) || 0,
+                    c: parseFloat(document.getElementById('m-chest').value) || 0,
+                    a: parseFloat(document.getElementById('m-arm').value) || 0,
+                    l: parseFloat(document.getElementById('m-leg').value) || 0,
+                    g: parseFloat(document.getElementById('m-glute').value) || 0
                 };
                 
-                db.profile.weight = parseFloat(wInput);
-                db.measurements.push(entry);
-                this.save();
-                UserInterface.refreshAll();
-                alert("Werte erfolgreich gespeichert!");
-                
-                // Felder leeren
-                document.querySelectorAll('#screen-stats input').forEach(i => i.value = "");
+                // Gewicht ist Pflicht, der Rest optional
+                if(entry.w > 0) {
+                    db.profile.weight = entry.w;
+                    db.measurements.push(entry);
+                    this.save();
+                    UserInterface.refreshAll();
+                    alert("Werte erfolgreich gespeichert!");
+                    
+                    // Felder leeren
+                    document.querySelectorAll('#screen-stats input').forEach(i => i.value = "");
+                } else {
+                    alert("Bitte mindestens das Gewicht eintragen.");
+                }
             },
 
             clearAll: function() {
@@ -1224,6 +1229,7 @@
                 AppController.save();
                 UserInterface.refreshAll();
                 document.getElementById('overlay-rating').style.display = 'none';
+                alert("Training erfolgreich gespeichert!");
             },
 
             exit: function() {
@@ -1289,23 +1295,26 @@
                     
                     let tableHtml = `<table class="comparison-table">`;
                     fields.forEach(f => {
-                        const valCur = parseFloat(current[f.key]);
-                        const valPre = parseFloat(previous[f.key]);
-                        if(!isNaN(valCur) && !isNaN(valPre)) {
+                        const valCur = parseFloat(current[f.key]) || 0;
+                        const valPre = parseFloat(previous[f.key]) || 0;
+                        
+                        // Nur anzeigen, wenn mindestens einer der Werte > 0 ist
+                        if(valCur > 0 || valPre > 0) {
                             const diff = valCur - valPre;
                             let cssClass = "diff-neutral";
                             
-                            // Logik: Bei Gewicht ist Weniger meist besser, bei Muskeln (Arm etc.) Mehr besser
-                            if(f.key === 'w') {
-                                cssClass = diff < 0 ? "diff-positive" : (diff > 0 ? "diff-negative" : "diff-neutral");
-                            } else {
-                                cssClass = diff > 0 ? "diff-positive" : (diff < 0 ? "diff-negative" : "diff-neutral");
+                            if(diff !== 0) {
+                                if(f.key === 'w') {
+                                    cssClass = diff < 0 ? "diff-positive" : "diff-negative";
+                                } else {
+                                    cssClass = diff > 0 ? "diff-positive" : "diff-negative";
+                                }
                             }
                             
                             tableHtml += `
                                 <tr>
                                     <td>${f.label}</td>
-                                    <td>${valCur}</td>
+                                    <td>${valCur > 0 ? valCur : '-'}</td>
                                     <td class="${cssClass}">${diff > 0 ? "+" : ""}${diff.toFixed(1)}</td>
                                 </tr>`;
                         }
@@ -1348,15 +1357,31 @@
                 a.download = 'bodypulse_backup_' + new Date().toISOString().split('T')[0] + '.json';
                 a.click();
             },
+            
+            // HIER IST DER FIX FÜR ALTE BACKUPS
             import: function(input) {
                 const reader = new FileReader();
                 reader.onload = e => {
                     try {
-                        db = JSON.parse(e.target.result);
+                        let importedData = JSON.parse(e.target.result);
+                        
+                        // FIX: Prüfen, ob das Backup aus einer alten Version (Variable "appData") kommt
+                        // Alte Versionen hatten eine andere Struktur, wir mappen sie um.
+                        if(!importedData.profile && importedData.height) {
+                            // Sehr altes Format, wir versuchen es zu retten
+                             alert("Dieses Backup ist zu alt und nicht kompatibel.");
+                             return;
+                        }
+
+                        // Falls das Backup Struktur hat, aber wir sichergehen wollen
+                        db = importedData;
+                        
                         AppController.save();
+                        alert("Backup erfolgreich geladen!");
                         location.reload();
                     } catch(err) {
-                        alert("Ungültige Backup-Datei.");
+                        alert("Fehler beim Laden des Backups. Datei beschädigt?");
+                        console.error(err);
                     }
                 };
                 reader.readAsText(input.files[0]);
