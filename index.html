@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V40.0 - FIXED DATA & TIME</title>
+    <title>Body Pulse V41.0 - EXTENDED METRICS</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -124,7 +124,7 @@
         }
 
         .freq-value-text {
-            font-size: 18px; /* Etwas kleiner damit Text passt */
+            font-size: 18px;
             font-weight: 900;
             color: var(--color-accent-green);
             line-height: 1.2;
@@ -182,6 +182,7 @@
             border-radius: 6px;
         }
 
+        /* FARBLOGIK FÜR TRENDS */
         .trend-positive-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
         .trend-negative-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
         .trend-positive-bad { background-color: rgba(255, 69, 58, 0.15); color: var(--color-accent-red); }
@@ -602,6 +603,8 @@
                 <input type="number" id="meas-arm" class="text-input" placeholder="Arm (cm)">
                 <input type="number" id="meas-leg" class="text-input" placeholder="Bein (cm)">
                 <input type="number" id="meas-glute" class="text-input" placeholder="Po (cm)">
+                <input type="number" id="meas-fold-abs" class="text-input" placeholder="Bauchfalte (mm)">
+                <input type="number" id="meas-fold-side" class="text-input" placeholder="Seitl. Falte (mm)">
             </div>
             <button class="primary-button" style="margin-top:5px;" onclick="AppController.saveMeasurement()">WERTE SPEICHERN</button>
         </div>
@@ -654,12 +657,10 @@
     </div>
 
     <script>
-        // DER FIXE SCHLÜSSEL FÜR ALLE ZUKÜNFTIGEN VERSIONEN
         const STORAGE_KEY = "BODYPULSE_MASTER_DATA";
 
         /**
          * ÜBUNGSDATENBANK
-         * Vollständig ausgeschrieben, keine Kürzungen.
          */
         const EXERCISES = {
             "Planks": {
@@ -847,7 +848,7 @@
         const CHECKLIST_ITEMS = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
 
         /**
-         * DATENSTRUKTUR (MIT DEFAULT WERTEN)
+         * DATENSTRUKTUR
          */
         let db = {
             profile: { height: 0, weight: 0, age: 0 },
@@ -921,6 +922,8 @@
                 const aInput = parseFloat(document.getElementById('meas-arm').value);
                 const lInput = parseFloat(document.getElementById('meas-leg').value);
                 const gInput = parseFloat(document.getElementById('meas-glute').value);
+                const faInput = parseFloat(document.getElementById('meas-fold-abs').value);
+                const fsInput = parseFloat(document.getElementById('meas-fold-side').value);
                 
                 if(wInput > 0) {
                     const entry = {
@@ -930,7 +933,9 @@
                         c: cInput || 0,
                         a: aInput || 0,
                         l: lInput || 0,
-                        g: gInput || 0
+                        g: gInput || 0,
+                        fa: faInput || 0,
+                        fs: fsInput || 0
                     };
                     
                     db.profile.weight = wInput; // Profil aktualisieren
@@ -969,9 +974,7 @@
                 
                 db.history.forEach(h => {
                     const d = new Date(h.date);
-                    // Versuche Dauer zu ermitteln. 
-                    // Fallback: Wenn 'duration' nicht gespeichert wurde (alte Daten), 
-                    // schätzen wir es aus kcal (kcal / 8) oder nehmen 0.
+                    // Versuche Dauer zu ermitteln
                     let duration = 0;
                     if(h.duration) {
                         duration = h.duration;
@@ -1112,10 +1115,12 @@
                     const cur = db.measurements[db.measurements.length - 1];
                     const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
                     
-                    // Definition: invert=true heißt "weniger ist besser" (z.B. Gewicht)
+                    // Definition: invert=true heißt "weniger ist besser" (z.B. Gewicht, Falten)
                     const metrics = [
                         { id:'w', label:'GEWICHT', unit:'kg', invert: true },
                         { id:'b', label:'BAUCH', unit:'cm', invert: true },
+                        { id:'fa', label:'BAUCHFALTE', unit:'mm', invert: true },
+                        { id:'fs', label:'SEITL. FALTE', unit:'mm', invert: true },
                         { id:'c', label:'BRUST', unit:'cm', invert: false },
                         { id:'a', label:'ARM', unit:'cm', invert: false },
                         { id:'l', label:'BEIN', unit:'cm', invert: false },
@@ -1371,7 +1376,7 @@
                     date: new Date().toISOString(),
                     kcal: kcal,
                     rating: rating,
-                    duration: db.config.duration, // NEU
+                    duration: db.config.duration,
                     type: "Live Training"
                 });
                 
