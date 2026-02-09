@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Body Pulse V41.0 - EXTENDED METRICS</title>
+    <title>Body Pulse V44.0 - FULL EXTENDED</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,21 +11,21 @@
 
     <style>
         /* ======================================================================
-           1. CSS DESIGN SYSTEM (VOLLSTÄNDIG)
+           1. CSS DESIGN SYSTEM
            ====================================================================== */
         :root {
             --color-background: #000000;
-            --color-card-background: #111111;
-            --color-card-light: #1c1c1e;
+            --color-card-bg: #111111;
+            --color-card-highlight: #1c1c1e;
             --color-border: #333333;
             --color-text-primary: #ffffff;
             --color-text-secondary: #8e8e93;
-            --color-accent-green: #32d74b;
-            --color-accent-blue: #0a84ff;
-            --color-accent-orange: #ff9f0a;
-            --color-accent-red: #ff453a;
-            --color-accent-purple: #bf5af2;
-            --font-family-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            --color-success: #32d74b;
+            --color-info: #0a84ff;
+            --color-warning: #ff9f0a;
+            --color-danger: #ff453a;
+            --color-category: #bf5af2;
+            --font-family-base: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
             --safe-area-top: env(safe-area-inset-top);
             --safe-area-bottom: env(safe-area-inset-bottom);
         }
@@ -38,221 +38,266 @@
             padding: 0;
         }
 
-        html, body {
+        html {
             position: fixed;
             width: 100%;
             height: 100%;
             background-color: var(--color-background);
             color: var(--color-text-primary);
-            font-family: var(--font-family-system);
+            font-family: var(--font-family-base);
             overflow: hidden;
         }
 
         body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             padding-top: var(--safe-area-top);
+            margin: 0;
         }
 
-        /* SCREEN LAYOUTS */
-        .app-screen-container {
+        /* SCREEN CONTAINER 
+           --------------------------------------------------
+        */
+        .app-view-container {
             flex: 1;
             display: none;
             flex-direction: column;
             width: 100%;
             padding: 15px;
-            padding-bottom: 100px; 
+            padding-bottom: 120px; /* Extra Platz für Navigation */
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
-        .app-screen-container.screen-active {
+        .app-view-container.view-active {
             display: flex;
         }
 
-        /* UI ELEMENTE */
-        .ui-card {
-            background-color: var(--color-card-background);
+        /* CARDS & BOXES 
+           --------------------------------------------------
+        */
+        .ui-card-element {
+            background-color: var(--color-card-bg);
             border: 1px solid var(--color-border);
             border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
             position: relative;
         }
 
-        /* TEXT STYLES */
-        h1.headline-text {
-            font-size: 24px;
+        /* TYPOGRAPHY 
+           --------------------------------------------------
+        */
+        h1.text-headline {
+            font-size: 28px;
             font-weight: 900;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             line-height: 1.1;
             letter-spacing: -0.5px;
+            color: var(--color-text-primary);
         }
 
-        h2.sub-headline-text {
+        h2.text-subhead {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--color-text-secondary);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 14px;
+            letter-spacing: 1.2px;
         }
 
-        /* DASHBOARD GRID SYSTEM */
-        .dashboard-grid-layout {
+        /* DASHBOARD GRIDS 
+           --------------------------------------------------
+        */
+        .grid-layout-3-col {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
-        .stat-display-item {
-            background-color: var(--color-card-light);
+        .stat-display-box {
+            background-color: var(--color-card-highlight);
             border: 1px solid #222222;
             border-radius: 12px;
-            padding: 10px 5px;
+            padding: 14px 8px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
-        .stat-value-text {
-            font-size: 17px;
+        .stat-value-primary {
+            font-size: 18px;
             font-weight: 800;
             color: #ffffff;
         }
 
-        .freq-value-text {
-            font-size: 18px;
+        .stat-value-frequency {
+            font-size: 20px;
             font-weight: 900;
-            color: var(--color-accent-green);
-            line-height: 1.2;
+            color: var(--color-success);
+            line-height: 1.1;
         }
 
-        .freq-sub-text {
+        .stat-sub-text {
             font-size: 10px;
-            color: #888;
+            color: #888888;
             font-weight: 600;
+            margin-top: 4px;
         }
 
-        .stat-label-text {
+        .stat-label-small {
             font-size: 9px;
             color: var(--color-text-secondary);
             font-weight: 700;
             text-transform: uppercase;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
-        /* METRICS GRID FÜR STATISTIK */
+        /* METRICS GRID (TILES) 
+           --------------------------------------------------
+        */
         .metrics-grid-layout {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        .metric-card-item {
-            background-color: var(--color-card-light);
+        .metric-tile-item {
+            background-color: var(--color-card-highlight);
             border: 1px solid var(--color-border);
             border-radius: 14px;
-            padding: 14px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .metric-card-header {
+        .tile-header-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .metric-label {
+        .tile-label-text {
             font-size: 11px;
             font-weight: 700;
             color: #888888;
             text-transform: uppercase;
         }
 
-        .metric-trend-badge {
+        .trend-badge-indicator {
             font-size: 11px;
             font-weight: 800;
-            padding: 3px 6px;
+            padding: 4px 8px;
             border-radius: 6px;
         }
 
-        /* FARBLOGIK FÜR TRENDS */
-        .trend-positive-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
-        .trend-negative-good { background-color: rgba(50, 215, 75, 0.15); color: var(--color-accent-green); }
-        .trend-positive-bad { background-color: rgba(255, 69, 58, 0.15); color: var(--color-accent-red); }
-        .trend-negative-bad { background-color: rgba(255, 69, 58, 0.15); color: var(--color-accent-red); }
-        .trend-neutral { background-color: #222222; color: #666666; }
+        .badge-positive {
+            background-color: rgba(50, 215, 75, 0.15);
+            color: var(--color-success);
+        }
 
-        .metric-current-value {
-            font-size: 22px;
+        .badge-negative {
+            background-color: rgba(255, 69, 58, 0.15);
+            color: var(--color-danger);
+        }
+
+        .badge-neutral {
+            background-color: #222222;
+            color: #666666;
+        }
+
+        .tile-value-text {
+            font-size: 24px;
             font-weight: 900;
             color: white;
             letter-spacing: -0.5px;
         }
 
-        .metric-unit {
-            font-size: 12px;
+        .tile-unit-text {
+            font-size: 13px;
             font-weight: 600;
             color: #666666;
-            margin-left: 2px;
+            margin-left: 3px;
         }
 
-        /* INPUTS */
-        input.text-input, select.select-input, textarea.text-area-input {
+        /* FORM ELEMENTS 
+           --------------------------------------------------
+        */
+        input.input-text-field, 
+        select.input-select-field, 
+        textarea.input-area-field {
             width: 100%;
             background-color: #0a0a0a;
             border: 1px solid #333333;
             color: white;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-family: inherit;
         }
-        input.text-input:focus { border-color: var(--color-accent-blue); }
 
-        /* BUTTONS */
-        .primary-button {
+        input.input-text-field:focus {
+            border-color: var(--color-info);
+        }
+
+        /* BUTTONS 
+           --------------------------------------------------
+        */
+        .button-primary-action {
             background-color: var(--color-text-primary);
             color: #000000;
             border: none;
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 13px;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
         }
-        .primary-button:active { transform: scale(0.98); opacity: 0.9; }
 
-        .outline-button {
+        .button-primary-action:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .button-outline-action {
             background-color: transparent;
             border: 1px solid var(--color-border);
             color: var(--color-text-primary);
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 13px;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .outline-button:active { background-color: #222222; }
 
-        .small-toggle-button {
-            padding: 8px;
+        .button-outline-action:active {
+            background-color: #222222;
+        }
+
+        .button-toggle-small {
+            padding: 12px;
             font-size: 11px;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 1px solid var(--color-border);
             background-color: transparent;
             color: #888888;
@@ -260,48 +305,56 @@
             font-weight: 700;
             text-transform: uppercase;
         }
-        .small-toggle-button.button-active {
+
+        .button-toggle-small.is-active {
             background-color: #ffffff;
             color: #000000;
             border-color: #ffffff;
         }
 
-        /* CHECKLISTE */
-        .checklist-row-item {
+        /* CHECKLIST 
+           --------------------------------------------------
+        */
+        .checklist-item-row {
             display: flex;
             align-items: center;
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #222222;
             cursor: pointer;
         }
-        .checkbox-indicator {
-            width: 20px;
-            height: 20px;
+
+        .checklist-box-icon {
+            width: 24px;
+            height: 24px;
             border: 2px solid #555555;
-            border-radius: 6px;
-            margin-right: 12px;
+            border-radius: 8px;
+            margin-right: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .checklist-row-item.item-checked .checkbox-indicator {
-            background-color: var(--color-accent-green);
-            border-color: var(--color-accent-green);
+
+        .checklist-item-row.is-checked .checklist-box-icon {
+            background-color: var(--color-success);
+            border-color: var(--color-success);
             color: #000000;
         }
-        .checklist-row-item.item-checked .checkbox-indicator::after {
+
+        .checklist-item-row.is-checked .checklist-box-icon::after {
             content: '✓';
             font-weight: 900;
-            font-size: 14px;
+            font-size: 16px;
         }
 
-        /* NAVIGATION LEISTE (FIXED BOTTOM) */
-        .bottom-navbar {
+        /* NAVIGATION (BOTTOM) 
+           --------------------------------------------------
+        */
+        .bottom-navigation-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: calc(60px + var(--safe-area-bottom));
+            height: calc(70px + var(--safe-area-bottom));
             background-color: rgba(10, 10, 10, 0.98);
             border-top: 1px solid #222222;
             display: flex;
@@ -310,37 +363,42 @@
             z-index: 9999;
         }
 
-        .nav-item-btn {
+        .nav-tab-item {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 0.3;
+            opacity: 0.4;
             color: white;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: 0.2s opacity;
         }
-        .nav-item-btn.nav-active {
+
+        .nav-tab-item.tab-active {
             opacity: 1;
             color: var(--color-text-primary);
         }
-        .nav-icon-font {
-            font-size: 20px;
-            margin-bottom: 2px;
+
+        .nav-icon-symbol {
+            font-size: 24px;
+            margin-bottom: 5px;
         }
-        .nav-label-text {
-            font-size: 9px;
+
+        .nav-text-label {
+            font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
         }
 
-        /* OVERLAYS SYSTEM */
-        .fullscreen-overlay {
+        /* OVERLAYS (FULLSCREEN) 
+           --------------------------------------------------
+        */
+        .overlay-fullscreen {
             position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             background-color: #000000;
             z-index: 10000;
@@ -349,54 +407,63 @@
             padding: var(--safe-area-top) 15px 15px 15px;
         }
 
-        .overlay-header-row {
+        .overlay-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 1px solid #222222;
         }
 
-        .overlay-scroll-content {
+        .overlay-content-body {
             flex: 1;
             overflow-y: auto;
             padding-bottom: 80px;
         }
 
-        /* PLAYER COMPONENTS */
-        .player-visual-circle {
+        /* PLAYER SPECIFIC STYLES 
+           --------------------------------------------------
+        */
+        .player-visual-wrapper {
             position: relative;
-            width: 220px;
-            height: 220px;
-            margin: 10px auto;
+            width: 260px;
+            height: 260px;
+            margin: 20px auto;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .player-svg-container {
+
+        .player-svg-element {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             transform: rotate(-90deg);
         }
-        .player-timer-text {
-            font-size: 70px;
+
+        .player-time-display {
+            font-size: 85px;
             font-weight: 900;
             font-variant-numeric: tabular-nums;
         }
-        .player-guide-link {
-            font-size: 13px;
-            color: var(--color-accent-blue);
+
+        .player-guide-action {
+            font-size: 14px;
+            color: var(--color-info);
             text-decoration: underline;
             font-weight: 700;
-            margin-top: 10px;
+            margin-top: 15px;
             cursor: pointer;
         }
-        .player-next-preview-box {
+
+        .player-next-box {
             background-color: #222222;
-            padding: 12px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
             width: 100%;
             border: 1px solid #333333;
             text-align: center;
@@ -406,162 +473,161 @@
     </style>
 </head>
 <body>
-
-    <div id="overlay-setup" class="fullscreen-overlay" style="z-index:11000; justify-content:center;">
-        <h1 style="text-align:center; margin-bottom:20px;">WILLKOMMEN</h1>
-        <div class="ui-card">
-            <h2 class="sub-headline-text">DEIN PROFIL</h2>
-            <input type="number" id="setup-height" class="text-input" placeholder="Größe (cm)">
-            <input type="number" id="setup-weight" class="text-input" placeholder="Gewicht (kg)">
-            <input type="number" id="setup-age" class="text-input" placeholder="Alter">
+    <div id="overlay-setup" class="overlay-fullscreen" style="z-index:11000; justify-content:center;">
+        <h1 style="text-align:center; margin-bottom:30px;">WILLKOMMEN</h1>
+        <div class="ui-card-element">
+            <h2 class="text-subhead">DEIN PROFIL EINSTELLEN</h2>
+            <input type="number" id="input-height" class="input-text-field" placeholder="Größe (cm)">
+            <input type="number" id="input-weight" class="input-text-field" placeholder="Gewicht (kg)">
+            <input type="number" id="input-age" class="input-text-field" placeholder="Alter">
         </div>
-        <button class="primary-button" onclick="AppController.finishSetup()">LOS GEHT'S</button>
+        <button class="button-primary-action" onclick="AppController.finishSetup()">LOS GEHT'S</button>
     </div>
 
-    <div id="overlay-notes" class="fullscreen-overlay">
-        <div class="overlay-header-row">
-            <h1 class="headline-text">NOTIZEN</h1>
-            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-notes')">SCHLIESSEN</button>
+    <div id="overlay-notes" class="overlay-fullscreen">
+        <div class="overlay-header">
+            <h1 class="text-headline">NOTIZEN</h1>
+            <button class="button-toggle-small" onclick="UserInterface.closeOverlay('overlay-notes')">SCHLIESSEN</button>
         </div>
-        <div class="overlay-scroll-content">
-            <div class="ui-card">
-                <textarea id="note-input" class="text-area-input" style="height:300px; background-color:transparent; border:none;" placeholder="Tippe hier deine Gedanken..." oninput="AppController.saveNote(this.value)"></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div id="overlay-library" class="fullscreen-overlay">
-        <div class="overlay-header-row">
-            <h1 class="headline-text">ÜBUNGEN</h1>
-            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-library')">SCHLIESSEN</button>
-        </div>
-        <div class="overlay-scroll-content" id="library-list">
-            </div>
-    </div>
-
-    <div id="overlay-detail" class="fullscreen-overlay" style="z-index:12000;">
-        <div class="overlay-header-row">
-            <h1 class="headline-text" id="detail-title">TITEL</h1>
-            <button class="small-toggle-button" onclick="UserInterface.closeOverlay('overlay-detail')">SCHLIESSEN</button>
-        </div>
-        <div class="overlay-scroll-content">
-            <div class="ui-card">
-                <span id="detail-category" style="color:var(--color-accent-purple); font-weight:bold; font-size:11px; text-transform:uppercase;">KATEGORIE</span>
-                <div id="detail-body" style="white-space:pre-wrap; line-height:1.6; margin-top:10px; font-size:15px; color:#dddddd;">TEXT</div>
+        <div class="overlay-content-body">
+            <div class="ui-card-element">
+                <textarea id="input-note" class="input-area-field" style="height:400px; background-color:transparent; border:none;" placeholder="Deine Gedanken zum Training..." oninput="AppController.saveNote(this.value)"></textarea>
             </div>
         </div>
     </div>
 
-    <div id="overlay-player" class="fullscreen-overlay">
-        <div class="overlay-header-row">
-            <button class="small-toggle-button" onclick="PlayerSystem.exit()">ABBRECHEN</button>
-            <span id="player-status-round" style="font-weight:bold; color:#888; font-size:12px;">ÜBUNG 1 / 10</span>
-            <div id="player-mute" onclick="PlayerSystem.toggleMute()" style="font-size:24px; cursor:pointer;">🔊</div>
+    <div id="overlay-library" class="overlay-fullscreen">
+        <div class="overlay-header">
+            <h1 class="text-headline">ÜBUNGEN</h1>
+            <button class="button-toggle-small" onclick="UserInterface.closeOverlay('overlay-library')">SCHLIESSEN</button>
         </div>
-        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div id="player-phase" style="font-size:24px; font-weight:900; color:var(--color-accent-green); letter-spacing:2px; text-transform:uppercase;">BEREIT</div>
-            
-            <div class="player-visual-circle">
-                <svg class="player-svg-container">
-                    <circle cx="110" cy="110" r="100" stroke="#222" stroke-width="12" fill="none"/>
-                    <circle id="player-ring" cx="110" cy="110" r="100" stroke="white" stroke-width="12" fill="none" stroke-dasharray="628" stroke-dashoffset="0" style="transition:1s linear;"/>
-                </svg>
-                <div id="player-timer" class="player-timer-text">10</div>
+        <div class="overlay-content-body" id="library-container">
             </div>
+    </div>
 
-            <div style="text-align:center; padding:0 15px;">
-                <div id="player-ex-cat" style="color:var(--color-accent-purple); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:5px;">KATEGORIE</div>
-                <div id="player-ex-name" style="font-size:24px; font-weight:900; line-height:1.1;">ÜBUNG NAME</div>
-                <div id="player-guide-trigger" class="player-guide-link" onclick="PlayerSystem.showCurrentGuide()">Anleitung ansehen</div>
-            </div>
-
-            <div id="player-next-box" class="player-next-preview-box">
-                <span style="font-size:10px; color:#888; font-weight:800;">ALS NÄCHSTES:</span><br>
-                <span id="player-next-name" style="font-size:16px; font-weight:900;">-</span>
-                <div style="margin-top:5px; font-size:10px; color:var(--color-accent-blue); font-weight:bold; cursor:pointer;" onclick="PlayerSystem.showNextGuide()">VORSCHAU ANZEIGEN</div>
-            </div>
+    <div id="overlay-detail" class="overlay-fullscreen" style="z-index:12000;">
+        <div class="overlay-header">
+            <h1 class="text-headline" id="detail-headline">TITEL</h1>
+            <button class="button-toggle-small" onclick="UserInterface.closeOverlay('overlay-detail')">SCHLIESSEN</button>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
-            <button id="player-play-pause" class="primary-button" onclick="PlayerSystem.toggle()">START</button>
-            <button id="player-skip" class="outline-button" onclick="PlayerSystem.skip()">ÜBERSPRINGEN</button>
+        <div class="overlay-content-body">
+            <div class="ui-card-element">
+                <span id="detail-category" style="color:var(--color-category); font-weight:800; font-size:12px; text-transform:uppercase;">KATEGORIE</span>
+                <div id="detail-text" style="white-space:pre-wrap; line-height:1.7; margin-top:15px; font-size:16px; color:#dddddd;">BESCHREIBUNG</div>
+            </div>
         </div>
     </div>
 
-    <div id="overlay-rating" class="fullscreen-overlay" style="z-index:13000; justify-content:flex-start;">
-        <h1 style="text-align:center; margin-top:20px; margin-bottom:20px; color:var(--color-accent-green);">GESCHAFFT!</h1>
+    <div id="overlay-player" class="overlay-fullscreen">
+        <div class="overlay-header">
+            <button class="button-toggle-small" onclick="PlayerSystem.exit()">EXIT</button>
+            <span id="player-round-display" style="font-weight:bold; color:#888; font-size:12px;">1 / 10</span>
+            <div id="player-mute-btn" onclick="PlayerSystem.toggleMute()" style="font-size:24px; cursor:pointer;">🔊</div>
+        </div>
         
-        <div class="overlay-scroll-content">
-            <div class="ui-card" style="text-align:center;">
-                <p style="font-size:10px; font-weight:700; color:#666;">INTENSITÄT</p>
-                <h2 id="rating-val" style="font-size:50px; margin:5px 0;">5</h2>
-                <input type="range" id="rating-slider" min="1" max="10" value="5" style="width:100%;" oninput="document.getElementById('rating-val').innerText=this.value">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div id="player-phase-text" style="font-size:32px; font-weight:900; color:var(--color-success); letter-spacing:2px; text-transform:uppercase;">BEREIT</div>
+            
+            <div class="player-visual-wrapper">
+                <svg class="player-svg-element">
+                    <circle cx="130" cy="130" r="120" stroke="#222" stroke-width="16" fill="none"/>
+                    <circle id="player-ring-visual" cx="130" cy="130" r="120" stroke="white" stroke-width="16" fill="none" stroke-dasharray="753" stroke-dashoffset="0" style="transition:1s linear;"/>
+                </svg>
+                <div id="player-timer-number" class="player-time-display">10</div>
             </div>
 
-            <div class="ui-card">
-                <h2 class="sub-headline-text">SUPPLEMENTS & MERKLISTE</h2>
-                <div id="finish-checklist-container">
+            <div style="text-align:center; padding:0 20px;">
+                <div id="player-cat-display" style="color:var(--color-category); font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">KATEGORIE</div>
+                <div id="player-name-display" style="font-size:30px; font-weight:900; line-height:1.1;">ÜBUNG</div>
+                <div id="player-guide-link" class="player-guide-action" onclick="PlayerSystem.showCurrentGuide()">Anleitung anzeigen</div>
+            </div>
+
+            <div id="player-next-container" class="player-next-box">
+                <span style="font-size:11px; color:#888; font-weight:800;">ALS NÄCHSTES:</span><br>
+                <span id="player-next-name" style="font-size:18px; font-weight:900;">-</span>
+                <div style="margin-top:8px; font-size:11px; color:var(--color-info); font-weight:bold; cursor:pointer;" onclick="PlayerSystem.showNextGuide()">VORSCHAU</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;">
+            <button id="player-toggle-btn" class="button-primary-action" onclick="PlayerSystem.toggle()">START</button>
+            <button class="button-outline-action" onclick="PlayerSystem.skip()">SKIP</button>
+        </div>
+    </div>
+
+    <div id="overlay-finish" class="overlay-fullscreen" style="justify-content:flex-start; z-index:13000;">
+        <h1 style="text-align:center; margin:30px 0; color:var(--color-success); font-size:32px;">GESCHAFFT!</h1>
+        <div class="overlay-content-body">
+            <div class="ui-card-element" style="text-align:center;">
+                <p style="font-size:11px; font-weight:700; color:#666;">INTENSITÄT</p>
+                <h2 id="rating-display" style="font-size:60px; margin:10px 0;">5</h2>
+                <input type="range" id="rating-slider" min="1" max="10" value="5" style="width:100%;" oninput="document.getElementById('rating-display').innerText=this.value">
+            </div>
+
+            <div class="ui-card-element">
+                <h2 class="text-subhead">SUPPLEMENTS & MERKLISTE</h2>
+                <div id="finish-list-container">
                     </div>
             </div>
 
-            <button class="primary-button" style="margin-top:10px;" onclick="PlayerSystem.saveAndFinish()">SPEICHERN & BEENDEN</button>
+            <button class="button-primary-action" style="margin-top:10px;" onclick="PlayerSystem.saveAndFinish()">SPEICHERN & SCHLIESSEN</button>
         </div>
     </div>
 
-
-    <div id="screen-home" class="app-screen-container screen-active">
+    <div id="screen-home" class="app-view-container view-active">
         
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:15px;">
             <div>
-                <h1 id="home-day-title" class="headline-text">TAG X</h1>
-                <span id="home-date-title" style="color:var(--color-accent-green); font-weight:bold; font-size:11px;">DATUM</span>
+                <h1 id="home-day-display" class="text-headline">TAG X</h1>
+                <span id="home-date-display" style="color:var(--color-success); font-weight:bold; font-size:12px;">DATUM</span>
             </div>
             
             <div style="text-align:right;">
                 <span style="font-size:10px; color:#888; font-weight:800;">TOTAL</span> 
-                <span id="home-total-val" style="font-weight:900; font-size:14px;">0</span>
-                <span style="font-size:10px; color:#888; font-weight:800; margin-left:8px;">STREAK</span> 
-                <span id="home-streak-val" style="font-weight:900; color:var(--color-accent-orange); font-size:14px;">0</span>
+                <span id="home-total-display" style="font-weight:900; font-size:15px;">0</span>
+                <span style="font-size:10px; color:#888; font-weight:800; margin-left:10px;">STREAK</span> 
+                <span id="home-streak-display" style="font-weight:900; color:var(--color-warning); font-size:15px;">0</span>
             </div>
         </div>
 
-        <div class="dashboard-grid-layout">
-            <div class="stat-display-item">
-                <span class="stat-label-text">BMI</span>
-                <span class="stat-value-text" id="home-bmi">-</span>
+        <div class="grid-layout-3-col">
+            <div class="stat-display-box">
+                <span class="stat-label-small">BMI</span>
+                <span class="stat-value-primary" id="home-bmi-display">-</span>
             </div>
-            <div class="stat-display-item">
-                <span class="stat-label-text">KCAL</span>
-                <span class="stat-value-text" id="home-kcal">0</span>
+            <div class="stat-display-box">
+                <span class="stat-label-small">KCAL</span>
+                <span class="stat-value-primary" id="home-kcal-display">0</span>
             </div>
-            <div class="stat-display-item">
-                <span class="stat-label-text">LEVEL</span>
-                <span class="stat-value-text" id="home-lvl" style="color:var(--color-accent-orange);">1</span>
-            </div>
-        </div>
-
-        <div class="dashboard-grid-layout">
-            <div class="stat-display-item">
-                <span class="stat-label-text">WOCHE</span>
-                <div id="freq-week" class="freq-value-text">0</div>
-            </div>
-            <div class="stat-display-item">
-                <span class="stat-label-text">MONAT</span>
-                <div id="freq-month" class="freq-value-text">0</div>
-            </div>
-            <div class="stat-display-item">
-                <span class="stat-label-text">JAHR</span>
-                <div id="freq-year" class="freq-value-text">0</div>
+            <div class="stat-display-box">
+                <span class="stat-label-small">LEVEL</span>
+                <span class="stat-value-primary" id="home-lvl-display" style="color:var(--color-warning);">1</span>
             </div>
         </div>
 
-        <div class="ui-card">
-            <div class="dashboard-grid-layout">
-                <button id="dur-10" class="small-toggle-button" onclick="AppController.setDuration(10)">10 MIN</button>
-                <button id="dur-20" class="small-toggle-button" onclick="AppController.setDuration(20)">20 MIN</button>
-                <button id="dur-30" class="small-toggle-button" onclick="AppController.setDuration(30)">30 MIN</button>
+        <div class="grid-layout-3-col">
+            <div class="stat-display-box">
+                <span class="stat-label-small">WOCHE</span>
+                <div id="freq-week-display" class="stat-value-frequency">0</div>
+            </div>
+            <div class="stat-display-box">
+                <span class="stat-label-small">MONAT</span>
+                <div id="freq-month-display" class="stat-value-frequency">0</div>
+            </div>
+            <div class="stat-display-box">
+                <span class="stat-label-small">JAHR</span>
+                <div id="freq-year-display" class="stat-value-frequency">0</div>
+            </div>
+        </div>
+
+        <div class="ui-card-element">
+            <div class="grid-layout-3-col">
+                <button id="dur-btn-10" class="button-toggle-small" onclick="AppController.setDuration(10)">10 MIN</button>
+                <button id="dur-btn-20" class="button-toggle-small" onclick="AppController.setDuration(20)">20 MIN</button>
+                <button id="dur-btn-30" class="button-toggle-small" onclick="AppController.setDuration(30)">30 MIN</button>
             </div>
             
-            <select id="home-focus" class="select-input" style="font-size:13px; padding:10px;">
+            <select id="home-focus-select" class="input-select-field" style="margin-top:10px;">
                 <option value="all">Mix (Ganzkörper)</option>
                 <option value="Bauch & Core">Bauch & Core</option>
                 <option value="Beine & Po">Beine & Po</option>
@@ -569,139 +635,153 @@
                 <option value="Ganzkörper & Cardio">Cardio & Fettverbrennung</option>
             </select>
 
-            <button class="primary-button" onclick="PlayerSystem.start()" style="margin-bottom:0;">TRAINING STARTEN</button>
+            <button class="button-primary-action" onclick="PlayerSystem.start()" style="margin-bottom:0;">TRAINING STARTEN</button>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <button class="outline-button" onclick="UserInterface.openLibrary()">ÜBUNGEN</button>
-            <button class="outline-button" onclick="UserInterface.openNotes()">NOTIZEN</button>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <button class="button-outline-action" onclick="UserInterface.openLibrary()">ÜBUNGEN</button>
+            <button class="button-outline-action" onclick="UserInterface.openNotes()">NOTIZEN</button>
         </div>
     </div>
 
-    <div id="screen-stats" class="app-screen-container">
-        <h1 class="headline-text">STATISTIK</h1>
+    <div id="screen-stats" class="app-view-container">
+        <h1 class="text-headline">STATISTIK</h1>
         
-        <div class="ui-card" style="margin-top:10px; padding-bottom:5px;">
-            <h2 class="sub-headline-text">GEWICHTSVERLAUF</h2>
-            <div style="height:120px; width:100%;">
-                <svg id="weight-chart-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
+        <div class="ui-card-element" style="margin-top:10px; padding-bottom:5px;">
+            <h2 class="text-subhead">GEWICHTSVERLAUF</h2>
+            <div style="height:140px; width:100%;">
+                <svg id="chart-svg" width="100%" height="100%" preserveAspectRatio="none" style="overflow:visible;"></svg>
             </div>
         </div>
 
-        <div class="ui-card">
-            <h2 class="sub-headline-text">AKTUELLE MESSWERTE</h2>
-            <div id="metrics-grid-container" class="metrics-grid-layout">
+        <div class="ui-card-element">
+            <h2 class="text-subhead">MESSWERTE (DASHBOARD)</h2>
+            <div id="metrics-container" class="metrics-grid-layout">
                 </div>
         </div>
 
-        <div class="ui-card">
-            <h2 class="sub-headline-text">NEUE MESSUNG EINTRAGEN</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <input type="number" id="meas-weight" class="text-input" placeholder="Gewicht (kg)">
-                <input type="number" id="meas-waist" class="text-input" placeholder="Bauch (cm)">
-                <input type="number" id="meas-chest" class="text-input" placeholder="Brust (cm)">
-                <input type="number" id="meas-arm" class="text-input" placeholder="Arm (cm)">
-                <input type="number" id="meas-leg" class="text-input" placeholder="Bein (cm)">
-                <input type="number" id="meas-glute" class="text-input" placeholder="Po (cm)">
-                <input type="number" id="meas-fold-abs" class="text-input" placeholder="Bauchfalte (mm)">
-                <input type="number" id="meas-fold-side" class="text-input" placeholder="Seitl. Falte (mm)">
+        <div class="ui-card-element">
+            <h2 class="text-subhead">NEUE MESSUNG (LEER LASSEN = WERT BEHALTEN)</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input type="number" id="meas-weight" class="input-text-field" placeholder="Gewicht (kg)">
+                <input type="number" id="meas-waist" class="input-text-field" placeholder="Bauch (cm)">
+                
+                <input type="number" id="meas-fold-abs" class="input-text-field" placeholder="Bauchfalte (mm)">
+                <input type="number" id="meas-fold-side" class="input-text-field" placeholder="Seitl. Falte (mm)">
+
+                <input type="number" id="meas-chest" class="input-text-field" placeholder="Brust (cm)">
+                <input type="number" id="meas-arm" class="input-text-field" placeholder="Arm (cm)">
+                <input type="number" id="meas-leg" class="input-text-field" placeholder="Bein (cm)">
+                <input type="number" id="meas-glute" class="input-text-field" placeholder="Po (cm)">
             </div>
-            <button class="primary-button" style="margin-top:5px;" onclick="AppController.saveMeasurement()">WERTE SPEICHERN</button>
+            <button class="button-primary-action" style="margin-top:10px;" onclick="AppController.saveMeasurement()">WERTE SPEICHERN</button>
         </div>
 
-        <div id="workout-history-list">
-            </div>
+        <div id="history-list-container"></div>
     </div>
 
-    <div id="screen-system" class="app-screen-container">
-        <h1 class="headline-text">SYSTEM</h1>
+    <div id="screen-system" class="app-view-container">
+        <h1 class="text-headline">SYSTEM</h1>
         
-        <div class="ui-card" style="margin-top:10px;">
-            <h2 class="sub-headline-text">TIMER EINSTELLUNGEN</h2>
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span style="font-size:12px;">BELASTUNG</span>
-                <b id="val-work" style="color:var(--color-accent-green);">40s</b>
-            </div>
-            <input type="range" id="range-work" min="20" max="120" step="5" style="width:100%; margin-bottom:15px;" oninput="AppController.updateConfig()">
+        <div class="ui-card-element" style="margin-top:10px;">
+            <h2 class="text-subhead">TIMER KONFIGURATION</h2>
             
             <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <span style="font-size:12px;">PAUSE</span>
-                <b id="val-rest" style="color:var(--color-accent-blue);">20s</b>
+                <span class="stat-label-small">BELASTUNG</span>
+                <b id="label-work" style="color:var(--color-success);">40s</b>
+            </div>
+            <input type="range" id="range-work" min="20" max="120" step="5" style="width:100%; margin-bottom:20px;" oninput="AppController.updateConfig()">
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span class="stat-label-small">PAUSE</span>
+                <b id="label-rest" style="color:var(--color-info);">20s</b>
             </div>
             <input type="range" id="range-rest" min="10" max="60" step="5" style="width:100%;" oninput="AppController.updateConfig()">
         </div>
 
-        <div class="ui-card">
-            <h2 class="sub-headline-text">DATENVERWALTUNG</h2>
-            <button class="outline-button" style="margin-bottom:8px;" onclick="BackupSystem.export()">EXPORTIEREN</button>
-            <input type="file" id="import-file" style="display:none" onchange="BackupSystem.import(this)">
-            <button class="outline-button" style="margin-bottom:20px;" onclick="document.getElementById('import-file').click()">IMPORTIEREN</button>
+        <div class="ui-card-element">
+            <h2 class="text-subhead">DATENVERWALTUNG</h2>
+            <button class="button-outline-action" style="margin-bottom:10px;" onclick="BackupSystem.export()">EXPORTIEREN</button>
+            <input type="file" id="file-import" style="display:none" onchange="BackupSystem.import(this)">
+            <button class="button-outline-action" style="margin-bottom:25px;" onclick="document.getElementById('file-import').click()">IMPORTIEREN</button>
             
-            <button class="outline-button" style="border-color:var(--color-accent-red); color:var(--color-accent-red);" onclick="AppController.clearAll()">APP ZURÜCKSETZEN</button>
+            <button class="button-outline-action" style="border-color:var(--color-danger); color:var(--color-danger);" onclick="AppController.resetApp()">APP ZURÜCKSETZEN</button>
         </div>
     </div>
 
-    <div class="bottom-navbar">
-        <div id="nav-home" class="nav-item-btn nav-active" onclick="UserInterface.nav('screen-home', this)">
-            <div class="nav-icon-font">🏠</div>
-            <span class="nav-label-text">HOME</span>
+    <div class="bottom-navigation-bar">
+        <div id="nav-home" class="nav-tab-item tab-active" onclick="UserInterface.navigate('screen-home', this)">
+            <div class="nav-icon-symbol">🏠</div>
+            <span class="nav-text-label">HOME</span>
         </div>
-        <div id="nav-stats" class="nav-item-btn" onclick="UserInterface.nav('screen-stats', this)">
-            <div class="nav-icon-font">📊</div>
-            <span class="nav-label-text">STATS</span>
+        <div id="nav-stats" class="nav-tab-item" onclick="UserInterface.navigate('screen-stats', this)">
+            <div class="nav-icon-symbol">📊</div>
+            <span class="nav-text-label">STATS</span>
         </div>
-        <div id="nav-system" class="nav-item-btn" onclick="UserInterface.nav('screen-system', this)">
-            <div class="nav-icon-font">⚙️</div>
-            <span class="nav-label-text">SYSTEM</span>
+        <div id="nav-system" class="nav-tab-item" onclick="UserInterface.navigate('screen-system', this)">
+            <div class="nav-icon-symbol">⚙️</div>
+            <span class="nav-text-label">SYSTEM</span>
         </div>
     </div>
-
     <script>
+        // STORAGE KEY FOR PERSISTENCE
         const STORAGE_KEY = "BODYPULSE_MASTER_DATA";
 
-        /**
-         * ÜBUNGSDATENBANK
-         */
+        // CHECKLIST ITEMS
+        const CHECKLIST_ITEMS = [
+            "Protein Shake", 
+            "Kreatin", 
+            "Vitamine", 
+            "Eisen", 
+            "Magnesium"
+        ];
+
+        // FULL EXERCISE DATABASE (50 ITEMS, UNABRIDGED)
         const EXERCISES = {
             "Planks": {
                 cat: "Bauch & Core",
                 short: "Statische Halteübung für den Rumpf.",
-                long: "1. Gehe in den Unterarmstütz.\n2. Platziere die Ellbogen direkt unter den Schultern.\n3. Strecke den Körper durch, sodass er eine gerade Linie bildet.\n4. Spanne Bauch und Po fest an und halte die Position."
+                long: "1. Gehe in den Unterarmstütz.\n2. Platziere die Ellbogen direkt unter den Schultern.\n3. Strecke den Körper durch, sodass er eine gerade Linie bildet.\n4. Spanne Bauch und Po fest an und halte die Position so lange wie möglich."
             },
             "Liegestütze": {
                 cat: "Oberkörper",
                 short: "Klassische Kräftigung für Brust und Arme.",
-                long: "1. Platziere die Hände etwas weiter als schulterbreit.\n2. Halte den Körper steif wie ein Brett.\n3. Senke die Brust tief zum Boden ab.\n4. Drücke dich kraftvoll wieder nach oben."
+                long: "1. Platziere die Hände etwas weiter als schulterbreit.\n2. Halte den Körper steif wie ein Brett.\n3. Senke die Brust tief zum Boden ab, bis die Nase fast den Boden berührt.\n4. Drücke dich kraftvoll wieder nach oben."
             },
             "Kniebeugen": {
                 cat: "Beine & Po",
                 short: "Basisübung für den Unterkörper.",
-                long: "1. Stelle dich schulterbreit hin.\n2. Schiebe den Po nach hinten unten, als würdest du dich setzen.\n3. Halte den Rücken gerade.\n4. Drücke dich aus den Fersen wieder hoch."
+                long: "1. Stelle dich schulterbreit hin.\n2. Schiebe den Po nach hinten unten, als würdest du dich auf einen Stuhl setzen.\n3. Halte den Rücken gerade.\n4. Drücke dich aus den Fersen wieder hoch."
             },
             "Crunches": {
                 cat: "Bauch & Core",
                 short: "Für die gerade Bauchmuskulatur.",
-                long: "1. Lege dich auf den Rücken, Beine angewinkelt.\n2. Hebe die Schulterblätter vom Boden ab.\n3. Spanne den Bauch aktiv an.\n4. Senke dich langsam wieder ab."
+                long: "1. Lege dich auf den Rücken, Beine angewinkelt.\n2. Hebe die Schulterblätter vom Boden ab.\n3. Spanne den Bauch aktiv an.\n4. Senke dich langsam wieder ab, ohne die Spannung ganz zu verlieren."
             },
-            "Ausfallschritte": {
+            "Ausfallschritte (L)": {
                 cat: "Beine & Po",
-                short: "Stärkt Beine und Balance.",
-                long: "1. Mache einen großen Schritt nach vorne.\n2. Senke das hintere Knie tief ab.\n3. Halte den Oberkörper aufrecht.\n4. Drücke dich zurück in den Stand."
+                short: "Beinkraft Links.",
+                long: "1. Mache einen großen Schritt mit dem linken Bein nach vorne.\n2. Senke das hintere Knie tief ab.\n3. Halte den Oberkörper aufrecht.\n4. Drücke dich zurück in den Stand."
+            },
+            "Ausfallschritte (R)": {
+                cat: "Beine & Po",
+                short: "Beinkraft Rechts.",
+                long: "1. Mache einen großen Schritt mit dem rechten Bein nach vorne.\n2. Senke das hintere Knie tief ab.\n3. Halte den Oberkörper aufrecht.\n4. Drücke dich zurück in den Stand."
             },
             "Dips": {
                 cat: "Oberkörper",
                 short: "Effektiv für den Trizeps.",
-                long: "1. Stütze dich rücklings an einer Kante ab.\n2. Beuge die Arme und senke den Po.\n3. Drücke dich aus der Kraft der Arme wieder hoch."
+                long: "1. Stütze dich rücklings an einer Kante (Stuhl/Bank) ab.\n2. Beuge die Arme und senke den Po Richtung Boden.\n3. Drücke dich aus der Kraft der Arme wieder hoch."
             },
             "Burpees": {
                 cat: "Ganzkörper & Cardio",
                 short: "Kraft und Ausdauer kombiniert.",
-                long: "1. Gehe in die Hocke.\n2. Springe in den Liegestütz.\n3. Mache einen Liegestütz (optional).\n4. Springe zurück in die Hocke und mache einen Strecksprung."
+                long: "1. Gehe in die Hocke.\n2. Springe nach hinten in den Liegestütz.\n3. Mache einen Liegestütz (optional).\n4. Springe zurück in die Hocke und mache einen Strecksprung nach oben."
             },
             "Mountain Climber": {
                 cat: "Ganzkörper & Cardio",
                 short: "Dynamische Core-Übung.",
-                long: "1. Gehe in die Liegestützposition.\n2. Ziehe die Knie abwechselnd schnell zur Brust.\n3. Halte den Rücken gerade und stabil."
+                long: "1. Gehe in die Liegestützposition.\n2. Ziehe die Knie abwechselnd schnell zur Brust.\n3. Halte den Rücken gerade und stabil wie ein Brett."
             },
             "Wandsitzen": {
                 cat: "Beine & Po",
@@ -716,7 +796,7 @@
             "Beinheben": {
                 cat: "Bauch & Core",
                 short: "Für den unteren Bauch.",
-                long: "1. Lege dich auf den Rücken, Hände unter den Po.\n2. Hebe die gestreckten Beine an.\n3. Senke sie langsam ab, ohne den Boden zu berühren."
+                long: "1. Lege dich auf den Rücken, Hände unter den Po zur Stützung.\n2. Hebe die gestreckten Beine an.\n3. Senke sie langsam ab, ohne den Boden zu berühren."
             },
             "Glute Bridge": {
                 cat: "Beine & Po",
@@ -731,7 +811,7 @@
             "Russian Twist": {
                 cat: "Bauch & Core",
                 short: "Für die schrägen Bauchmuskeln.",
-                long: "1. Setze dich hin, hebe die Füße an.\n2. Rotiere den Oberkörper nach links und rechts.\n3. Berühre jeweils den Boden neben dir."
+                long: "1. Setze dich hin, hebe die Füße an.\n2. Rotiere den Oberkörper nach links und rechts.\n3. Berühre jeweils den Boden neben dir mit den Händen."
             },
             "Superman": {
                 cat: "Bauch & Core",
@@ -756,7 +836,7 @@
             "Diamond Pushups": {
                 cat: "Oberkörper",
                 short: "Liegestütz für Trizeps.",
-                long: "1. Forme mit Daumen und Zeigefinger ein Dreieck.\n2. Platziere die Hände unter der Brust.\n3. Senke dich ab und drücke dich hoch."
+                long: "1. Forme mit Daumen und Zeigefinger ein Dreieck unter der Brust.\n2. Senke dich ab.\n3. Drücke dich hoch (fokussiert Trizeps)."
             },
             "Bicycle Crunches": {
                 cat: "Bauch & Core",
@@ -803,25 +883,40 @@
                 short: "Seitliche Sprünge.",
                 long: "1. Springe seitlich auf ein Bein.\n2. Kreuze das andere Bein hinten.\n3. Wechsle dynamisch die Seite."
             },
-            "Donkey Kicks": {
+            "Donkey Kicks (L)": {
                 cat: "Beine & Po",
-                short: "Po-Isolation.",
-                long: "1. Gehe in den Vierfüßlerstand.\n2. Kicke ein Bein angewinkelt nach oben zur Decke.\n3. Spanne den Po oben fest an."
+                short: "Po-Isolation Links.",
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Kicke das linke Bein angewinkelt nach oben zur Decke.\n3. Spanne den Po oben fest an."
             },
-            "Fire Hydrants": {
+            "Donkey Kicks (R)": {
                 cat: "Beine & Po",
-                short: "Hüft-Rotation.",
-                long: "1. Gehe in den Vierfüßlerstand.\n2. Hebe ein Bein seitlich angewinkelt an.\n3. Halte den Rücken dabei gerade."
+                short: "Po-Isolation Rechts.",
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Kicke das rechte Bein angewinkelt nach oben zur Decke.\n3. Spanne den Po oben fest an."
+            },
+            "Fire Hydrants (L)": {
+                cat: "Beine & Po",
+                short: "Hüft-Rotation Links.",
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Hebe das linke Bein seitlich angewinkelt an.\n3. Halte den Rücken dabei gerade."
+            },
+            "Fire Hydrants (R)": {
+                cat: "Beine & Po",
+                short: "Hüft-Rotation Rechts.",
+                long: "1. Gehe in den Vierfüßlerstand.\n2. Hebe das rechte Bein seitlich angewinkelt an.\n3. Halte den Rücken dabei gerade."
             },
             "Armkreisen": {
                 cat: "Oberkörper",
                 short: "Schulter-Ausdauer.",
                 long: "1. Strecke die Arme seitlich aus.\n2. Mache kleine, schnelle Kreise.\n3. Halte die Spannung in den Schultern."
             },
-            "Seitl. Beinheben": {
+            "Seitl. Beinheben (L)": {
                 cat: "Beine & Po",
-                short: "Hüft-Isolation.",
-                long: "1. Lege dich auf die Seite.\n2. Hebe das obere gestreckte Bein an.\n3. Senke es langsam wieder ab."
+                short: "Hüft-Isolation Links.",
+                long: "1. Lege dich auf die rechte Seite.\n2. Hebe das obere (linke) gestreckte Bein an.\n3. Senke es langsam wieder ab."
+            },
+            "Seitl. Beinheben (R)": {
+                cat: "Beine & Po",
+                short: "Hüft-Isolation Rechts.",
+                long: "1. Lege dich auf die linke Seite.\n2. Hebe das obere (rechte) gestreckte Bein an.\n3. Senke es langsam wieder ab."
             },
             "Käfer (Dead Bug)": {
                 cat: "Bauch & Core",
@@ -842,14 +937,60 @@
                 cat: "Oberkörper",
                 short: "Liegestütz an Wand.",
                 long: "1. Stehe vor einer Wand.\n2. Lehne dich mit den Händen dagegen.\n3. Beuge die Arme und drücke dich wieder ab."
+            },
+            "Squat Jumps": {
+                cat: "Beine & Po",
+                short: "Sprung-Kniebeuge.",
+                long: "1. Mache eine Kniebeuge.\n2. Springe aus der tiefsten Position explosiv hoch.\n3. Lande weich und gehe direkt in die nächste Beuge."
+            },
+            "Curtsy Lunges": {
+                cat: "Beine & Po",
+                short: "Knicks-Schritt.",
+                long: "1. Mache einen Ausfallschritt schräg nach hinten (wie ein Knicks).\n2. Gehe tief.\n3. Wechsle die Seite."
+            },
+            "Pike Pushups": {
+                cat: "Oberkörper",
+                short: "Schulter-Push.",
+                long: "1. Gehe in den Liegestütz, aber schiebe den Po hoch (V-Form).\n2. Senke den Kopf Richtung Boden.\n3. Drücke dich aus den Schultern wieder hoch."
+            },
+            "V-Ups": {
+                cat: "Bauch & Core",
+                short: "Klappmesser.",
+                long: "1. Rückenlage, Arme nach hinten gestreckt.\n2. Klappe Oberkörper und Beine gleichzeitig hoch, sodass sich Hände und Füße berühren."
+            },
+            "Heel Touch": {
+                cat: "Bauch & Core",
+                short: "Seitlicher Bauch.",
+                long: "1. Rückenlage, Füße aufgestellt.\n2. Hebe den Oberkörper leicht an.\n3. Berühre abwechselnd mit den Händen deine Fersen."
+            },
+            "Frog Pumps": {
+                cat: "Beine & Po",
+                short: "Frosch-Brücke.",
+                long: "1. Rückenlage, Fußsohlen aneinander (Frosch-Beine).\n2. Hebe das Becken an und spanne den Po fest an."
+            },
+            "Crab Walk": {
+                cat: "Ganzkörper & Cardio",
+                short: "Krebsgang.",
+                long: "1. Setze dich hin, Hände hinter dir aufstützen.\n2. Hebe den Po an.\n3. Laufe vorwärts oder rückwärts auf Händen und Füßen."
+            },
+            "Bear Crawl": {
+                cat: "Ganzkörper & Cardio",
+                short: "Bärengang.",
+                long: "1. Vierfüßlerstand, aber Knie schweben knapp über dem Boden.\n2. Krabble vorwärts, ohne die Knie abzusetzen."
+            },
+            "Wall Walk": {
+                cat: "Oberkörper",
+                short: "Wandlauf.",
+                long: "1. Starte im Liegestütz mit Füßen an der Wand.\n2. Laufe mit den Füßen die Wand hoch und mit den Händen näher zur Wand (Handstand).\n3. Laufe kontrolliert zurück."
+            },
+            "Reverse Snow Angel": {
+                cat: "Oberkörper",
+                short: "Rücken.",
+                long: "1. Bauchlage, Arme neben dem Körper.\n2. Hebe Arme und Oberkörper an.\n3. Führe die Arme gestreckt über den Kopf und zurück (wie ein Schneeengel)."
             }
         };
 
-        const CHECKLIST_ITEMS = ["Protein Shake", "Kreatin", "Vitamine", "Eisen", "Magnesium"];
-
-        /**
-         * DATENSTRUKTUR
-         */
+        // GLOBAL DATA STORE
         let db = {
             profile: { height: 0, weight: 0, age: 0 },
             config: { work: 40, rest: 20, duration: 10, note: "" },
@@ -859,31 +1000,23 @@
             meta: { installed: Date.now() }
         };
 
-        let player = {
-            timerId: null,
-            running: false,
-            time: 10,
-            phase: 'PREP',
-            idx: 0,
-            plan: []
-        };
-        
+        // AUDIO CONTEXT FOR SOUND
         let audioContext = null;
         let isMuted = false;
-
-        // ======================================================
-        // APP CONTROLLER LOGIK
-        // ======================================================
-
+        // ======================================================================
+        // APP CONTROLLER (DATA & STATE MANAGEMENT)
+        // ======================================================================
         const AppController = {
+            // Speicherfunktion
             save: function() {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
             },
 
+            // Erst-Einrichtung
             finishSetup: function() {
-                const h = parseFloat(document.getElementById('setup-height').value);
-                const w = parseFloat(document.getElementById('setup-weight').value);
-                const a = parseFloat(document.getElementById('setup-age').value);
+                const h = parseFloat(document.getElementById('input-height').value);
+                const w = parseFloat(document.getElementById('input-weight').value);
+                const a = parseFloat(document.getElementById('input-age').value);
                 
                 if(h > 50 && w > 10) {
                     db.profile.height = h;
@@ -897,17 +1030,20 @@
                 }
             },
 
+            // Setzt Dauer
             setDuration: function(val) {
                 db.config.duration = val;
                 this.save();
                 UserInterface.refreshAll();
             },
             
+            // Speichert Notiz
             saveNote: function(val) {
                 db.config.note = val;
                 this.save();
             },
             
+            // Update Timer Config
             updateConfig: function() {
                 db.config.work = parseInt(document.getElementById('range-work').value);
                 db.config.rest = parseInt(document.getElementById('range-rest').value);
@@ -915,54 +1051,72 @@
                 UserInterface.refreshAll();
             },
 
+            // SMART SAVE MEASUREMENT (MERGE LOGIC)
             saveMeasurement: function() {
-                const wInput = parseFloat(document.getElementById('meas-weight').value);
-                const bInput = parseFloat(document.getElementById('meas-waist').value);
-                const cInput = parseFloat(document.getElementById('meas-chest').value);
-                const aInput = parseFloat(document.getElementById('meas-arm').value);
-                const lInput = parseFloat(document.getElementById('meas-leg').value);
-                const gInput = parseFloat(document.getElementById('meas-glute').value);
-                const faInput = parseFloat(document.getElementById('meas-fold-abs').value);
-                const fsInput = parseFloat(document.getElementById('meas-fold-side').value);
-                
-                if(wInput > 0) {
+                // Eingabefelder holen
+                const iW = document.getElementById('meas-weight').value;
+                const iB = document.getElementById('meas-waist').value;
+                const iFA = document.getElementById('meas-fold-abs').value;
+                const iFS = document.getElementById('meas-fold-side').value;
+                const iC = document.getElementById('meas-chest').value;
+                const iA = document.getElementById('meas-arm').value;
+                const iL = document.getElementById('meas-leg').value;
+                const iG = document.getElementById('meas-glute').value;
+
+                // Letzte Messung holen (für Fallback)
+                let last = db.measurements.length > 0 ? db.measurements[db.measurements.length - 1] : {};
+
+                // Werte ermitteln: Wenn Input leer, nimm alten Wert. Wenn kein alter Wert, nimm 0.
+                const nW = iW !== "" ? parseFloat(iW) : (last.w || 0);
+                const nB = iB !== "" ? parseFloat(iB) : (last.b || 0);
+                const nFA = iFA !== "" ? parseFloat(iFA) : (last.fa || 0);
+                const nFS = iFS !== "" ? parseFloat(iFS) : (last.fs || 0);
+                const nC = iC !== "" ? parseFloat(iC) : (last.c || 0);
+                const nA = iA !== "" ? parseFloat(iA) : (last.a || 0);
+                const nL = iL !== "" ? parseFloat(iL) : (last.l || 0);
+                const nG = iG !== "" ? parseFloat(iG) : (last.g || 0);
+
+                // Speichern nur wenn Gewicht vorhanden ist
+                if(nW > 0) {
                     const entry = {
                         date: new Date().toISOString(),
-                        w: wInput,
-                        b: bInput || 0,
-                        c: cInput || 0,
-                        a: aInput || 0,
-                        l: lInput || 0,
-                        g: gInput || 0,
-                        fa: faInput || 0,
-                        fs: fsInput || 0
+                        w: nW, 
+                        b: nB, 
+                        fa: nFA,
+                        fs: nFS,
+                        c: nC, 
+                        a: nA, 
+                        l: nL, 
+                        g: nG
                     };
                     
-                    db.profile.weight = wInput; // Profil aktualisieren
+                    db.profile.weight = nW; // Profil-Update
                     db.measurements.push(entry);
                     this.save();
                     
                     UserInterface.refreshAll();
-                    alert("Messung erfolgreich gespeichert!");
+                    alert("Messung gespeichert! (Leere Felder wurden automatisch aufgefüllt)");
                     
+                    // Eingabefelder leeren
                     document.querySelectorAll('#screen-stats input').forEach(i => i.value = "");
                 } else {
-                    alert("Bitte gib mindestens dein Gewicht ein, um zu speichern.");
+                    alert("Bitte gib mindestens dein Gewicht ein.");
                 }
             },
 
-            clearAll: function() {
+            // Reset Funktion
+            resetApp: function() {
                 if(confirm("Wirklich alles löschen? Dies kann nicht rückgängig gemacht werden.")) {
                     localStorage.removeItem(STORAGE_KEY);
                     location.reload();
                 }
             },
 
-            // FREQUENZ UND MINUTEN BERECHNUNG
+            // Frequenz-Berechnung
             calculateFrequency: function() {
                 const now = new Date();
                 
-                // Wochenstart (Montag) berechnen
+                // Wochenstart ermitteln (Montag)
                 const startOfWeek = new Date(now); 
                 const day = startOfWeek.getDay() || 7; 
                 if(day !== 1) startOfWeek.setHours(-24 * (day - 1)); 
@@ -974,27 +1128,22 @@
                 
                 db.history.forEach(h => {
                     const d = new Date(h.date);
-                    // Versuche Dauer zu ermitteln
-                    let duration = 0;
-                    if(h.duration) {
-                        duration = h.duration;
-                    } else if (h.kcal) {
-                        duration = Math.round(h.kcal / 8);
-                    }
+                    // Dauer ermitteln (Kompatibilität mit alten Daten)
+                    let duration = h.duration ? h.duration : (h.kcal ? Math.round(h.kcal / 8) : 0);
 
-                    // WOCHE
+                    // Woche
                     if(d >= startOfWeek) {
                         w_count++;
                         w_min += duration;
                     }
                     
-                    // MONAT
+                    // Monat
                     if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
                         m_count++;
                         m_min += duration;
                     }
                     
-                    // JAHR
+                    // Jahr
                     if(d.getFullYear() === now.getFullYear()) {
                         y_count++;
                         y_min += duration;
@@ -1009,16 +1158,16 @@
             }
         };
 
-        // ======================================================
-        // USER INTERFACE LOGIK
-        // ======================================================
-
+        // ======================================================================
+        // USER INTERFACE (DOM MANIPULATION)
+        // ======================================================================
         const UserInterface = {
-            nav: function(screenId, el) {
-                document.querySelectorAll('.app-screen-container').forEach(s => s.classList.remove('screen-active'));
-                document.getElementById(screenId).classList.add('screen-active');
-                document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('nav-active'));
-                el.classList.add('nav-active');
+            // Navigation
+            navigate: function(screenId, el) {
+                document.querySelectorAll('.app-view-container').forEach(s => s.classList.remove('view-active'));
+                document.getElementById(screenId).classList.add('view-active');
+                document.querySelectorAll('.nav-tab-item').forEach(b => b.classList.remove('tab-active'));
+                el.classList.add('tab-active');
             },
 
             closeOverlay: function(id) {
@@ -1030,17 +1179,17 @@
             },
 
             openLibrary: function() {
-                const list = document.getElementById('library-list');
+                const list = document.getElementById('library-container');
                 list.innerHTML = "";
                 Object.keys(EXERCISES).sort().forEach(key => {
                     const ex = EXERCISES[key];
                     const card = document.createElement('div');
-                    card.className = "ui-card";
+                    card.className = "ui-card-element";
                     card.style.cursor = "pointer";
                     card.innerHTML = `
                         <div style="display:flex; justify-content:space-between;">
                             <b>${key}</b>
-                            <span style="font-size:10px; color:var(--color-accent-purple); text-transform:uppercase;">${ex.cat}</span>
+                            <span style="font-size:10px; color:var(--color-category); text-transform:uppercase;">${ex.cat}</span>
                         </div>
                         <p style="font-size:12px; color:#888; margin-top:5px;">${ex.short}</p>
                     `;
@@ -1052,70 +1201,90 @@
 
             showDetail: function(key) {
                 const ex = EXERCISES[key];
-                document.getElementById('detail-title').innerText = key;
+                document.getElementById('detail-headline').innerText = key;
                 document.getElementById('detail-category').innerText = ex.cat;
-                document.getElementById('detail-body').innerText = ex.long;
+                document.getElementById('detail-text').innerText = ex.long;
                 document.getElementById('overlay-detail').style.display = 'flex';
             },
 
             refreshAll: function() {
-                // 1. HEADER DATEN
+                // Header Daten
                 const days = Math.ceil((Date.now() - db.meta.installed) / 86400000);
-                document.getElementById('home-day-title').innerText = "TAG " + (days || 1);
+                document.getElementById('home-day-display').innerText = "TAG " + (days || 1);
                 
                 const today = new Date();
-                document.getElementById('home-date-title').innerText = today.toLocaleDateString('de-DE', {weekday:'short', day:'2-digit', month:'short'}).toUpperCase();
+                document.getElementById('home-date-display').innerText = today.toLocaleDateString('de-DE', {weekday:'short', day:'2-digit', month:'short'}).toUpperCase();
                 
-                document.getElementById('home-streak-val').innerText = db.status.streak;
-                document.getElementById('home-total-val').innerText = db.history.length;
+                document.getElementById('home-streak-display').innerText = db.status.streak;
+                document.getElementById('home-total-display').innerText = db.history.length;
 
-                // 2. FREQUENZ ANZEIGE (MIT MINUTEN)
+                // Frequenz Anzeige
                 const freq = AppController.calculateFrequency();
-                document.getElementById('freq-week').innerHTML = `${freq.w} <span class="freq-sub-text">(${freq.w_m} MIN)</span>`;
-                document.getElementById('freq-month').innerHTML = `${freq.m} <span class="freq-sub-text">(${freq.m_m} MIN)</span>`;
-                document.getElementById('freq-year').innerHTML = `${freq.y} <span class="freq-sub-text">(${freq.y_m} MIN)</span>`;
+                document.getElementById('freq-week-display').innerHTML = `${freq.w} <span class="stat-sub-text">(${freq.w_m}m)</span>`;
+                document.getElementById('freq-month-display').innerHTML = `${freq.m} <span class="stat-sub-text">(${freq.m_m}m)</span>`;
+                document.getElementById('freq-year-display').innerHTML = `${freq.y} <span class="stat-sub-text">(${freq.y_m}m)</span>`;
 
-                // 3. BMI BERECHNUNG
+                // BMI
                 const hMeters = db.profile.height / 100;
                 let bmi = "-";
                 if(db.profile.weight > 0 && hMeters > 0) {
                     bmi = (db.profile.weight / (hMeters * hMeters)).toFixed(1);
                 }
-                document.getElementById('home-bmi').innerText = bmi;
+                document.getElementById('home-bmi-display').innerText = bmi;
 
-                // 4. KALORIEN & LEVEL
+                // Kcal & Level
                 const totalKcal = db.history.reduce((acc, curr) => acc + (curr.kcal || 0), 0);
-                document.getElementById('home-kcal').innerText = totalKcal.toLocaleString();
-                document.getElementById('home-lvl').innerText = 1 + Math.floor(totalKcal / 1000);
+                document.getElementById('home-kcal-display').innerText = totalKcal.toLocaleString();
+                document.getElementById('home-lvl-display').innerText = 1 + Math.floor(totalKcal / 1000);
 
-                // 5. BUTTON STATES
-                document.querySelectorAll('.small-toggle-button').forEach(b => b.classList.remove('button-active'));
-                const btn = document.getElementById('dur-' + db.config.duration);
-                if(btn) btn.classList.add('button-active');
+                // Buttons Active State
+                document.querySelectorAll('.button-toggle-small').forEach(b => b.classList.remove('is-active'));
+                const btn = document.getElementById('dur-btn-' + db.config.duration);
+                if(btn) btn.classList.add('is-active');
 
-                // 6. SLIDER SETTINGS
+                // Sliders
                 document.getElementById('range-work').value = db.config.work;
                 document.getElementById('range-rest').value = db.config.rest;
-                document.getElementById('val-work').innerText = db.config.work + "s";
-                document.getElementById('val-rest').innerText = db.config.rest + "s";
+                document.getElementById('label-work').innerText = db.config.work + "s";
+                document.getElementById('label-rest').innerText = db.config.rest + "s";
                 
-                // 7. NOTIZEN
-                document.getElementById('note-input').value = db.config.note;
+                // Note
+                document.getElementById('input-note').value = db.config.note;
 
-                // 8. STATISTIK RENDER
+                // Render Stats
                 StatsSystem.render();
-            },
-            
-            // DIE MODERNEN KACHELN
-            renderModernStats: function() {
-                const gridContainer = document.getElementById('metrics-grid-container');
+            }
+        };
+
+        // ======================================================================
+        // STATS SYSTEM
+        // ======================================================================
+        const StatsSystem = {
+            render: function() {
+                // 1. CHART
+                const svg = document.getElementById('chart-svg');
+                svg.innerHTML = "";
+                if(db.measurements.length > 1) {
+                    const vals = db.measurements.map(m => parseFloat(m.w));
+                    const min = Math.min(...vals) - 1;
+                    const max = Math.max(...vals) + 1;
+                    const points = vals.map((w, i) => {
+                        const x = (i / (vals.length - 1)) * 100;
+                        const y = 100 - ((w - min) / (max - min) * 100);
+                        return `${x},${y}`;
+                    }).join(' ');
+                    svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
+                }
+
+                // 2. METRICS GRID (MODERN TILES)
+                const gridContainer = document.getElementById('metrics-container');
                 gridContainer.innerHTML = "";
                 
                 if(db.measurements.length > 0) {
                     const cur = db.measurements[db.measurements.length - 1];
                     const pre = db.measurements.length > 1 ? db.measurements[db.measurements.length - 2] : null;
                     
-                    // Definition: invert=true heißt "weniger ist besser" (z.B. Gewicht, Falten)
+                    // Konfiguration: invert=true heißt "weniger ist besser" (Gewicht, Falten, Bauch)
                     const metrics = [
                         { id:'w', label:'GEWICHT', unit:'kg', invert: true },
                         { id:'b', label:'BAUCH', unit:'cm', invert: true },
@@ -1130,32 +1299,48 @@
                     metrics.forEach(m => {
                         const valCur = cur[m.id] || 0;
                         if(valCur > 0) {
-                            let badgeHtml = `<span class="metric-trend-badge trend-neutral">START</span>`;
+                            let badgeHtml = `<span class="trend-badge-indicator badge-neutral">START</span>`;
                             
-                            if(pre && pre[m.id] > 0) {
+                            if(pre && (pre[m.id] || 0) > 0) {
                                 const diff = valCur - pre[m.id];
                                 if(diff !== 0) {
                                     const isGood = m.invert ? (diff < 0) : (diff > 0);
                                     let cssClass = "";
-                                    if(isGood) cssClass = diff > 0 ? "trend-positive-good" : "trend-negative-good";
-                                    else cssClass = diff > 0 ? "trend-positive-bad" : "trend-negative-bad";
                                     
+                                    if(isGood) {
+                                        cssClass = diff > 0 ? "badge-positive" : "badge-positive"; // Positiv = Grün (egal ob + oder -)
+                                    } else {
+                                        cssClass = diff > 0 ? "badge-negative" : "badge-negative"; // Negativ = Rot
+                                    }
+                                    
+                                    // Korrektur Klassenname
+                                    // Wir nutzen oben definierte Klassen: badge-positive (grün), badge-negative (rot)
+                                    // Logik: 
+                                    // Wenn invert=true (z.B. Gewicht): -1kg ist GUT (grün), +1kg ist SCHLECHT (rot)
+                                    // Wenn invert=false (z.B. Bizeps): +1cm ist GUT (grün), -1cm ist SCHLECHT (rot)
+                                    
+                                    if (m.invert) {
+                                        cssClass = diff < 0 ? "badge-positive" : "badge-negative";
+                                    } else {
+                                        cssClass = diff > 0 ? "badge-positive" : "badge-negative";
+                                    }
+
                                     const sign = diff > 0 ? "+" : "";
-                                    badgeHtml = `<span class="metric-trend-badge ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
+                                    badgeHtml = `<span class="trend-badge-indicator ${cssClass}">${sign}${diff.toFixed(1)}</span>`;
                                 } else {
-                                    badgeHtml = `<span class="metric-trend-badge trend-neutral">+/- 0</span>`;
+                                    badgeHtml = `<span class="trend-badge-indicator badge-neutral">+/- 0</span>`;
                                 }
                             }
                             
                             const card = document.createElement('div');
-                            card.className = "metric-card-item";
+                            card.className = "metric-tile-item";
                             card.innerHTML = `
-                                <div class="metric-card-header">
-                                    <span class="metric-label">${m.label}</span>
+                                <div class="tile-header-row">
+                                    <span class="tile-label-text">${m.label}</span>
                                     ${badgeHtml}
                                 </div>
-                                <div class="metric-current-value">
-                                    ${valCur} <span class="metric-unit">${m.unit}</span>
+                                <div class="tile-value-text">
+                                    ${valCur} <span class="tile-unit-text">${m.unit}</span>
                                 </div>
                             `;
                             gridContainer.appendChild(card);
@@ -1164,43 +1349,21 @@
                 } else {
                     gridContainer.innerHTML = "<div style='grid-column:1/-1; text-align:center; color:#666; font-size:12px; padding:10px;'>Noch keine Messdaten vorhanden.</div>";
                 }
-            }
-        };
 
-        const StatsSystem = {
-            render: function() {
-                // 1. GEWICHTS GRAPH
-                const svg = document.getElementById('weight-chart-svg');
-                svg.innerHTML = "";
-                if(db.measurements.length > 1) {
-                    const vals = db.measurements.map(m => parseFloat(m.w));
-                    const min = Math.min(...vals) - 1;
-                    const max = Math.max(...vals) + 1;
-                    const points = vals.map((w, i) => {
-                        const x = (i / (vals.length - 1)) * 100;
-                        const y = 100 - ((w - min) / (max - min) * 100);
-                        return `${x},${y}`;
-                    }).join(' ');
-                    svg.innerHTML = `<polyline points="${points}" fill="none" stroke="#32d74b" stroke-width="3"/>`;
-                }
-
-                // 2. METRICS
-                UserInterface.renderModernStats();
-
-                // 3. HISTORY
-                const list = document.getElementById('workout-history-list');
-                list.innerHTML = "<h2 class='sub-headline-text'>VERLAUF</h2>";
+                // 3. HISTORY LISTE
+                const list = document.getElementById('history-list-container');
+                list.innerHTML = "<h2 class='text-subhead'>VERLAUF</h2>";
                 
                 [...db.history].reverse().slice(0, 10).forEach(entry => {
                     const card = document.createElement('div');
-                    card.className = "ui-card";
+                    card.className = "ui-card-element";
                     card.innerHTML = `
                         <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
                             <span>${entry.type}</span>
                             <span style="color:#666">${new Date(entry.date).toLocaleDateString()}</span>
                         </div>
-                        <div style="font-size:12px; color:var(--color-accent-blue); margin-top:4px;">
-                            ${entry.kcal} kcal • Intensität: ${entry.rating}/10
+                        <div style="font-size:12px; color:var(--color-info); margin-top:4px;">
+                            ${entry.kcal} kcal • ${entry.duration || 0} min • Int: ${entry.rating}/10
                         </div>
                     `;
                     list.appendChild(card);
@@ -1208,6 +1371,9 @@
             }
         };
 
+        // ======================================================================
+        // PLAYER SYSTEM
+        // ======================================================================
         const PlayerSystem = {
             timerId: null,
             running: false,
@@ -1216,31 +1382,56 @@
             idx: 0,
             plan: [],
             
+            // INTELLIGENTE TRAININGSERSTELLUNG
             start: function() {
                 if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 
-                const focus = document.getElementById('home-focus').value;
+                const focus = document.getElementById('home-focus-select').value;
                 const totalSeconds = db.config.duration * 60;
                 const cycleTime = db.config.work + db.config.rest;
                 const count = Math.max(1, Math.floor(totalSeconds / cycleTime));
                 
-                let poolMain = [];
-                let poolSec = [];
-                
+                // Pool filtern
+                let pool = [];
                 Object.keys(EXERCISES).forEach(key => {
                     if(focus === 'all' || EXERCISES[key].cat === focus) {
-                        poolMain.push(key);
-                    } else {
-                        poolSec.push(key);
+                        pool.push(key);
                     }
                 });
 
+                // Plan erstellen mit Logik: Keine Wiederholungen & L/R Paare
                 let newPlan = [];
-                for(let i=0; i < count; i++) {
-                    if(focus === 'all' || Math.random() < 0.75) {
-                        newPlan.push(poolMain[Math.floor(Math.random() * poolMain.length)]);
+                let attempts = 0;
+                
+                while(newPlan.length < count && attempts < 2000) {
+                    attempts++;
+                    const candidate = pool[Math.floor(Math.random() * pool.length)];
+
+                    // Regel 1: Nicht die gleiche wie vorher
+                    if(newPlan.length > 0 && newPlan[newPlan.length - 1] === candidate) {
+                        continue;
+                    }
+
+                    // Regel 2: Links/Rechts Paarung
+                    if(candidate.includes("(L)")) {
+                        const partner = candidate.replace("(L)", "(R)");
+                        if(EXERCISES[partner]) {
+                            // Füge beide hinzu
+                            newPlan.push(candidate);
+                            if(newPlan.length < count) newPlan.push(partner);
+                            continue;
+                        }
+                    } else if(candidate.includes("(R)")) {
+                        const partner = candidate.replace("(R)", "(L)");
+                        if(EXERCISES[partner]) {
+                            // Füge erst L dann R hinzu
+                            newPlan.push(partner);
+                            if(newPlan.length < count) newPlan.push(candidate);
+                            continue;
+                        }
                     } else {
-                        newPlan.push(poolSec[Math.floor(Math.random() * poolSec.length)]);
+                        // Normale Übung
+                        newPlan.push(candidate);
                     }
                 }
                 
@@ -1258,11 +1449,11 @@
                 if(this.running) {
                     clearInterval(this.timerId);
                     this.running = false;
-                    document.getElementById('player-play-pause').innerText = "WEITER";
+                    document.getElementById('player-toggle-btn').innerText = "WEITER";
                 } else {
                     this.timerId = setInterval(this.tick.bind(this), 1000);
                     this.running = true;
-                    document.getElementById('player-play-pause').innerText = "PAUSE";
+                    document.getElementById('player-toggle-btn').innerText = "PAUSE";
                 }
             },
 
@@ -1306,34 +1497,34 @@
             },
 
             draw: function() {
-                document.getElementById('player-timer').innerText = this.time;
-                document.getElementById('player-phase').innerText = this.phase === 'PREP' ? "BEREIT" : (this.phase === 'WORK' ? "GO!" : "PAUSE");
+                document.getElementById('player-timer-number').innerText = this.time;
+                document.getElementById('player-phase-text').innerText = this.phase === 'PREP' ? "BEREIT" : (this.phase === 'WORK' ? "GO!" : "PAUSE");
                 
                 const max = this.phase === 'WORK' ? db.config.work : (this.phase === 'REST' ? db.config.rest : 10);
-                document.getElementById('player-ring').style.strokeDashoffset = 628 - (this.time / max) * 628;
+                document.getElementById('player-ring-visual').style.strokeDashoffset = 753 - (this.time / max) * 753;
                 
-                const color = this.phase === 'WORK' ? "var(--color-accent-green)" : (this.phase === 'REST' ? "var(--color-accent-blue)" : "#fff");
-                document.getElementById('player-phase').style.color = color;
-                document.getElementById('player-ring').style.stroke = color;
+                const color = this.phase === 'WORK' ? "var(--color-success)" : (this.phase === 'REST' ? "var(--color-info)" : "#fff");
+                document.getElementById('player-phase-text').style.color = color;
+                document.getElementById('player-ring-visual').style.stroke = color;
 
                 const exName = this.plan[this.idx];
                 const ex = EXERCISES[exName];
 
                 if(this.phase !== 'REST') {
-                    document.getElementById('player-ex-name').innerText = exName.toUpperCase();
-                    document.getElementById('player-ex-cat').innerText = ex.cat;
-                    document.getElementById('player-guide-trigger').style.display = 'block';
-                    document.getElementById('player-next-box').style.display = 'none';
+                    document.getElementById('player-name-display').innerText = exName.toUpperCase();
+                    document.getElementById('player-cat-display').innerText = ex.cat;
+                    document.getElementById('player-guide-link').style.display = 'block';
+                    document.getElementById('player-next-container').style.display = 'none';
                 } else {
-                    document.getElementById('player-ex-name').innerText = "PAUSE";
-                    document.getElementById('player-ex-cat').innerText = "ERHOLUNG";
-                    document.getElementById('player-guide-trigger').style.display = 'none';
+                    document.getElementById('player-name-display').innerText = "PAUSE";
+                    document.getElementById('player-cat-display').innerText = "ERHOLUNG";
+                    document.getElementById('player-guide-link').style.display = 'none';
                     
-                    document.getElementById('player-next-box').style.display = 'block';
+                    document.getElementById('player-next-container').style.display = 'block';
                     document.getElementById('player-next-name').innerText = this.plan[this.idx + 1];
                 }
                 
-                document.getElementById('player-status-round').innerText = (this.idx + 1) + " / " + this.plan.length;
+                document.getElementById('player-round-display').innerText = (this.idx + 1) + " / " + this.plan.length;
             },
 
             showCurrentGuide: function() {
@@ -1348,16 +1539,16 @@
                 clearInterval(this.timerId);
                 document.getElementById('overlay-player').style.display = 'none';
                 this.renderFinishChecklist();
-                document.getElementById('overlay-rating').style.display = 'flex';
+                document.getElementById('overlay-finish').style.display = 'flex';
             },
 
             renderFinishChecklist: function() {
-                const container = document.getElementById('finish-checklist-container');
+                const container = document.getElementById('finish-list-container');
                 container.innerHTML = "";
                 CHECKLIST_ITEMS.forEach((label, i) => {
                     const row = document.createElement('div');
-                    row.className = "checklist-row-item" + (db.status.checklist[i] ? " item-checked" : "");
-                    row.innerHTML = `<div class="checkbox-indicator"></div><span style="font-size:14px;">${label}</span>`;
+                    row.className = "checklist-item-row" + (db.status.checklist[i] ? " is-checked" : "");
+                    row.innerHTML = `<div class="checklist-box-icon"></div><span style="font-size:14px;">${label}</span>`;
                     row.onclick = () => {
                         db.status.checklist[i] = !db.status.checklist[i];
                         AppController.save();
@@ -1371,7 +1562,6 @@
                 const rating = document.getElementById('rating-slider').value;
                 const kcal = db.config.duration * 8;
                 
-                // HIER SPEICHERN WIR JETZT AUCH DIE MINUTEN (duration)
                 db.history.push({
                     date: new Date().toISOString(),
                     kcal: kcal,
@@ -1389,11 +1579,11 @@
                 
                 AppController.save();
                 UserInterface.refreshAll();
-                document.getElementById('overlay-rating').style.display = 'none';
+                document.getElementById('overlay-finish').style.display = 'none';
             },
 
             exit: function() {
-                if(confirm("Abbrechen?")) {
+                if(confirm("Training wirklich abbrechen?")) {
                     clearInterval(this.timerId);
                     document.getElementById('overlay-player').style.display = 'none';
                 }
@@ -1413,10 +1603,13 @@
             
             toggleMute: function() {
                 isMuted = !isMuted;
-                document.getElementById('player-mute').innerText = isMuted ? "🔇" : "🔊";
+                document.getElementById('player-mute-btn').innerText = isMuted ? "🔇" : "🔊";
             }
         };
 
+        // ======================================================================
+        // BACKUP SYSTEM
+        // ======================================================================
         const BackupSystem = {
             export: function() {
                 const blob = new Blob([JSON.stringify(db)], {type:'application/json'});
@@ -1426,18 +1619,19 @@
                 a.download = 'bodypulse_backup.json';
                 a.click();
             },
-            // INTELLIGENTER IMPORT DER ALTE UND NEUE BACKUPS VERSTEHT
+            
+            // SMART IMPORT (HANDLES OLD & NEW VERSIONS)
             import: function(el) {
                 const reader = new FileReader();
                 reader.onload = e => {
                     try {
                         const data = JSON.parse(e.target.result);
                         
-                        // FALL 1: Altes Backup (ausführliche Namen)
-                        if(data.profile) {
+                        // FALL 1: Neues Format (Master Data)
+                        if(data.profile && !data.prof) {
                             db = data;
                         }
-                        // FALL 2: Mittleres Backup (gekürzte Namen aus V38)
+                        // FALL 2: Altes komprimiertes Format
                         else if(data.prof) {
                             db.profile = {
                                 height: data.prof.h,
@@ -1451,32 +1645,32 @@
                                 note: data.cfg.note
                             };
                             db.status = {
-                                checklist: data.stat.list || [false,false,false,false,false],
+                                checklist: data.stat.list || [],
                                 streak: data.stat.str,
                                 lastWorkout: data.stat.last
                             };
-                            // Mapping History
                             db.history = data.hist.map(h => ({
                                 date: h.d,
                                 kcal: h.k,
                                 rating: h.r,
-                                type: h.t
+                                type: h.t,
+                                duration: 0 // War früher nicht dabei
                             }));
-                            // Mapping Measurements
                             db.measurements = data.meas.map(m => ({
                                 date: m.d,
-                                w: m.w, b: m.b, c: m.c, a: m.a, l: m.l, g: m.g
+                                w: m.w, b: m.b, c: m.c, a: m.a, l: m.l, g: m.g,
+                                fa: 0, fs: 0 // Neue Felder
                             }));
                             db.meta = { installed: data.meta.date };
                         } else {
-                            throw new Error("Format unbekannt");
+                            throw new Error("Unbekanntes Format");
                         }
                         
                         AppController.save();
-                        alert("Backup erfolgreich wiederhergestellt!");
+                        alert("Daten erfolgreich importiert!");
                         location.reload();
                     } catch(err) {
-                        alert("Fehler beim Importieren: " + err.message);
+                        alert("Fehler beim Import: " + err.message);
                         console.error(err);
                     }
                 };
@@ -1484,11 +1678,16 @@
             }
         };
 
+        // ======================================================================
+        // BOOTSTRAP
+        // ======================================================================
         window.onload = function() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if(saved) {
                 try { 
                     db = JSON.parse(saved); 
+                    // Sicherheit: Falls neue Felder fehlen
+                    if(!db.measurements) db.measurements = [];
                 } catch(e) {
                     console.error("Datenfehler", e);
                 }
